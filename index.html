@@ -62,28 +62,16 @@
     <div class="time-display" id="timeDisplay">00:00:00</div>
     <div class="status" id="notifyStatus">Benachrichtigungen: unbekannt</div>
 
-    <!-- 🔊 Neuer Bereich für Signal-Auswahl -->
+    <!-- 🔊 Nur Lautstärke + Testen -->
     <div style="margin-top:10px">
-      <label style="display:block;margin:6px 0">Signal:
-        <select id="alarmMode">
-          <option value="file">Datei (empfohlen)</option>
-          <option value="synth">Synth (weich)</option>
-        </select>
-      </label>
-
-      <label style="display:block;margin:6px 0">
-        Datei-URL/Name: <input id="alarmSrc" placeholder="pi-pi-pi.mp3" style="min-width:240px">
-      </label>
-
       <label style="display:block;margin:6px 0">
         Lautstärke: <input id="alarmVol" type="range" min="0" max="1" step="0.01" value="0.6">
       </label>
-
       <button onclick="testAlarm()">🔊 Testen</button>
     </div>
 
-    <!-- Audio ohne feste Quelle -->
-    <audio id="alarm" preload="auto"></audio>
+    <!-- Audio mit fester Quelle -->
+    <audio id="alarm" src="pi-pi-pi.mp3" preload="auto"></audio>
   </div>
 
 <script>
@@ -117,53 +105,16 @@ function notifyUser(title, body) {
   }
 }
 
-// ===== Signal-Wahl =====
-function getVol() {
-  return parseFloat(document.getElementById('alarmVol')?.value || "0.6");
-}
+// ===== Alarm abspielen =====
 function playAlarm() {
-  const mode = document.getElementById('alarmMode')?.value || 'file';
-  if (mode === 'synth') {
-    playSynthChime();
-  } else {
-    const el = document.getElementById('alarm');
-    const src = (document.getElementById('alarmSrc')?.value || '').trim();
-    if (src) el.src = src;
-    el.volume = getVol();
-    el.play().catch(()=>{});
-  }
+  const el = document.getElementById('alarm');
+  el.volume = parseFloat(document.getElementById('alarmVol')?.value || "0.6");
+  el.currentTime = 0;
+  el.play().catch(()=>{});
 }
+
 function testAlarm() {
   playAlarm();
-}
-function playSynthChime() {
-  const AC = window.AudioContext || window.webkitAudioContext;
-  const ctx = new AC();
-  const vol = getVol();
-
-  function tone(freq, start, dur, type='sine', gain=vol) {
-    const osc = ctx.createOscillator();
-    const g = ctx.createGain();
-    osc.type = type;
-    osc.frequency.value = freq;
-    osc.connect(g);
-    g.connect(ctx.destination);
-
-    const now = ctx.currentTime + start;
-    const attack = 0.01, decay = 0.2;
-    g.gain.setValueAtTime(0, now);
-    g.gain.linearRampToValueAtTime(gain, now + attack);
-    g.gain.exponentialRampToValueAtTime(0.0001, now + attack + decay + dur);
-
-    osc.start(now);
-    osc.stop(now + attack + decay + dur + 0.05);
-  }
-
-  tone(880, 0.00, 0.15, 'sine', vol);
-  tone(1320,0.00, 0.12, 'sine', vol*0.5);
-  tone(880, 0.25, 0.15, 'sine', vol);
-  tone(1175,0.25, 0.14, 'sine', vol*0.4);
-  tone(660, 0.00, 0.6, 'sine', vol*0.15);
 }
 
 // ===== Timer (Systemzeit-basiert) =====
