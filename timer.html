@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<title>Timer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root {
+    --bg-color: #f0f4f7; --text-color: #000; --card-bg: #fff; --shadow: rgba(0,0,0,0.2);
+  }
+  body.dark {
+    --bg-color: #121212; --text-color: #e0e0e0; --card-bg: #1e1e1e; --shadow: rgba(0,0,0,0.6);
+  }
+  body { font-family: Arial, sans-serif; text-align: center; background: var(--bg-color); color: var(--text-color);
+         padding: 50px; transition: background .3s, color .3s; }
+  h1 { font-size: 2.5em; margin-bottom: 20px; }
+  .container { display: inline-block; background: var(--card-bg); padding: 20px 40px; border-radius: 15px;
+               box-shadow: 0 4px 10px var(--shadow); transition: background .3s, box-shadow .3s; }
+  .time-display { font-size: 3em; margin: 20px 0; }
+  select, input, button { font-size: 1.1em; margin: 6px; padding: 8px 12px; border: 1px solid #888; border-radius: 8px;
+                          background: var(--card-bg); color: var(--text-color); }
+  button { cursor: pointer; background: #0078d7; color: #fff; border: none; }
+  button:hover { background: #005fa3; }
+  .row { margin: 8px 0; }
+  .dark-toggle, .notify-toggle { position: fixed; right: 20px; padding: 8px 14px; border-radius: 8px; border: none; }
+  .dark-toggle { top: 20px; background: #333; color: #fff; }
+  body.dark .dark-toggle { background: #ddd; color: #000; }
+  .notify-toggle { top: 64px; background: #555; color: #fff; }
+  .status { font-size: .9em; opacity: .8; margin-top: 6px; }
+</style>
+</head>
+<body>
+
+  <button class="dark-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+  <button class="notify-toggle" onclick="requestNotify()">🔔 Benachrichtigungen</button>
+
+  <div class="container">
+    <h1>⏱️ Timer</h1>
+
+    <div class="row">
+      <label>Standardzeit:
+        <select id="preset">
+          <option value="">-- wählen --</option>
+          <option value="3000">50 Minuten</option>
+          <option value="1800">30 Minuten</option>
+          <option value="600">10 Minuten</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="row">
+      <h3>Oder eigene Zeit eingeben:</h3>
+      <input type="number" id="hours" placeholder="Stunden" min="0">
+      <input type="number" id="minutes" placeholder="Minuten" min="0" max="59">
+      <input type="number" id="seconds" placeholder="Sekunden" min="0" max="59">
+    </div>
+
+    <div class="row">
+      <button onclick="startTimer()">Start</button>
+      <button onclick="resetTimer()">Reset</button>
+    </div>
+
+    <div class="time-display" id="timeDisplay">00:00:00</div>
+    <div class="status" id="notifyStatus">Benachrichtigungen: unbekannt</div>
+
+    <audio id="alarm" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" preload="auto"></audio>
+  </div>
+
+<script>
+let endTime = null;
+let timer;
+let originalTitle = document.title;
+
+// ===== Notifications =====
+function updateNotifyStatus() {
+  const s = document.getElementById('notifyStatus');
+  if (!('Notification' in window)) {
+    s.textContent = 'Benachrichtigungen: nicht verfügbar';
+  } else {
+    s.textContent = 'Benachrichtigungen: ' + Notification.permission;
+  }
+}
+async function requestNotify() {
+  if (!('Notification' in window)) { alert('Benachrichtigungen werden von diesem Browser nicht unterstützt.'); return; }
+  if (Notification.permission === 'default') {
+    try { await Notification.requestPermission(); }
+    catch(e) { /* ignore */ }
+  }
+  updateNotifyStatus();
+}
+function notifyUser(title, body) {
+  if ('Notification' in window && Notification.permission === 'granted') {
+    try {
+      const n = new Notification(title, { body });
+      // Klick holt den Tab in den Vordergrund
+      n.onclick = () => window.focus();
+    } catch (e) { /* z.B. unsichere Umgebung */ }
+  }
+}
+
+// ===== Timer (Systemzeit-basiert) =====
+function startTimer() {
+  clearInterval(timer);
+  const preset = document.getElementById('preset').value;
+
+  let totalSeconds = 0;
+  if (preset) {
+    totalSeconds = parseInt(preset);
+  } else {
+    const h = parseInt(document.getElementById('hours').value) || 0;
+    const m = parseInt(document.getElementById('minutes').value) || 0;
+    const s = parseInt(document.getElementById('seconds').value) || 0;
+    totalSeconds = h * 3600 + m * 60 + s;
+  }
+
+  if (totalSeconds <= 0) {
+    alert("Bitte eine gültige Zeit eingeben!");
+    return;
+  }
+
+  // beim Start (Nutzer-Geste) um Erlaubnis fragen, falls noch nicht entschieden
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission().finally(updateNotifyStatus);
+  } else {
+    updateNotifyStatus();
+  }
+
+  endTime = Date.now() + totalSeconds * 1000;
+  updateDisplay();
+  timer = setInterval(updateDisplay, 1000);
+}
+
+function resetTimer() {
+  clearInterval(timer);
+  endTime = null;
+  document.getElementById('timeDisplay').textContent = "00:00:00";
+  document.title = originalTitle;
+}
+
+function updateDisplay() {
+  if (!endTime) return;
+
+  let diff = Math.floor((endTime - Date.now()) / 1000);
+
+  if (diff <= 0) {
+    clearInterval(timer);
+    document.getElementById('timeDisplay').textContent = "00:00:00";
+    document.title = "⏰ Timer abgelaufen!";
+    // Sound + Vibration + Notification
+    document.getElementById('alarm').play().catch(()=>{});
+    if (navigator.vibrate) navigator.vibrate([200,100,200]);
+    notifyUser('⏰ Timer abgelaufen', 'Deine eingestellte Zeit ist vorbei.');
+    alert("✅ Zeit ist abgelaufen!");
+    return;
+  }
+
+  const hrs = String(Math.floor(diff / 3600)).padStart(2, '0');
+  const mins = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+  const secs = String(diff % 60).padStart(2, '0');
+  const timeString = `${hrs}:${mins}:${secs}`;
+
+  document.getElementById('timeDisplay').textContent = timeString;
+  document.title = `⏱️ ${timeString} verbleibend`;
+}
+
+// ===== Dark Mode =====
+function toggleDarkMode() {
+  document.body.classList.toggle("dark");
+  localStorage.setItem("darkMode", document.body.classList.contains("dark"));
+}
+window.onload = () => {
+  if (localStorage.getItem("darkMode") === "true") document.body.classList.add("dark");
+  updateNotifyStatus();
+};
+</script>
+
+</body>
+</html>
