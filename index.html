@@ -21,7 +21,6 @@
                           background: var(--card-bg); color: var(--text-color); }
   button { cursor: pointer; background: #0078d7; color: #fff; border: none; }
   button:hover { background: #005fa3; }
-  .row { margin: 8px 0; }
   .dark-toggle, .notify-toggle { position: fixed; right: 20px; padding: 8px 14px; border-radius: 8px; border: none; }
   .dark-toggle { top: 20px; background: #333; color: #fff; }
   body.dark .dark-toggle { background: #ddd; color: #000; }
@@ -37,7 +36,7 @@
   <div class="container">
     <h1>⏱️ Timer</h1>
 
-    <div class="row">
+    <div>
       <label>Standardzeit:
         <select id="preset">
           <option value="">-- wählen --</option>
@@ -48,14 +47,14 @@
       </label>
     </div>
 
-    <div class="row">
+    <div>
       <h3>Oder eigene Zeit eingeben:</h3>
       <input type="number" id="hours" placeholder="Stunden" min="0">
       <input type="number" id="minutes" placeholder="Minuten" min="0" max="59">
       <input type="number" id="seconds" placeholder="Sekunden" min="0" max="59">
     </div>
 
-    <div class="row">
+    <div>
       <button onclick="startTimer()">Start</button>
       <button onclick="resetTimer()">Reset</button>
     </div>
@@ -63,7 +62,28 @@
     <div class="time-display" id="timeDisplay">00:00:00</div>
     <div class="status" id="notifyStatus">Benachrichtigungen: unbekannt</div>
 
-    <audio id="alarm" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" preload="auto"></audio>
+    <!-- 🔊 Neuer Bereich für Signal-Auswahl -->
+    <div style="margin-top:10px">
+      <label style="display:block;margin:6px 0">Signal:
+        <select id="alarmMode">
+          <option value="file">Datei (empfohlen)</option>
+          <option value="synth">Synth (weich)</option>
+        </select>
+      </label>
+
+      <label style="display:block;margin:6px 0">
+        Datei-URL/Name: <input id="alarmSrc" placeholder="pi-pi-pi.mp3" style="min-width:240px">
+      </label>
+
+      <label style="display:block;margin:6px 0">
+        Lautstärke: <input id="alarmVol" type="range" min="0" max="1" step="0.01" value="0.6">
+      </label>
+
+      <button onclick="testAlarm()">🔊 Testen</button>
+    </div>
+
+    <!-- Audio ohne feste Quelle -->
+    <audio id="alarm" preload="auto"></audio>
   </div>
 
 <script>
@@ -92,18 +112,66 @@ function notifyUser(title, body) {
   if ('Notification' in window && Notification.permission === 'granted') {
     try {
       const n = new Notification(title, { body });
-      // Klick holt den Tab in den Vordergrund
       n.onclick = () => window.focus();
-    } catch (e) { /* z.B. unsichere Umgebung */ }
+    } catch (e) {}
   }
+}
+
+// ===== Signal-Wahl =====
+function getVol() {
+  return parseFloat(document.getElementById('alarmVol')?.value || "0.6");
+}
+function playAlarm() {
+  const mode = document.getElementById('alarmMode')?.value || 'file';
+  if (mode === 'synth') {
+    playSynthChime();
+  } else {
+    const el = document.getElementById('alarm');
+    const src = (document.getElementById('alarmSrc')?.value || '').trim();
+    if (src) el.src = src;
+    el.volume = getVol();
+    el.play().catch(()=>{});
+  }
+}
+function testAlarm() {
+  playAlarm();
+}
+function playSynthChime() {
+  const AC = window.AudioContext || window.webkitAudioContext;
+  const ctx = new AC();
+  const vol = getVol();
+
+  function tone(freq, start, dur, type='sine', gain=vol) {
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = type;
+    osc.frequency.value = freq;
+    osc.connect(g);
+    g.connect(ctx.destination);
+
+    const now = ctx.currentTime + start;
+    const attack = 0.01, decay = 0.2;
+    g.gain.setValueAtTime(0, now);
+    g.gain.linearRampToValueAtTime(gain, now + attack);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + attack + decay + dur);
+
+    osc.start(now);
+    osc.stop(now + attack + decay + dur + 0.05);
+  }
+
+  tone(880, 0.00, 0.15, 'sine', vol);
+  tone(1320,0.00, 0.12, 'sine', vol*0.5);
+  tone(880, 0.25, 0.15, 'sine', vol);
+  tone(1175,0.25, 0.14, 'sine', vol*0.4);
+  tone(660, 0.00, 0.6, 'sine', vol*0.15);
 }
 
 // ===== Timer (Systemzeit-basiert) =====
 function startTimer() {
   clearInterval(timer);
   const preset = document.getElementById('preset').value;
-
   let totalSeconds = 0;
+
   if (preset) {
     totalSeconds = parseInt(preset);
   } else {
@@ -118,7 +186,6 @@ function startTimer() {
     return;
   }
 
-  // beim Start (Nutzer-Geste) um Erlaubnis fragen, falls noch nicht entschieden
   if ('Notification' in window && Notification.permission === 'default') {
     Notification.requestPermission().finally(updateNotifyStatus);
   } else {
@@ -139,15 +206,13 @@ function resetTimer() {
 
 function updateDisplay() {
   if (!endTime) return;
-
   let diff = Math.floor((endTime - Date.now()) / 1000);
 
   if (diff <= 0) {
     clearInterval(timer);
     document.getElementById('timeDisplay').textContent = "00:00:00";
     document.title = "⏰ Timer abgelaufen!";
-    // Sound + Vibration + Notification
-    document.getElementById('alarm').play().catch(()=>{});
+    playAlarm();
     if (navigator.vibrate) navigator.vibrate([200,100,200]);
     notifyUser('⏰ Timer abgelaufen', 'Deine eingestellte Zeit ist vorbei.');
     alert("✅ Zeit ist abgelaufen!");
@@ -158,7 +223,6 @@ function updateDisplay() {
   const mins = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
   const secs = String(diff % 60).padStart(2, '0');
   const timeString = `${hrs}:${mins}:${secs}`;
-
   document.getElementById('timeDisplay').textContent = timeString;
   document.title = `⏱️ ${timeString} verbleibend`;
 }
