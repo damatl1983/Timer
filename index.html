@@ -14,7 +14,7 @@
     --accent:#0078d7;
   }
 
-  /* Light explizit (damit Laptop wirklich weiß wird) */
+  /* Explizit: Light (weiß) */
   body.light {
     --bg-color:#ffffff;
     --text-color:#000000;
@@ -103,17 +103,21 @@
   }
   .system-top button { min-width: 140px; }
 
-  /* Sprachmenü (immer oben unter dem Sprachbutton) */
+  /* Sprachmenü – lesbar in allen Themes */
   .lang-menu {
     position: fixed; right: 16px; top: calc(16px + 44px + 8px);
-    background: var(--card-bg); color: var(--text-color);
+    background: rgba(255,255,255,0.98); color:#000;
     border:1px solid #888; border-radius:8px; box-shadow:0 6px 18px var(--shadow);
-    display:none; z-index: 20; min-width: 180px; text-align:left;
+    display:none; z-index: 20; min-width: 200px; text-align:left;
   }
-  .lang-menu button { display:block; width:100%; text-align:left; padding:10px 14px; border:none; background:transparent; }
+  .lang-menu button { display:block; width:100%; text-align:left; padding:10px 14px; border:none; background:transparent; color:inherit; }
   .lang-menu button:hover { background: rgba(0,0,0,.06); }
 
-  /* --- Mobile: nur Sprache oben; Dark/Fancy/Notify unten --- */
+  /* Dark: Sprachmenü dunkel mit heller Schrift */
+  body.dark .lang-menu { background:#1f1f1f; color:#eaeaea; border-color:#555; }
+  body.dark .lang-menu button:hover { background: rgba(255,255,255,.08); }
+
+  /* --- Mobile: nur Sprache oben; Hell/Dark/Fancy/Notify unten --- */
   .system-bottom { display:none; margin-top: 16px; }
   .system-bottom .btn-row { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
   .system-bottom button { min-width: 140px; }
@@ -121,7 +125,7 @@
   @media (max-width: 768px) {
     .system-top { top: 8px; right: 8px; }
     /* In der Top-Leiste nur den Sprachbutton zeigen */
-    .system-top .btn-dark, .system-top .btn-fancy, .system-top .btn-notify { display: none; }
+    .system-top .btn-light, .system-top .btn-dark, .system-top .btn-fancy, .system-top .btn-notify { display: none; }
     .system-bottom { display:block; }
     body { padding-top: 64px; } /* Platz für Sprachbutton */
   }
@@ -132,6 +136,7 @@
   <!-- Desktop/Laptop: alle oben | Mobile: nur Sprache oben -->
   <div class="system-top">
     <button id="btnLang" class="btn-lang" onclick="toggleLangMenu()">🌐 DE</button>
+    <button class="btn-light" onclick="setLight()" data-i18n="btn_light">☀️ Hell</button>
     <button class="btn-dark" onclick="toggleDarkMode()" data-i18n="btn_dark">🌙 Dark</button>
     <button class="btn-fancy" onclick="toggleFancyMode()" data-i18n="btn_fancy">🎨 Fancy</button>
     <button class="btn-notify" onclick="requestNotify()" data-i18n="btn_notify">🔔 Benachrichtigungen</button>
@@ -179,7 +184,7 @@
 
     <!-- Countdown -->
     <div class="time-display" id="timeDisplay">00:00:00</div>
-    <div class="status" id="notifyStatus">Benachrichtigungen: unbekannt</div>
+    <div class="status" id="notifyStatus">Benachrichtigungen: nicht festgelegt</div>
 
     <!-- Lautstärke/Test -->
     <div class="row" style="margin-top:8px">
@@ -193,6 +198,7 @@
   <!-- Mobile: Mode/Notify unten -->
   <div class="system-bottom" id="bottomControls">
     <div class="btn-row">
+      <button class="btn-light" onclick="setLight()" data-i18n="btn_light">☀️ Hell</button>
       <button class="btn-dark" onclick="toggleDarkMode()" data-i18n="btn_dark">🌙 Dark</button>
       <button class="btn-fancy" onclick="toggleFancyMode()" data-i18n="btn_fancy">🎨 Fancy</button>
       <button class="btn-notify" onclick="requestNotify()" data-i18n="btn_notify">🔔 Benachrichtigungen</button>
@@ -212,7 +218,7 @@ const LANGS = {
     section_timer:"Timer (Dauer)", section_time:"Uhrzeit (Alarm um)",
     btn_start:"Start", btn_reset:"Reset", label_volume:"Lautstärke",
     btn_test:"Testen", btn_notify:"Benachrichtigungen",
-    btn_dark:"🌙 Dark", btn_fancy:"🎨 Fancy",
+    btn_light:"☀️ Hell", btn_dark:"🌙 Dark", btn_fancy:"🎨 Fancy",
     alarm_time_prefix:"Alarmzeit: ", time_suffix:" Uhr",
     notify_status_unavailable:"Benachrichtigungen: nicht verfügbar",
     notify_status_active:"Benachrichtigungen: aktiv",
@@ -221,16 +227,18 @@ const LANGS = {
     invalid_time:"Bitte eine gültige Zeit oder Uhrzeit eingeben!",
     time_up_alert:"Zeit ist abgelaufen!",
     notif_title:"⏰ Timer abgelaufen",
-    notif_body:"Deine eingestellte Zeit ist vorbei."
+    notif_body:"Deine eingestellte Zeit ist vorbei.",
+    notif_denied_tip:"Benachrichtigungen sind blockiert. Bitte im Browser unter Website-Einstellungen aktivieren."
   },
   de_gz: {
     codeBtn:"🌐 DE💬", dir:"ltr",
     title:"⏱️ Timer (Lit)",
     preset_50:"50 Min", preset_30:"30 Min", preset_10:"10 Min",
     section_timer:"Timer (Dauer)", section_time:"Uhrzeit (Alarm um)",
-    btn_start:"Start (let's go)", btn_reset:"Reset (chill)", label_volume:"Lautstärke 🔊",
+    btn_start:"Start (let's go)", btn_reset:"Reset (chill)",
+    label_volume:"Lautstärke 🔊",
     btn_test:"Testen 🔥", btn_notify:"Notifs",
-    btn_dark:"🌙 Dark", btn_fancy:"🎨 Fancy",
+    btn_light:"☀️ Hell", btn_dark:"🌙 Dark", btn_fancy:"🎨 Fancy",
     alarm_time_prefix:"Alarmzeit: ", time_suffix:" Uhr",
     notify_status_unavailable:"Notifs: nicht verfügbar",
     notify_status_active:"Notifs: aktiv",
@@ -239,7 +247,8 @@ const LANGS = {
     invalid_time:"Gib mal 'ne echte Zeit ein 😅",
     time_up_alert:"Bämm! Zeit ist um 😎",
     notif_title:"⏰ Ding Dong",
-    notif_body:"Dein Timer ist durch."
+    notif_body:"Dein Timer ist durch.",
+    notif_denied_tip:"Notifs sind blockiert. Aktiviere sie in den Website-Einstellungen."
   },
   en: {
     codeBtn:"🌐 EN", dir:"ltr",
@@ -248,7 +257,7 @@ const LANGS = {
     section_timer:"Timer (Duration)", section_time:"Time (Alarm at)",
     btn_start:"Start", btn_reset:"Reset", label_volume:"Volume",
     btn_test:"Test", btn_notify:"Notifications",
-    btn_dark:"🌙 Dark", btn_fancy:"🎨 Fancy",
+    btn_light:"☀️ Light", btn_dark:"🌙 Dark", btn_fancy:"🎨 Fancy",
     alarm_time_prefix:"Alarm time: ", time_suffix:"",
     notify_status_unavailable:"Notifications: unavailable",
     notify_status_active:"Notifications: active",
@@ -257,7 +266,8 @@ const LANGS = {
     invalid_time:"Please enter a valid duration or time!",
     time_up_alert:"Time is up!",
     notif_title:"⏰ Timer finished",
-    notif_body:"Your set time has ended."
+    notif_body:"Your set time has ended.",
+    notif_denied_tip:"Notifications are blocked. Enable them in site settings."
   },
   tr: {
     codeBtn:"🌐 TR", dir:"ltr",
@@ -266,7 +276,7 @@ const LANGS = {
     section_timer:"Zamanlayıcı (Süre)", section_time:"Saat (Alarm zamanı)",
     btn_start:"Başlat", btn_reset:"Sıfırla", label_volume:"Ses",
     btn_test:"Test", btn_notify:"Bildirimler",
-    btn_dark:"🌙 Koyu", btn_fancy:"🎨 Fancy",
+    btn_light:"☀️ Açık", btn_dark:"🌙 Koyu", btn_fancy:"🎨 Fancy",
     alarm_time_prefix:"Alarm saati: ", time_suffix:"",
     notify_status_unavailable:"Bildirimler: kullanılamıyor",
     notify_status_active:"Bildirimler: etkin",
@@ -275,7 +285,8 @@ const LANGS = {
     invalid_time:"Lütfen geçerli bir süre veya saat girin!",
     time_up_alert:"Süre doldu!",
     notif_title:"⏰ Zamanlayıcı bitti",
-    notif_body:"Ayarladığınız süre sona erdi."
+    notif_body:"Ayarladığınız süre sona erdi.",
+    notif_denied_tip:"Bildirimler engelli. Site ayarlarından etkinleştirin."
   },
   fa: { /* Dari */
     codeBtn:"🌐 دری", dir:"rtl",
@@ -284,7 +295,7 @@ const LANGS = {
     section_timer:"تایمر (مدت)", section_time:"زمان (زنگ در)",
     btn_start:"شروع", btn_reset:"بازنشانی", label_volume:"بلندی صدا",
     btn_test:"آزمودن", btn_notify:"اطلاع‌رسانی‌ها",
-    btn_dark:"🌙 تیره", btn_fancy:"🎨 فَنسی",
+    btn_light:"☀️ روشن", btn_dark:"🌙 تیره", btn_fancy:"🎨 فَنسی",
     alarm_time_prefix:"زمان زنگ: ", time_suffix:"",
     notify_status_unavailable:"اطلاع‌رسانی‌ها: دردسترس نیست",
     notify_status_active:"اطلاع‌رسانی‌ها: فعال",
@@ -293,7 +304,8 @@ const LANGS = {
     invalid_time:"لطفاً یک مدت یا ساعت معتبر وارد کنید!",
     time_up_alert:"زمان به پایان رسید!",
     notif_title:"⏰ تایمر تمام شد",
-    notif_body:"زمان تعیین‌شده شما تمام شد."
+    notif_body:"زمان تعیین‌شده شما تمام شد.",
+    notif_denied_tip:"اطلاع‌رسانی‌ها مسدود است. لطفاً در تنظیمات سایت فعال کنید."
   }
 };
 
@@ -307,11 +319,14 @@ function applyLang() {
   document.querySelectorAll("[data-i18n]").forEach(el => {
     el.textContent = t(el.getAttribute("data-i18n"));
   });
-  // Buttons oben/unten synchronisieren
+
+  // Synchronisiere doppelte Buttons (oben/unten)
+  document.querySelectorAll(".btn-light").forEach(el => el.textContent = t("btn_light"));
   document.querySelectorAll(".btn-dark").forEach(el => el.textContent = t("btn_dark"));
   document.querySelectorAll(".btn-fancy").forEach(el => el.textContent = t("btn_fancy"));
   document.querySelectorAll(".btn-notify").forEach(el => el.textContent = t("btn_notify"));
 
+  // Language button
   document.getElementById("btnLang").textContent = t("codeBtn");
   document.title = t("title");
 
@@ -333,6 +348,7 @@ function applyLang() {
   updateAlarmAtPreview();
 }
 
+/* Sprachmenü */
 function toggleLangMenu(){
   const menu = document.getElementById("langMenu");
   menu.style.display = (menu.style.display === "block") ? "none" : "block";
@@ -472,16 +488,42 @@ function updateDisplay() {
 /* ===================== Notifications & Audio ===================== */
 function updateNotifyStatus() {
   const s = document.getElementById('notifyStatus');
-  if (!('Notification' in window)) { s.textContent = t('notify_status_unavailable'); return; }
+  // Status-Text (übersetzt)
+  if (!('Notification' in window)) {
+    s.textContent = t('notify_status_unavailable');
+    setNotifyButtonsVisible(false); // kein Support -> Button aus
+    return;
+  }
   const state = Notification.permission;
-  if (state === 'granted') s.textContent = t('notify_status_active');
-  else if (state === 'denied') s.textContent = t('notify_status_denied');
-  else s.textContent = t('notify_status_default');
+  if (state === 'granted') {
+    s.textContent = t('notify_status_active');
+    setNotifyButtonsVisible(false); // Button ausblenden, wenn aktiv
+  } else if (state === 'denied') {
+    s.textContent = t('notify_status_denied');
+    setNotifyButtonsVisible(true);  // sichtbar lassen (Nutzer kann Guide sehen)
+  } else {
+    s.textContent = t('notify_status_default');
+    setNotifyButtonsVisible(true);
+  }
+}
+
+function setNotifyButtonsVisible(visible){
+  document.querySelectorAll('.btn-notify').forEach(btn => {
+    btn.style.display = visible ? '' : 'none';
+  });
 }
 
 async function requestNotify() {
-  if (!('Notification' in window)) { alert(t('notify_status_unavailable')); return; }
-  if (Notification.permission === 'default') { try { await Notification.requestPermission(); } catch(e) {} }
+  if (!('Notification' in window)) {
+    alert(t('notify_status_unavailable'));
+    return;
+  }
+  if (Notification.permission === 'default') {
+    try { await Notification.requestPermission(); } catch(e) {}
+  } else if (Notification.permission === 'denied') {
+    // Chrome re-promptet nicht bei "denied": Nutzer-Hinweis
+    alert(t('notif_denied_tip'));
+  }
   updateNotifyStatus();
 }
 
