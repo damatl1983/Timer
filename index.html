@@ -14,7 +14,6 @@
     --accent:#0078d7;
   }
 
-  /* Explizit: Light (weiß) */
   body.light {
     --bg-color:#ffffff;
     --text-color:#000000;
@@ -24,8 +23,6 @@
     background: var(--bg-color);
     color: var(--text-color);
   }
-
-  /* Dark */
   body.dark {
     --bg-color:#121212;
     --text-color:#e0e0e0;
@@ -35,8 +32,6 @@
     background: var(--bg-color);
     color: var(--text-color);
   }
-
-  /* Fancy */
   body.fancy {
     --text-color:#ffffff;
     --card-bg:rgba(255,255,255,.12);
@@ -87,6 +82,7 @@
     background: var(--card-bg); color: var(--text-color);
   }
   input[type=number], input[type=time]{ width:8.5em; }
+  input[type="file"] { border: none; padding: 0; }
   button { cursor:pointer; background:var(--accent); color:#fff; border:none; transition:transform .1s, filter .2s; }
   button:hover { transform: scale(1.04); filter: brightness(1.05); }
 
@@ -95,6 +91,13 @@
 
   .status { font-size:.92em; opacity:.85; margin-top:8px; }
   .alarm-at { font-size:1em; margin-top:6px; opacity:.95; }
+
+  /* Volume-Zeile Feinschliff */
+  .volume-row { display:flex; gap:12px; align-items:flex-start; justify-content:center; flex-wrap:wrap; }
+  .volume-row label { margin:0; }
+  .volume-range { position: relative; top: 8px; } /* 8px nach unten wie gewünscht */
+  .sound-file-row { display:flex; gap:10px; justify-content:center; align-items:center; flex-wrap:wrap; }
+  .sound-filename { font-size:0.95em; opacity:0.9; }
 
   /* --- Desktop/Laptop: alle Systembuttons oben rechts --- */
   .system-top {
@@ -112,8 +115,6 @@
   }
   .lang-menu button { display:block; width:100%; text-align:left; padding:10px 14px; border:none; background:transparent; color:inherit; }
   .lang-menu button:hover { background: rgba(0,0,0,.06); }
-
-  /* Dark: Sprachmenü dunkel mit heller Schrift */
   body.dark .lang-menu { background:#1f1f1f; color:#eaeaea; border-color:#555; }
   body.dark .lang-menu button:hover { background: rgba(255,255,255,.08); }
 
@@ -124,7 +125,6 @@
 
   @media (max-width: 768px) {
     .system-top { top: 8px; right: 8px; }
-    /* In der Top-Leiste nur den Sprachbutton zeigen */
     .system-top .btn-light, .system-top .btn-dark, .system-top .btn-fancy, .system-top .btn-notify { display: none; }
     .system-bottom { display:block; }
     body { padding-top: 64px; } /* Platz für Sprachbutton */
@@ -186,12 +186,19 @@
     <div class="time-display" id="timeDisplay">00:00:00</div>
     <div class="status" id="notifyStatus">Benachrichtigungen: nicht festgelegt</div>
 
-    <!-- Lautstärke/Test -->
-    <div class="row" style="margin-top:8px">
-      <label style="display:block;margin:6px 0" id="lblVolume"><span data-i18n="label_volume">Lautstärke</span>:
-        <input id="alarmVol" type="range" min="0" max="1" step="0.01" value="0.6">
-      </label>
-      <button onclick="testAlarm()" data-i18n="btn_test">🔊 Testen</button>
+    <!-- Lautstärke/Test/Alarmton -->
+    <div class="row">
+      <div class="volume-row">
+        <label id="lblVolume"><span data-i18n="label_volume">Lautstärke</span>:</label>
+        <input class="volume-range" id="alarmVol" type="range" min="0" max="1" step="0.01" value="0.6" aria-label="Lautstärke">
+        <button onclick="testAlarm()" data-i18n="btn_test_alarm">Alarm testen</button>
+      </div>
+      <div class="sound-file-row" style="margin-top:10px">
+        <label for="soundFile" id="lblSound"><span data-i18n="label_sound">Alarmton hochladen</span>:</label>
+        <input type="file" id="soundFile" accept="audio/mpeg,audio/mp3" />
+        <span class="sound-filename" id="soundName"></span>
+        <button onclick="resetToDefaultSound()" data-i18n="btn_sound_reset">Standardton wiederherstellen</button>
+      </div>
     </div>
   </div>
 
@@ -217,8 +224,12 @@ const LANGS = {
     preset_50:"50 Min", preset_30:"30 Min", preset_10:"10 Min",
     section_timer:"Timer (Dauer)", section_time:"Uhrzeit (Alarm um)",
     btn_start:"Start", btn_reset:"Reset", label_volume:"Lautstärke",
-    btn_test:"Testen", btn_notify:"Benachrichtigungen",
+    btn_test_alarm:"Alarm testen", btn_notify:"Benachrichtigungen",
     btn_light:"☀️ Hell", btn_dark:"🌙 Dark", btn_fancy:"🎨 Fancy",
+    label_sound:"Alarmton hochladen",
+    sound_current_prefix:"Aktueller Ton: ",
+    sound_default_label:"Standardton: pi-pi-pi.mp3",
+    btn_sound_reset:"Standardton wiederherstellen",
     alarm_time_prefix:"Alarmzeit: ", time_suffix:" Uhr",
     notify_status_unavailable:"Benachrichtigungen: nicht verfügbar",
     notify_status_active:"Benachrichtigungen: aktiv",
@@ -228,7 +239,7 @@ const LANGS = {
     time_up_alert:"Zeit ist abgelaufen!",
     notif_title:"⏰ Timer abgelaufen",
     notif_body:"Deine eingestellte Zeit ist vorbei.",
-    notif_denied_tip:"Benachrichtigungen sind blockiert. Bitte im Browser unter Website-Einstellungen aktivieren."
+    notif_denied_tip:"Benachrichtigungen sind blockiert. Bitte in den Website-Einstellungen aktivieren."
   },
   de_gz: {
     codeBtn:"🌐 DE💬", dir:"ltr",
@@ -237,8 +248,12 @@ const LANGS = {
     section_timer:"Timer (Dauer)", section_time:"Uhrzeit (Alarm um)",
     btn_start:"Start (let's go)", btn_reset:"Reset (chill)",
     label_volume:"Lautstärke 🔊",
-    btn_test:"Testen 🔥", btn_notify:"Notifs",
+    btn_test_alarm:"Alarm checken 🔥", btn_notify:"Notifs",
     btn_light:"☀️ Hell", btn_dark:"🌙 Dark", btn_fancy:"🎨 Fancy",
+    label_sound:"Alarm hochladen",
+    sound_current_prefix:"Aktueller Ton: ",
+    sound_default_label:"Standard: pi-pi-pi.mp3",
+    btn_sound_reset:"Zurück auf Standard",
     alarm_time_prefix:"Alarmzeit: ", time_suffix:" Uhr",
     notify_status_unavailable:"Notifs: nicht verfügbar",
     notify_status_active:"Notifs: aktiv",
@@ -248,7 +263,7 @@ const LANGS = {
     time_up_alert:"Bämm! Zeit ist um 😎",
     notif_title:"⏰ Ding Dong",
     notif_body:"Dein Timer ist durch.",
-    notif_denied_tip:"Notifs sind blockiert. Aktiviere sie in den Website-Einstellungen."
+    notif_denied_tip:"Notifs sind blockiert. Aktivier sie in den Website-Einstellungen."
   },
   en: {
     codeBtn:"🌐 EN", dir:"ltr",
@@ -256,8 +271,12 @@ const LANGS = {
     preset_50:"50 min", preset_30:"30 min", preset_10:"10 min",
     section_timer:"Timer (Duration)", section_time:"Time (Alarm at)",
     btn_start:"Start", btn_reset:"Reset", label_volume:"Volume",
-    btn_test:"Test", btn_notify:"Notifications",
+    btn_test_alarm:"Test alarm", btn_notify:"Notifications",
     btn_light:"☀️ Light", btn_dark:"🌙 Dark", btn_fancy:"🎨 Fancy",
+    label_sound:"Upload alarm sound",
+    sound_current_prefix:"Current sound: ",
+    sound_default_label:"Default: pi-pi-pi.mp3",
+    btn_sound_reset:"Restore default",
     alarm_time_prefix:"Alarm time: ", time_suffix:"",
     notify_status_unavailable:"Notifications: unavailable",
     notify_status_active:"Notifications: active",
@@ -275,8 +294,12 @@ const LANGS = {
     preset_50:"50 dk", preset_30:"30 dk", preset_10:"10 dk",
     section_timer:"Zamanlayıcı (Süre)", section_time:"Saat (Alarm zamanı)",
     btn_start:"Başlat", btn_reset:"Sıfırla", label_volume:"Ses",
-    btn_test:"Test", btn_notify:"Bildirimler",
+    btn_test_alarm:"Alarm testi", btn_notify:"Bildirimler",
     btn_light:"☀️ Açık", btn_dark:"🌙 Koyu", btn_fancy:"🎨 Fancy",
+    label_sound:"Alarm sesi yükle",
+    sound_current_prefix:"Geçerli ses: ",
+    sound_default_label:"Varsayılan: pi-pi-pi.mp3",
+    btn_sound_reset:"Varsayılanı geri yükle",
     alarm_time_prefix:"Alarm saati: ", time_suffix:"",
     notify_status_unavailable:"Bildirimler: kullanılamıyor",
     notify_status_active:"Bildirimler: etkin",
@@ -294,8 +317,12 @@ const LANGS = {
     preset_50:"۵۰ دقیقه", preset_30:"۳۰ دقیقه", preset_10:"۱۰ دقیقه",
     section_timer:"تایمر (مدت)", section_time:"زمان (زنگ در)",
     btn_start:"شروع", btn_reset:"بازنشانی", label_volume:"بلندی صدا",
-    btn_test:"آزمودن", btn_notify:"اطلاع‌رسانی‌ها",
+    btn_test_alarm:"آزمایش زنگ", btn_notify:"اطلاع‌رسانی‌ها",
     btn_light:"☀️ روشن", btn_dark:"🌙 تیره", btn_fancy:"🎨 فَنسی",
+    label_sound:"آپلود صدای زنگ",
+    sound_current_prefix:"صدای فعلی: ",
+    sound_default_label:"پیش‌فرض: pi-pi-pi.mp3",
+    btn_sound_reset:"بازگردانی پیش‌فرض",
     alarm_time_prefix:"زمان زنگ: ", time_suffix:"",
     notify_status_unavailable:"اطلاع‌رسانی‌ها: دردسترس نیست",
     notify_status_active:"اطلاع‌رسانی‌ها: فعال",
@@ -305,36 +332,29 @@ const LANGS = {
     time_up_alert:"زمان به پایان رسید!",
     notif_title:"⏰ تایمر تمام شد",
     notif_body:"زمان تعیین‌شده شما تمام شد.",
-    notif_denied_tip:"اطلاع‌رسانی‌ها مسدود است. لطفاً در تنظیمات سایت فعال کنید."
+    notif_denied_tip:"اطلاع‌رسانی‌ها مسدود است. در تنظیمات سایت فعال کنید."
   }
 };
 
 let currentLang = localStorage.getItem("lang") || "de";
 
-/* ===================== Helpers ===================== */
+/* ===================== Helpers & i18n ===================== */
 function t(key){ const L = LANGS[currentLang]; return (L && L[key]) || LANGS.de[key] || key; }
 
 function applyLang() {
-  // statische Texte
   document.querySelectorAll("[data-i18n]").forEach(el => {
     el.textContent = t(el.getAttribute("data-i18n"));
   });
-
-  // Synchronisiere doppelte Buttons (oben/unten)
   document.querySelectorAll(".btn-light").forEach(el => el.textContent = t("btn_light"));
   document.querySelectorAll(".btn-dark").forEach(el => el.textContent = t("btn_dark"));
   document.querySelectorAll(".btn-fancy").forEach(el => el.textContent = t("btn_fancy"));
   document.querySelectorAll(".btn-notify").forEach(el => el.textContent = t("btn_notify"));
-
-  // Language button
   document.getElementById("btnLang").textContent = t("codeBtn");
   document.title = t("title");
 
-  // Sprache/dir setzen
   document.documentElement.lang = currentLang === "fa" ? "fa" : currentLang;
   document.body.dir = LANGS[currentLang].dir || "ltr";
 
-  // Placeholders
   document.getElementById('hours').placeholder   =
     currentLang==="en" ? "Hours"   : currentLang==="tr" ? "Saat"   : currentLang==="fa" ? "ساعت"   : "Stunden";
   document.getElementById('minutes').placeholder =
@@ -344,11 +364,13 @@ function applyLang() {
   document.getElementById('alarmTime').placeholder =
     currentLang==="en" ? "HH:MM"   : currentLang==="tr" ? "SS:DD"  : "HH:MM";
 
+  // Labels für Sound-Bereich
+  document.getElementById("lblSound").querySelector("span").textContent = t("label_sound");
+  updateSoundFilenameLabel();
   updateNotifyStatus();
   updateAlarmAtPreview();
 }
 
-/* Sprachmenü */
 function toggleLangMenu(){
   const menu = document.getElementById("langMenu");
   menu.style.display = (menu.style.display === "block") ? "none" : "block";
@@ -373,11 +395,7 @@ const alarmTimeInput = document.getElementById('alarmTime');
 const alarmAtLine = document.getElementById('alarmAtLine');
 
 [hours, minutes, secondsInput].forEach(el => el.addEventListener('input', updateAlarmAtPreview));
-
-alarmTimeInput.addEventListener('input', () => {
-  // Uhrzeit aktiv => Vorschau für Dauer ausblenden
-  alarmAtLine.style.display = 'none';
-});
+alarmTimeInput.addEventListener('input', () => { alarmAtLine.style.display = 'none'; });
 
 function setPreset(seconds, btn) {
   presetSeconds = seconds;
@@ -395,13 +413,11 @@ function getDurationSecondsFromInputs(){
   const s = parseInt(secondsInput.value) || 0;
   return h*3600 + m*60 + s;
 }
-
 function formatHHMM(d){
   const hh = String(d.getHours()).padStart(2,'0');
   const mm = String(d.getMinutes()).padStart(2,'0');
   return `${hh}:${mm}`;
 }
-
 function updateAlarmAtPreview(){
   if (alarmTimeInput.value) { alarmAtLine.style.display = 'none'; return; }
   let secs = getDurationSecondsFromInputs();
@@ -467,9 +483,7 @@ function updateDisplay() {
 
   if (diff <= 0) {
     clearInterval(timer);
-
-    // Uhrzeit nach Ablauf leeren (Wunsch)
-    alarmTimeInput.value = '';
+    alarmTimeInput.value = ''; // Uhrzeit nach Ablauf leeren
     updateAlarmAtPreview();
 
     document.getElementById('timeDisplay').textContent = "00:00:00";
@@ -488,56 +502,100 @@ function updateDisplay() {
 /* ===================== Notifications & Audio ===================== */
 function updateNotifyStatus() {
   const s = document.getElementById('notifyStatus');
-  // Status-Text (übersetzt)
   if (!('Notification' in window)) {
     s.textContent = t('notify_status_unavailable');
-    setNotifyButtonsVisible(false); // kein Support -> Button aus
+    setNotifyButtonsVisible(false);
     return;
   }
   const state = Notification.permission;
   if (state === 'granted') {
     s.textContent = t('notify_status_active');
-    setNotifyButtonsVisible(false); // Button ausblenden, wenn aktiv
+    setNotifyButtonsVisible(false); // Button ausblenden
   } else if (state === 'denied') {
     s.textContent = t('notify_status_denied');
-    setNotifyButtonsVisible(true);  // sichtbar lassen (Nutzer kann Guide sehen)
+    setNotifyButtonsVisible(true);
   } else {
     s.textContent = t('notify_status_default');
     setNotifyButtonsVisible(true);
   }
 }
-
 function setNotifyButtonsVisible(visible){
-  document.querySelectorAll('.btn-notify').forEach(btn => {
-    btn.style.display = visible ? '' : 'none';
-  });
+  document.querySelectorAll('.btn-notify').forEach(btn => { btn.style.display = visible ? '' : 'none'; });
 }
-
 async function requestNotify() {
-  if (!('Notification' in window)) {
-    alert(t('notify_status_unavailable'));
-    return;
-  }
+  if (!('Notification' in window)) { alert(t('notify_status_unavailable')); return; }
   if (Notification.permission === 'default') {
     try { await Notification.requestPermission(); } catch(e) {}
   } else if (Notification.permission === 'denied') {
-    // Chrome re-promptet nicht bei "denied": Nutzer-Hinweis
     alert(t('notif_denied_tip'));
   }
   updateNotifyStatus();
 }
-
 function notifyUser(title, body) {
   if ('Notification' in window && Notification.permission === 'granted') {
     try { const n = new Notification(title, { body }); n.onclick = () => window.focus(); } catch (e) {}
   }
 }
 
+/* ==== Alarm Audio: Upload, Persistenz, Reset ==== */
+const alarmEl = document.getElementById('alarm');
+const soundFileInput = document.getElementById('soundFile');
+const soundNameEl = document.getElementById('soundName');
+
+function updateSoundFilenameLabel() {
+  const storedName = localStorage.getItem('alarmAudioName');
+  if (storedName) {
+    soundNameEl.textContent = t('sound_current_prefix') + storedName;
+  } else {
+    soundNameEl.textContent = t('sound_default_label');
+  }
+}
+
+function loadStoredSoundIfAny() {
+  const dataUrl = localStorage.getItem('alarmAudioData');
+  const name = localStorage.getItem('alarmAudioName');
+  if (dataUrl && name) {
+    alarmEl.src = dataUrl;
+  } else {
+    alarmEl.src = 'pi-pi-pi.mp3';
+  }
+  updateSoundFilenameLabel();
+}
+
+soundFileInput.addEventListener('change', () => {
+  const file = soundFileInput.files?.[0];
+  if (!file) return;
+  if (!/^audio\/(mpeg|mp3)$/.test(file.type) && !file.name.toLowerCase().endsWith('.mp3')) {
+    alert('Bitte eine MP3-Datei auswählen.');
+    soundFileInput.value = '';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => {
+    const dataUrl = reader.result; // base64 data URL
+    try {
+      localStorage.setItem('alarmAudioData', dataUrl);
+      localStorage.setItem('alarmAudioName', file.name);
+    } catch(e) {
+      alert('Konnte den Sound nicht speichern (Speicher voll?).');
+    }
+    alarmEl.src = dataUrl;
+    updateSoundFilenameLabel();
+  };
+  reader.readAsDataURL(file);
+});
+
+function resetToDefaultSound() {
+  localStorage.removeItem('alarmAudioData');
+  localStorage.removeItem('alarmAudioName');
+  alarmEl.src = 'pi-pi-pi.mp3';
+  updateSoundFilenameLabel();
+}
+
 function playAlarm() {
-  const el = document.getElementById('alarm');
-  el.volume = parseFloat(document.getElementById('alarmVol')?.value || "0.6");
-  el.currentTime = 0;
-  el.play().catch(()=>{});
+  alarmEl.volume = parseFloat(document.getElementById('alarmVol')?.value || "0.6");
+  alarmEl.currentTime = 0;
+  alarmEl.play().catch(()=>{});
 }
 function testAlarm(){ playAlarm(); }
 
@@ -557,15 +615,8 @@ function setFancy(){
   document.body.classList.add('fancy');
   localStorage.setItem('theme','fancy');
 }
-
-function toggleDarkMode(){
-  if (document.body.classList.contains('dark')) { setLight(); }
-  else { setDark(); }
-}
-function toggleFancyMode(){
-  if (document.body.classList.contains('fancy')) { setLight(); }
-  else { setFancy(); }
-}
+function toggleDarkMode(){ if (document.body.classList.contains('dark')) setLight(); else setDark(); }
+function toggleFancyMode(){ if (document.body.classList.contains('fancy')) setLight(); else setFancy(); }
 
 /* ===================== Init ===================== */
 window.onload = () => {
@@ -577,6 +628,9 @@ window.onload = () => {
 
   // Language
   applyLang();
+
+  // Alarmton aus Speicher laden (falls vorhanden)
+  loadStoredSoundIfAny();
 
   // Click außerhalb: Sprachmenü schließen
   document.addEventListener('click', (e)=>{
