@@ -21,7 +21,7 @@
     --shadow: rgba(0,0,0,0.6);
     --accent: #3b82f6;
   }
-  /* 🎨 Fancy Mode – Neon, animierter Verlauf */
+  /* 🎨 Fancy Mode – animierter Neon-Verlauf */
   body.fancy {
     --text-color: #ffffff;
     --card-bg: rgba(255,255,255,0.12);
@@ -53,9 +53,7 @@
     width: 100%;
   }
   .section-title { margin: 14px 0 6px; font-weight: bold; }
-  .time-display {
-    font-size: 3.2em; margin: 14px 0 6px; line-height: 1.15;
-  }
+  .time-display { font-size: 3.2em; margin: 14px 0 6px; line-height: 1.15; }
   body.fancy .time-display {
     background: linear-gradient(90deg, #ff00cc, #00ff99, #ffcc00);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
@@ -83,7 +81,7 @@
   .row { margin: 6px 0; }
   .status { font-size: .92em; opacity: .85; margin-top: 8px; }
 
-  /* Steuer-Buttons oben rechts (Desktop) */
+  /* Steuer-Buttons Desktop */
   .dark-toggle, .fancy-toggle, .notify-toggle {
     position: fixed; right: 20px; padding: 8px 14px; border-radius: 8px; border: none; z-index: 999;
   }
@@ -102,41 +100,47 @@
     .notify-toggle { bottom: 20px; }
   }
 
-  /* 🏃‍♂️ Track & Runner */
+  /* 🏁 Originalgetreue Bahn (CSS-Pixel-Art) */
   .track-wrap{
     position: relative; height: 120px; margin: 18px auto 6px; max-width: 720px;
-    border-radius: 14px; overflow: hidden; box-shadow: inset 0 0 0 2px rgba(0,0,0,.15);
+    border-radius: 12px; overflow: hidden;
+    box-shadow: inset 0 0 0 2px rgba(0,0,0,.15);
   }
-  .track {
-    position: absolute; inset: 0;
-    background:
-      linear-gradient(#ff8a00,#ff8a00) 0 33%, 
-      linear-gradient(#ff8a00,#ff8a00) 0 66%,
-      linear-gradient(#ff8a00,#ff8a00) 0 100%,
-      linear-gradient(#ff8a00,#ff8a00) 0 0/100% 100%;
-    background-repeat: no-repeat;
-    background-size: 100% 3px, 100% 3px, 100% 3px, 100% 100%;
-    background-position: 0 33%, 0 66%, 0 100%, 0 0;
-    background-color: #ffb26b; /* Bahn */
+  .grass-top, .grass-bottom {
+    position:absolute; left:0; right:0; height: 24px; background:#39b54a;
+    background-image:
+      radial-gradient(#ffffff66 1px, transparent 1px);
+    background-size: 8px 8px;
   }
-  .runner {
-    position: absolute; bottom: 26px; left: 0;
-    width: 64px; height: 64px; /* skaliert, unabhängig vom Sprite-Pixelmaß */
-    image-rendering: pixelated;
-    background-image: url('runner.png'); /* <- deine Datei */
-    background-repeat: no-repeat;
-    transform: translateX(0);
-    filter: drop-shadow(0 4px 6px rgba(0,0,0,.35));
+  .grass-top { top:0; }
+  .grass-bottom { bottom:0; }
+  .lanes {
+    position:absolute; left:0; right:0; top:24px; bottom:24px;
+    background:#d9782a; /* Orange Bahn */
   }
-  /* Zielband */
+  /* weiße Linien (3 Bahnen + Rand) */
+  .lanes::before, .lanes::after {
+    content:""; position:absolute; left:0; right:0; height:2px; background:#fff;
+    box-shadow: 0 28px 0 #fff, 0 56px 0 #fff, 0 84px 0 #fff; /* Linien duplizieren */
+  }
+  .lanes::before { top:0; }   /* obere Linie + Kopien */
+  .lanes::after  { bottom:0; }/* untere Linie + Kopien */
+
+  /* Zielfahne rechts */
   .finish {
-    position: absolute; right: 10px; top: 10px; bottom: 10px; width: 18px;
-    background:
-      repeating-linear-gradient(180deg, #fff 0 10px, #e00 10px 20px);
-    box-shadow: inset 0 0 0 2px rgba(0,0,0,.2);
+    position: absolute; right: 10px; top: 30px; bottom: 30px; width: 18px;
+    background: repeating-linear-gradient(180deg, #fff 0 10px, #e00 10px 20px);
+    box-shadow: inset 0 0 0 2px rgba(0,0,0,.25);
   }
 
-  /* Fancy-Glow für Track */
+  /* Runner-Canvas (über der Bahn) */
+  #runnerCanvas {
+    position:absolute; left:0; top:0; width:100%; height:100%;
+    image-rendering: pixelated;
+    pointer-events:none;
+  }
+
+  /* Fancy-Glow */
   body.fancy .track-wrap { box-shadow: 0 0 25px rgba(255,255,255,.5), inset 0 0 0 2px rgba(255,255,255,.25); }
 </style>
 </head>
@@ -192,9 +196,11 @@
 
     <!-- Track & Runner -->
     <div class="track-wrap" id="trackWrap">
-      <div class="track"></div>
+      <div class="grass-top"></div>
+      <div class="lanes"></div>
+      <div class="grass-bottom"></div>
       <div class="finish"></div>
-      <div class="runner" id="runner" title="RUN!"></div>
+      <canvas id="runnerCanvas" width="720" height="120"></canvas>
     </div>
 
     <!-- Audio -->
@@ -202,47 +208,104 @@
   </div>
 
 <script>
-let endTime = null;         // ms timestamp, Zielzeitpunkt
-let timer;                  // Interval-ID
+let endTime = null;               // Zielzeitpunkt (ms)
+let timer;                        // setInterval ID
 let originalTitle = document.title;
-let presetSeconds = 0;      // von Buttons
-let totalSecondsPlanned = 0;// Gesamtdauer (für Progress/Läufer)
-let rafId = null;           // requestAnimationFrame für Runner
+let presetSeconds = 0;            // Sekunden von Buttons
+let totalSecondsPlanned = 0;      // Gesamtdauer (für Progress)
 let running = false;
 
-// ===== Sprite-Setup (an dein Sheet anpassbar) =====
-// Speichere dein Sprite Sheet als "runner.png" (gleiches Verzeichnis).
-// FRAME_W/H: Breite/Höhe eines einzelnen Frames in Pixeln auf dem Sheet.
-// RUN_FRAMES: Liste von [col,row] (0-basiert) der Lauf-Frames.
-const FRAME_W = 24;       // <- ggf. anpassen
-const FRAME_H = 32;       // <- ggf. anpassen
-const SHEET_COLS = 12;    // <- wie viele Spalten hat die Zeile auf deinem Sheet? (schätzen/prüfen)
-const SCALE = 2.2;        // visuelle Größe des Läufers (wird auf 64px Zielgröße skaliert)
-const ANIM_FPS = 10;      // Animationsgeschwindigkeit des Laufens
+// ===== Sprite-Konfiguration =====
+// Dein Sheet hat 16x32 px pro Frame
+const FRAME_W = 16;
+const FRAME_H = 32;
+const SCALE   = 2.5;              // sichtbare Vergrößerung
+const START_OFFSET_X = 10;        // 10 px Abstand links (wie gewünscht)
+const ANIM_FPS = 10;              // Laufgeschwindigkeit
 
-// Beispiel-Frames (bitte an dein Sheet anpassen):
-// Diese Auswahl nimmt 4 Laufposen aus einer typischen Reihe.
+// Welche Frames sollen genutzt werden? (Spalte, Zeile) 0-basiert.
+// Passe das ggf. an deine Laufreihe an:
 const RUN_FRAMES = [
   [0, 1], [1, 1], [2, 1], [3, 1]
 ];
 
-const runnerEl = document.getElementById('runner');
-function drawFrame(col, row) {
-  const x = -col * FRAME_W;
-  const y = -row * FRAME_H;
-  runnerEl.style.backgroundPosition = `${x}px ${y}px`;
-  // skaliere sichtbare Größe:
-  runnerEl.style.width  = `${FRAME_W * SCALE}px`;
-  runnerEl.style.height = `${FRAME_H * SCALE}px`;
+const sprite = new Image();
+sprite.src = 'runner.png'; // <- lege runner.png neben die HTML
+let framesCache = [];      // vorverarbeitete (ge-chromakeyte) Canvas-Bilder
+let lastFrameTs = 0;
+let frameIndex = 0;
+
+const canvas = document.getElementById('runnerCanvas');
+const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+// Größe des Canvas dynamisch an Container anpassen (für scharfes Scaling)
+function resizeCanvasToDisplaySize() {
+  const wrap = document.getElementById('trackWrap');
+  const width = wrap.clientWidth;
+  const height = wrap.clientHeight;
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width  = Math.round(width * dpr);
+  canvas.height = Math.round(height * dpr);
+  canvas.style.width  = width + 'px';
+  canvas.style.height = height + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+window.addEventListener('resize', resizeCanvasToDisplaySize);
+
+// Chroma-Key: Grün transparent machen (einmalig pro Frame vorbereiten)
+function prepareFrames() {
+  framesCache = RUN_FRAMES.map(([col,row]) => {
+    const off = document.createElement('canvas');
+    off.width = FRAME_W * SCALE;
+    off.height = FRAME_H * SCALE;
+    const octx = off.getContext('2d', { willReadFrequently: true });
+
+    // Quelle-Frame zeichnen (erst unskaliert in tmp, dann skaliert sauber)
+    const tmp = document.createElement('canvas');
+    tmp.width = FRAME_W; tmp.height = FRAME_H;
+    const tctx = tmp.getContext('2d', { willReadFrequently: true });
+    tctx.drawImage(
+      sprite,
+      col*FRAME_W, row*FRAME_H, FRAME_W, FRAME_H,
+      0, 0, FRAME_W, FRAME_H
+    );
+    // Chroma-Key (grüner Hintergrund entfernen)
+    const img = tctx.getImageData(0,0,FRAME_W,FRAME_H);
+    const data = img.data;
+    for (let i=0;i<data.length;i+=4){
+      const r=data[i], g=data[i+1], b=data[i+2];
+      // „NES-Grün“ herauskeyen – Toleranz anpassen bei Bedarf
+      if (g > 150 && r < 120 && b < 120) data[i+3] = 0; // alpha 0
+    }
+    tctx.putImageData(img,0,0);
+
+    // sauber skaliert ins offscreen zeichnen
+    octx.imageSmoothingEnabled = false;
+    octx.drawImage(tmp, 0, 0, FRAME_W*SCALE, FRAME_H*SCALE);
+    return off;
+  });
 }
 
-// ===== UI: Presets =====
+sprite.onload = () => {
+  prepareFrames();
+  resizeCanvasToDisplaySize();
+  drawRunner(START_OFFSET_X); // Startpose
+};
+
+// Runner zeichnen bei x-Position
+function drawRunner(x){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const img = framesCache.length ? framesCache[frameIndex] : null;
+  const y = canvas.height / (window.devicePixelRatio || 1) - (FRAME_H*SCALE) - 26; // ca. Bahnmitte
+  if (img) ctx.drawImage(img, x, y);
+}
+
+// ===== Presets =====
 function setPreset(seconds, btn) {
   presetSeconds = seconds;
   document.getElementById('hours').value = Math.floor(seconds / 3600);
   document.getElementById('minutes').value = Math.floor((seconds % 3600) / 60);
   document.getElementById('seconds').value = seconds % 60;
-
   document.querySelectorAll('.preset-buttons button').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
 }
@@ -261,9 +324,7 @@ function updateNotifyStatus() {
 }
 async function requestNotify() {
   if (!('Notification' in window)) { alert('Benachrichtigungen werden nicht unterstützt.'); return; }
-  if (Notification.permission === 'default') {
-    try { await Notification.requestPermission(); } catch(e) {}
-  }
+  if (Notification.permission === 'default') { try { await Notification.requestPermission(); } catch(e) {} }
   updateNotifyStatus();
 }
 function notifyUser(title, body) {
@@ -272,7 +333,7 @@ function notifyUser(title, body) {
   }
 }
 
-// ===== Alarm =====
+// ===== Audio =====
 function playAlarm() {
   const el = document.getElementById('alarm');
   el.volume = parseFloat(document.getElementById('alarmVol')?.value || "0.6");
@@ -284,7 +345,6 @@ function testAlarm(){ playAlarm(); }
 // ===== Uhrzeit-Restzeit anzeigen =====
 const alarmTimeInput = document.getElementById('alarmTime');
 const untilTimeEl = document.getElementById('untilTime');
-
 alarmTimeInput.addEventListener('input', showRemainingToClock);
 function showRemainingToClock() {
   const t = alarmTimeInput.value; // "HH:MM"
@@ -305,20 +365,20 @@ function fmt(secs){
 }
 
 // ===== Timer starten (Uhrzeit hat Vorrang) =====
+let animRAF = null;
 function startTimer() {
   clearInterval(timer);
-  cancelAnim();
+  cancelAnimation();
 
-  // 1) Uhrzeit-Modus mit Vorrang
+  // 1) Uhrzeit-Modus (Vorrang)
   const t = alarmTimeInput.value; // "HH:MM"
   let totalSeconds = 0;
-
   if (t) {
     const [hh, mm] = t.split(':').map(n=>parseInt(n)||0);
     const now = new Date();
     let target = new Date(now);
     target.setHours(hh, mm, 0, 0);
-    if (target <= now) target.setDate(target.getDate()+1); // morgen
+    if (target <= now) target.setDate(target.getDate()+1);
     totalSeconds = Math.max(1, Math.floor((target - now)/1000));
   } else {
     // 2) Dauer-Modus
@@ -328,43 +388,44 @@ function startTimer() {
     totalSeconds = h*3600 + m*60 + s;
     if (totalSeconds <= 0 && presetSeconds > 0) totalSeconds = presetSeconds;
   }
-
   if (totalSeconds <= 0) { alert("Bitte eine gültige Zeit oder Uhrzeit eingeben!"); return; }
 
-  // Zielzeit und Gesamtdauer merken
+  // Zielzeit & Gesamtdauer
   totalSecondsPlanned = totalSeconds;
   endTime = Date.now() + totalSeconds*1000;
 
-  // Notifications ggf. anfragen
+  // Benachrichtigung ggf. anfragen
   if ('Notification' in window && Notification.permission === 'default') {
     Notification.requestPermission().finally(updateNotifyStatus);
   } else { updateNotifyStatus(); }
 
-  // Start Anzeigen + Läufer
+  // Start
   running = true;
+  lastFrameTs = performance.now();
+  frameIndex = 0;
   updateDisplay();
   timer = setInterval(updateDisplay, 1000);
-  startAnim(); // Läufer-Animation starten
+  resizeCanvasToDisplaySize();
+  requestFrame(); // Runner animieren
 }
 
 function resetTimer() {
   clearInterval(timer);
-  cancelAnim();
+  cancelAnimation();
   running = false;
-  endTime = null;
-  presetSeconds = 0;
-  totalSecondsPlanned = 0;
+  endTime = null; presetSeconds = 0; totalSecondsPlanned = 0;
   document.querySelectorAll('.preset-buttons button').forEach(b => b.classList.remove('active'));
   document.getElementById('timeDisplay').textContent = "00:00:00";
   document.title = originalTitle;
+  // Läufer auf Startposition
+  resizeCanvasToDisplaySize();
+  drawRunner(START_OFFSET_X);
 }
 
 function updateDisplay() {
   if (!endTime) return;
-  const nowMs = Date.now();
-  let diff = Math.floor((endTime - nowMs)/1000);
+  let diff = Math.floor((endTime - Date.now())/1000);
 
-  // Uhrzeit-Restzeitanzeige live aktualisieren, falls gesetzt
   if (alarmTimeInput.value) showRemainingToClock();
 
   if (diff <= 0) {
@@ -375,7 +436,9 @@ function updateDisplay() {
     playAlarm();
     if (navigator.vibrate) navigator.vibrate([200,100,200]);
     notifyUser('⏰ Timer abgelaufen', 'Deine eingestellte Zeit ist vorbei.');
-    cancelAnim(true); // Läufer ans Ziel setzen
+    // Läufer ins Ziel setzen
+    resizeCanvasToDisplaySize();
+    drawRunner(targetX());
     alert("✅ Zeit ist abgelaufen!");
     return;
   }
@@ -384,49 +447,37 @@ function updateDisplay() {
   document.title = `⏱️ ${fmt(diff)} verbleibend`;
 }
 
-// ===== Läufer-Animation (Sprites + Progress) =====
-let animStartTime = 0;
-let lastFrameTime = 0;
-let frameIndex = 0;
-
-function startAnim(){
-  animStartTime = performance.now();
-  lastFrameTime = animStartTime;
-  frameIndex = 0;
-  drawFrame(RUN_FRAMES[0][0], RUN_FRAMES[0][1]);
-  rafId = requestAnimationFrame(animLoop);
-}
-function cancelAnim(forceToFinish=false){
-  if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
-  // Läufer-Position zurücksetzen / ans Ziel setzen
+// ===== Runner-Animation (Canvas, Chroma-Key) =====
+function targetX(){
   const wrap = document.getElementById('trackWrap');
-  const maxX = wrap.clientWidth - (FRAME_W*SCALE) - 26 /* etwas Abstand vorm Finish */;
-  const x = forceToFinish ? maxX : 0;
-  runnerEl.style.transform = `translateX(${x}px)`;
+  const width = wrap.clientWidth;
+  const maxX = width - (FRAME_W*SCALE) - 26; // kurz vor Zielfahne
+  return maxX;
 }
-function animLoop(ts){
-  if (!running || !endTime) { rafId = null; return; }
+function progress01(){
+  if (!endTime || !totalSecondsPlanned) return 0;
+  const totalMs = totalSecondsPlanned * 1000;
+  const elapsed = Math.min(totalMs, Math.max(0, totalMs - (endTime - Date.now())));
+  return Math.min(1, elapsed / totalMs);
+}
+function requestFrame(){ animRAF = requestAnimationFrame(step); }
+function cancelAnimation(){ if (animRAF){ cancelAnimationFrame(animRAF); animRAF=null; } }
 
-  // Fortschritt 0..1
-  const total = totalSecondsPlanned * 1000;
-  const elapsed = Math.min(total, Math.max(0, ts - animStartTime));
-  const progress = Math.min(1, 1 - ((endTime - Date.now()) / total)); // 0..1 anhand echter Zeit
+function step(ts){
+  if (!running || !endTime) { animRAF=null; return; }
 
-  // Position
-  const wrap = document.getElementById('trackWrap');
-  const maxX = wrap.clientWidth - (FRAME_W*SCALE) - 26; // bis kurz vor Finish
-  const posX = Math.max(0, Math.min(maxX, progress * maxX));
-  runnerEl.style.transform = `translateX(${posX}px)`;
-
-  // Frame wechseln nach ANIM_FPS
-  if (ts - lastFrameTime > (1000/ANIM_FPS)) {
+  // Framewechsel
+  if (ts - lastFrameTs > (1000/ANIM_FPS)) {
     frameIndex = (frameIndex + 1) % RUN_FRAMES.length;
-    const [c, r] = RUN_FRAMES[frameIndex];
-    drawFrame(c, r);
-    lastFrameTime = ts;
+    lastFrameTs = ts;
   }
 
-  rafId = requestAnimationFrame(animLoop);
+  // Position berechnen
+  const p = progress01(); // 0..1
+  const x = START_OFFSET_X + p * (targetX() - START_OFFSET_X);
+
+  drawRunner(x);
+  requestFrame();
 }
 
 // ===== Themes =====
@@ -446,9 +497,9 @@ window.onload = () => {
   if (savedTheme === "dark") document.body.classList.add("dark");
   if (savedTheme === "fancy") document.body.classList.add("fancy");
   updateNotifyStatus();
-  // Startpose setzen
-  drawFrame(RUN_FRAMES[0][0], RUN_FRAMES[0][1]);
-  cancelAnim(false);
+  resizeCanvasToDisplaySize();
+  // Startpose
+  drawRunner(START_OFFSET_X);
 };
 </script>
 
