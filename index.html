@@ -50,7 +50,7 @@
     background: var(--bg-color);
     color: var(--text-color);
     padding: 50px 12px 24px;
-    transition: background .6s, color .4s;
+    transition: background .0s, color .0s; /* sofortiger Wechsel */
   }
 
   h1 { font-size:2.2em; margin: 0 0 14px; }
@@ -92,10 +92,9 @@
   .status { font-size:.92em; opacity:.85; margin-top:8px; }
   .alarm-at { font-size:1em; margin-top:6px; opacity:.95; }
 
-  /* Volume-Zeile Feinschliff */
-  .volume-row { display:flex; gap:12px; align-items:flex-start; justify-content:center; flex-wrap:wrap; }
+  /* Volume-Zeile: perfekt zentriert (kein top-Offset mehr) */
+  .volume-row { display:flex; gap:12px; align-items:center; justify-content:center; flex-wrap:wrap; }
   .volume-row label { margin:0; }
-  .volume-range { position: relative; top: 4px; } /* 4px nach oben (Fix) */
   .sound-file-row { display:flex; gap:10px; justify-content:center; align-items:center; flex-wrap:wrap; }
   .sound-filename { font-size:0.95em; opacity:0.9; }
 
@@ -380,7 +379,6 @@ function setLang(code){
   applyLang();
   document.getElementById("langMenu").style.display = "none";
 }
-
 /* ===================== Timer ===================== */
 let endTime = null;
 let timer;
@@ -595,42 +593,59 @@ function playAlarm() {
 function testAlarm(){ playAlarm(); }
 
 /* ===================== Themes ===================== */
-/* Robust: Light-Mode Variablen hart setzen (Chrome-Fix),
-   bei Dark/Fancy Inline-Variablen wieder entfernen */
+/* Chrome-sicher:
+   - Light: Klassen komplett zurücksetzen, minimalen Repaint erzwingen, Variablen hart setzen
+   - Dark/Fancy: Inline-Variablen entfernen, Klasse setzen */
 const THEME_VARS = ['--bg-color','--text-color','--card-bg','--shadow','--accent'];
 
-function applyThemeVars(mode){
-  const root = document.documentElement;
-  if (mode === 'light') {
-    root.style.setProperty('--bg-color', '#ffffff');
-    root.style.setProperty('--text-color', '#000000');
-    root.style.setProperty('--card-bg', '#ffffff');
-    root.style.setProperty('--shadow', 'rgba(0,0,0,0.12)');
-    root.style.setProperty('--accent', '#0078d7');
-  } else {
-    // Entferne Inline-Overrides, damit .dark / .fancy Klassen greifen
-    THEME_VARS.forEach(v => root.style.removeProperty(v));
-  }
+function forceChromeRepaint(){
+  // knallhart, sofort
+  document.body.style.display = 'none';
+  // Ein Frame abwarten ohne setTimeout: direktes Reflow erzwingen
+  void document.body.offsetHeight;
+  document.body.style.display = '';
+  void document.body.offsetHeight;
+}
+
+function setRootVarsForLight(){
+  const r = document.documentElement.style;
+  r.setProperty('--bg-color','#ffffff');
+  r.setProperty('--text-color','#000000');
+  r.setProperty('--card-bg','#ffffff');
+  r.setProperty('--shadow','rgba(0,0,0,0.12)');
+  r.setProperty('--accent','#0078d7');
+}
+
+function clearRootVars(){
+  const r = document.documentElement.style;
+  THEME_VARS.forEach(v => r.removeProperty(v));
 }
 
 function setLight(){
-  applyThemeVars('light');
-  document.body.classList.remove('dark','fancy');
+  // Alle Klassen runter
+  document.body.className = '';
+  forceChromeRepaint();
+  // Nur light setzen
   document.body.classList.add('light');
+  // Variablen hart setzen (gegen Cache)
+  setRootVarsForLight();
   localStorage.setItem('theme','light');
 }
+
 function setDark(){
-  applyThemeVars('dark');
-  document.body.classList.remove('light','fancy');
+  clearRootVars();                 // Inline-Variablen weg, Klassen greifen
+  document.body.className = '';    // Klassen sauber neu setzen
   document.body.classList.add('dark');
   localStorage.setItem('theme','dark');
 }
+
 function setFancy(){
-  applyThemeVars('fancy');
-  document.body.classList.remove('light','dark');
+  clearRootVars();
+  document.body.className = '';
   document.body.classList.add('fancy');
   localStorage.setItem('theme','fancy');
 }
+
 function toggleDarkMode(){ if (document.body.classList.contains('dark')) setLight(); else setDark(); }
 function toggleFancyMode(){ if (document.body.classList.contains('fancy')) setLight(); else setFancy(); }
 
