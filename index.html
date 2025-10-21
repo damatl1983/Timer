@@ -108,8 +108,7 @@
   }
   .grass-top, .grass-bottom {
     position:absolute; left:0; right:0; height: 24px; background:#39b54a;
-    background-image:
-      radial-gradient(#ffffff66 1px, transparent 1px);
+    background-image: radial-gradient(#ffffff66 1px, transparent 1px);
     background-size: 8px 8px;
   }
   .grass-top { top:0; }
@@ -121,10 +120,10 @@
   /* weiße Linien (3 Bahnen + Rand) */
   .lanes::before, .lanes::after {
     content:""; position:absolute; left:0; right:0; height:2px; background:#fff;
-    box-shadow: 0 28px 0 #fff, 0 56px 0 #fff, 0 84px 0 #fff; /* Linien duplizieren */
+    box-shadow: 0 28px 0 #fff, 0 56px 0 #fff, 0 84px 0 #fff;
   }
-  .lanes::before { top:0; }   /* obere Linie + Kopien */
-  .lanes::after  { bottom:0; }/* untere Linie + Kopien */
+  .lanes::before { top:0; }
+  .lanes::after  { bottom:0; }
 
   /* Zielfahne rechts */
   .finish {
@@ -215,18 +214,18 @@ let presetSeconds = 0;            // Sekunden von Buttons
 let totalSecondsPlanned = 0;      // Gesamtdauer (für Progress)
 let running = false;
 
-// ===== Sprite-Konfiguration =====
-// Dein Sheet hat 16x32 px pro Frame
+/* ===== Sprite-Konfiguration =====
+   Dein Sheet: 16×32 px pro Frame, Lauf-Frames in ZEILE 2 (Index 1)
+*/
 const FRAME_W = 16;
 const FRAME_H = 32;
-const SCALE   = 2.5;              // sichtbare Vergrößerung
-const START_OFFSET_X = 10;        // 10 px Abstand links (wie gewünscht)
+const SCALE   = 2.0;              // ~20% kleiner als vorher
+const START_OFFSET_X = 10;        // 10 px Abstand links
 const ANIM_FPS = 10;              // Laufgeschwindigkeit
 
-// Welche Frames sollen genutzt werden? (Spalte, Zeile) 0-basiert.
-// Passe das ggf. an deine Laufreihe an:
+// 5 Lauf-Frames aus Zeile 2 (Index 1). Passen bei Bedarf die Spalten an:
 const RUN_FRAMES = [
-  [0, 1], [1, 1], [2, 1], [3, 1]
+  [0, 1], [1, 1], [2, 1], [3, 1], [4, 1]
 ];
 
 const sprite = new Image();
@@ -238,7 +237,7 @@ let frameIndex = 0;
 const canvas = document.getElementById('runnerCanvas');
 const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
-// Größe des Canvas dynamisch an Container anpassen (für scharfes Scaling)
+// Canvas-DPI/Größe an Container anpassen
 function resizeCanvasToDisplaySize() {
   const wrap = document.getElementById('trackWrap');
   const width = wrap.clientWidth;
@@ -250,7 +249,7 @@ function resizeCanvasToDisplaySize() {
   canvas.style.height = height + 'px';
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
-window.addEventListener('resize', resizeCanvasToDisplaySize);
+window.addEventListener('resize', ()=>{ resizeCanvasToDisplaySize(); drawRunner(START_OFFSET_X); });
 
 // Chroma-Key: Grün transparent machen (einmalig pro Frame vorbereiten)
 function prepareFrames() {
@@ -260,26 +259,23 @@ function prepareFrames() {
     off.height = FRAME_H * SCALE;
     const octx = off.getContext('2d', { willReadFrequently: true });
 
-    // Quelle-Frame zeichnen (erst unskaliert in tmp, dann skaliert sauber)
+    // Quelle-Frame in tmp zeichnen
     const tmp = document.createElement('canvas');
     tmp.width = FRAME_W; tmp.height = FRAME_H;
     const tctx = tmp.getContext('2d', { willReadFrequently: true });
-    tctx.drawImage(
-      sprite,
-      col*FRAME_W, row*FRAME_H, FRAME_W, FRAME_H,
-      0, 0, FRAME_W, FRAME_H
-    );
-    // Chroma-Key (grüner Hintergrund entfernen)
+    tctx.imageSmoothingEnabled = false;
+    tctx.drawImage(sprite, col*FRAME_W, row*FRAME_H, FRAME_W, FRAME_H, 0, 0, FRAME_W, FRAME_H);
+
+    // Chroma-Key (großzügig, damit alles Grün weg ist)
     const img = tctx.getImageData(0,0,FRAME_W,FRAME_H);
     const data = img.data;
     for (let i=0;i<data.length;i+=4){
       const r=data[i], g=data[i+1], b=data[i+2];
-      // „NES-Grün“ herauskeyen – Toleranz anpassen bei Bedarf
-      if (g > 150 && r < 120 && b < 120) data[i+3] = 0; // alpha 0
+      if (g > 130 && r < 150 && b < 150) data[i+3] = 0; // transparent
     }
     tctx.putImageData(img,0,0);
 
-    // sauber skaliert ins offscreen zeichnen
+    // sauber skaliert ins Offscreen
     octx.imageSmoothingEnabled = false;
     octx.drawImage(tmp, 0, 0, FRAME_W*SCALE, FRAME_H*SCALE);
     return off;
@@ -296,7 +292,7 @@ sprite.onload = () => {
 function drawRunner(x){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   const img = framesCache.length ? framesCache[frameIndex] : null;
-  const y = canvas.height / (window.devicePixelRatio || 1) - (FRAME_H*SCALE) - 26; // ca. Bahnmitte
+  const y = canvas.height / (window.devicePixelRatio || 1) - (FRAME_H*SCALE) - 14; // schön mittig auf Bahn
   if (img) ctx.drawImage(img, x, y);
 }
 
@@ -466,7 +462,7 @@ function cancelAnimation(){ if (animRAF){ cancelAnimationFrame(animRAF); animRAF
 function step(ts){
   if (!running || !endTime) { animRAF=null; return; }
 
-  // Framewechsel
+  // Framewechsel (5 Frames)
   if (ts - lastFrameTs > (1000/ANIM_FPS)) {
     frameIndex = (frameIndex + 1) % RUN_FRAMES.length;
     lastFrameTs = ts;
