@@ -5,80 +5,66 @@
 <title>Timer</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23ffffff' stroke='%23000000' stroke-width='4'/%3E%3Cline x1='50' y1='50' x2='50' y2='20' stroke='%23000000' stroke-width='6' stroke-linecap='round'/%3E%3Cline x1='50' y1='50' x2='75' y2='50' stroke='%23000000' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E" />
-
 <style>
   :root {
     --bg-color: #f0f4f7;
     --text-color: #000;
     --card-bg: #fff;
     --shadow: rgba(0,0,0,0.2);
+    --accent: #0078d7;
   }
-
   /* 🌙 Dark Mode */
   body.dark {
     --bg-color: #121212;
     --text-color: #e0e0e0;
     --card-bg: #1e1e1e;
     --shadow: rgba(0,0,0,0.6);
+    --accent: #3b82f6;
   }
-
-  /* 🎨 Fancy Mode – Clown Disco */
+  /* 🎨 Fancy Mode – Neon, animierter Verlauf */
   body.fancy {
     --text-color: #ffffff;
-    --card-bg: rgba(255,255,255,0.15);
+    --card-bg: rgba(255,255,255,0.12);
     --shadow: rgba(255,255,255,0.6);
+    --accent: #ffcc00;
     animation: bgShift 10s infinite alternate ease-in-out;
     background: linear-gradient(45deg, #ff00cc, #3333ff, #00ff99, #ffcc00, #ff3366);
     background-size: 400% 400%;
   }
-
-  @keyframes bgShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
+  @keyframes bgShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
 
   body {
     font-family: Arial, sans-serif;
     text-align: center;
     background: var(--bg-color);
     color: var(--text-color);
-    padding: 50px;
-    transition: background 0.8s, color 0.5s;
+    padding: 50px 12px;
+    transition: background .8s, color .5s;
   }
-
-  h1 { font-size: 2.5em; margin-bottom: 20px; }
-
+  h1 { font-size: 2.4em; margin: 0 0 14px; }
   .container {
     display: inline-block;
     background: var(--card-bg);
-    padding: 20px 40px;
-    border-radius: 20px;
+    padding: 22px 28px;
+    border-radius: 18px;
     box-shadow: 0 4px 20px var(--shadow);
     backdrop-filter: blur(12px);
-    transition: background 0.5s, box-shadow 0.5s;
+    max-width: 760px;
+    width: 100%;
   }
-
+  .section-title { margin: 14px 0 6px; font-weight: bold; }
   .time-display {
-    font-size: 3.5em;
-    margin: 20px 0;
-    transition: color 0.5s;
+    font-size: 3.2em; margin: 14px 0 6px; line-height: 1.15;
   }
-
   body.fancy .time-display {
     background: linear-gradient(90deg, #ff00cc, #00ff99, #ffcc00);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     animation: pulse 2s infinite alternate;
   }
-
-  @keyframes pulse {
-    from { transform: scale(1); }
-    to { transform: scale(1.08); }
-  }
+  @keyframes pulse { from{transform:scale(1)} to{transform:scale(1.06)} }
 
   input, button {
-    font-size: 1.1em;
+    font-size: 1.05em;
     margin: 6px;
     padding: 8px 12px;
     border: 1px solid #888;
@@ -86,111 +72,171 @@
     background: var(--card-bg);
     color: var(--text-color);
   }
-
+  input[type=number], input[type=time] { width: 8.5em; }
   button {
-    cursor: pointer;
-    background: #0078d7;
-    color: #fff;
-    border: none;
-    transition: background 0.3s, transform 0.1s;
+    cursor: pointer; background: var(--accent); color: #fff; border: none;
+    transition: transform .1s, filter .2s;
   }
-  button:hover { transform: scale(1.05); }
+  button:hover { transform: scale(1.05); filter: brightness(1.05); }
+  .preset-buttons { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin: 6px 0 8px; }
+  .preset-buttons button.active { box-shadow: 0 0 14px rgba(0,120,215,.8); }
+  .row { margin: 6px 0; }
+  .status { font-size: .92em; opacity: .85; margin-top: 8px; }
 
-  body.fancy button {
-    background: linear-gradient(135deg, #ff0066, #ffcc00);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
-  }
-  body.fancy button:hover {
-    background: linear-gradient(135deg, #ff3366, #ffee33);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.9);
-  }
-
+  /* Steuer-Buttons oben rechts (Desktop) */
   .dark-toggle, .fancy-toggle, .notify-toggle {
-    position: fixed;
-    right: 20px;
-    padding: 8px 14px;
-    border-radius: 8px;
-    border: none;
-    z-index: 999;
+    position: fixed; right: 20px; padding: 8px 14px; border-radius: 8px; border: none; z-index: 999;
   }
-  .dark-toggle { top: 20px; background: #333; color: #fff; }
-  .fancy-toggle { top: 64px; background: #c026d3; color: #fff; }
-  .notify-toggle { top: 108px; background: #555; color: #fff; }
+  .dark-toggle { top: 20px; background: #333; color:#fff;}
+  .fancy-toggle { top: 64px; background: #c026d3; color:#fff;}
+  .notify-toggle { top: 108px; background: #555; color:#fff;}
 
-  .status { font-size: .9em; opacity: .85; margin-top: 6px; }
-
-  .preset-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-  .preset-buttons button.active {
-    box-shadow: 0 0 15px rgba(0,120,215,0.8);
-  }
-
-  /* 📱 Responsive: Buttons unten */
+  /* 📱 Smartphone: Buttons unten */
   @media (max-width: 768px) {
     .dark-toggle, .fancy-toggle, .notify-toggle {
-      top: auto;
-      right: 50%;
-      transform: translateX(50%);
-      width: 80%;
-      max-width: 300px;
-      margin-top: 8px;
+      top: auto; right: 50%; transform: translateX(50%);
+      width: 82%; max-width: 320px; margin-top: 8px;
     }
     .dark-toggle { bottom: 100px; }
     .fancy-toggle { bottom: 60px; }
     .notify-toggle { bottom: 20px; }
   }
+
+  /* 🏃‍♂️ Track & Runner */
+  .track-wrap{
+    position: relative; height: 120px; margin: 18px auto 6px; max-width: 720px;
+    border-radius: 14px; overflow: hidden; box-shadow: inset 0 0 0 2px rgba(0,0,0,.15);
+  }
+  .track {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(#ff8a00,#ff8a00) 0 33%, 
+      linear-gradient(#ff8a00,#ff8a00) 0 66%,
+      linear-gradient(#ff8a00,#ff8a00) 0 100%,
+      linear-gradient(#ff8a00,#ff8a00) 0 0/100% 100%;
+    background-repeat: no-repeat;
+    background-size: 100% 3px, 100% 3px, 100% 3px, 100% 100%;
+    background-position: 0 33%, 0 66%, 0 100%, 0 0;
+    background-color: #ffb26b; /* Bahn */
+  }
+  .runner {
+    position: absolute; bottom: 26px; left: 0;
+    width: 64px; height: 64px; /* skaliert, unabhängig vom Sprite-Pixelmaß */
+    image-rendering: pixelated;
+    background-image: url('runner.png'); /* <- deine Datei */
+    background-repeat: no-repeat;
+    transform: translateX(0);
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,.35));
+  }
+  /* Zielband */
+  .finish {
+    position: absolute; right: 10px; top: 10px; bottom: 10px; width: 18px;
+    background:
+      repeating-linear-gradient(180deg, #fff 0 10px, #e00 10px 20px);
+    box-shadow: inset 0 0 0 2px rgba(0,0,0,.2);
+  }
+
+  /* Fancy-Glow für Track */
+  body.fancy .track-wrap { box-shadow: 0 0 25px rgba(255,255,255,.5), inset 0 0 0 2px rgba(255,255,255,.25); }
 </style>
 </head>
 <body>
 
-  <button class="dark-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
-  <button class="fancy-toggle" onclick="toggleFancyMode()">🎨 Fancy Mode</button>
+  <!-- Reihenfolge: Dark → Fancy → Notifications -->
+  <button class="dark-toggle" onclick="toggleDarkMode()">🌙 Dark</button>
+  <button class="fancy-toggle" onclick="toggleFancyMode()">🎨 Fancy</button>
   <button class="notify-toggle" onclick="requestNotify()">🔔 Benachrichtigungen</button>
 
   <div class="container">
     <h1>⏱️ Timer</h1>
 
+    <!-- Preset-Buttons (Dauer) -->
     <div class="preset-buttons">
       <button onclick="setPreset(3000, this)">50 Min</button>
       <button onclick="setPreset(1800, this)">30 Min</button>
       <button onclick="setPreset(600, this)">10 Min</button>
     </div>
 
-    <div>
-      <h3>Oder eigene Zeit eingeben:</h3>
+    <!-- TIMER (Dauer) -->
+    <div class="row">
+      <div class="section-title">Timer (Dauer)</div>
       <input type="number" id="hours" placeholder="Stunden" min="0">
       <input type="number" id="minutes" placeholder="Minuten" min="0" max="59">
       <input type="number" id="seconds" placeholder="Sekunden" min="0" max="59">
     </div>
 
-    <div>
+    <!-- UHRZEIT -->
+    <div class="row">
+      <div class="section-title">Uhrzeit (Alarm um)</div>
+      <input type="time" id="alarmTime" step="60" placeholder="HH:MM" />
+      <span id="untilTime" style="display:block; margin-top:6px; opacity:.85;"></span>
+    </div>
+
+    <!-- Start/Reset -->
+    <div class="row">
       <button onclick="startTimer()">Start</button>
       <button onclick="resetTimer()">Reset</button>
     </div>
 
+    <!-- Anzeige -->
     <div class="time-display" id="timeDisplay">00:00:00</div>
     <div class="status" id="notifyStatus">Benachrichtigungen: unbekannt</div>
 
-    <div style="margin-top:10px">
+    <!-- Lautstärke & Test -->
+    <div class="row" style="margin-top:8px">
       <label style="display:block;margin:6px 0">
         Lautstärke: <input id="alarmVol" type="range" min="0" max="1" step="0.01" value="0.6">
       </label>
       <button onclick="testAlarm()">🔊 Testen</button>
     </div>
 
+    <!-- Track & Runner -->
+    <div class="track-wrap" id="trackWrap">
+      <div class="track"></div>
+      <div class="finish"></div>
+      <div class="runner" id="runner" title="RUN!"></div>
+    </div>
+
+    <!-- Audio -->
     <audio id="alarm" src="pi-pi-pi.mp3" preload="auto"></audio>
   </div>
 
 <script>
-let endTime = null;
-let timer;
+let endTime = null;         // ms timestamp, Zielzeitpunkt
+let timer;                  // Interval-ID
 let originalTitle = document.title;
-let presetSeconds = 0;
+let presetSeconds = 0;      // von Buttons
+let totalSecondsPlanned = 0;// Gesamtdauer (für Progress/Läufer)
+let rafId = null;           // requestAnimationFrame für Runner
+let running = false;
 
+// ===== Sprite-Setup (an dein Sheet anpassbar) =====
+// Speichere dein Sprite Sheet als "runner.png" (gleiches Verzeichnis).
+// FRAME_W/H: Breite/Höhe eines einzelnen Frames in Pixeln auf dem Sheet.
+// RUN_FRAMES: Liste von [col,row] (0-basiert) der Lauf-Frames.
+const FRAME_W = 24;       // <- ggf. anpassen
+const FRAME_H = 32;       // <- ggf. anpassen
+const SHEET_COLS = 12;    // <- wie viele Spalten hat die Zeile auf deinem Sheet? (schätzen/prüfen)
+const SCALE = 2.2;        // visuelle Größe des Läufers (wird auf 64px Zielgröße skaliert)
+const ANIM_FPS = 10;      // Animationsgeschwindigkeit des Laufens
+
+// Beispiel-Frames (bitte an dein Sheet anpassen):
+// Diese Auswahl nimmt 4 Laufposen aus einer typischen Reihe.
+const RUN_FRAMES = [
+  [0, 1], [1, 1], [2, 1], [3, 1]
+];
+
+const runnerEl = document.getElementById('runner');
+function drawFrame(col, row) {
+  const x = -col * FRAME_W;
+  const y = -row * FRAME_H;
+  runnerEl.style.backgroundPosition = `${x}px ${y}px`;
+  // skaliere sichtbare Größe:
+  runnerEl.style.width  = `${FRAME_W * SCALE}px`;
+  runnerEl.style.height = `${FRAME_H * SCALE}px`;
+}
+
+// ===== UI: Presets =====
 function setPreset(seconds, btn) {
   presetSeconds = seconds;
   document.getElementById('hours').value = Math.floor(seconds / 3600);
@@ -201,6 +247,7 @@ function setPreset(seconds, btn) {
   btn.classList.add('active');
 }
 
+// ===== Notifications =====
 function updateNotifyStatus() {
   const s = document.getElementById('notifyStatus');
   if (!('Notification' in window)) {
@@ -215,54 +262,98 @@ function updateNotifyStatus() {
 async function requestNotify() {
   if (!('Notification' in window)) { alert('Benachrichtigungen werden nicht unterstützt.'); return; }
   if (Notification.permission === 'default') {
-    try { await Notification.requestPermission(); }
-    catch(e) {}
+    try { await Notification.requestPermission(); } catch(e) {}
   }
   updateNotifyStatus();
 }
 function notifyUser(title, body) {
   if ('Notification' in window && Notification.permission === 'granted') {
-    try {
-      const n = new Notification(title, { body });
-      n.onclick = () => window.focus();
-    } catch (e) {}
+    try { const n = new Notification(title, { body }); n.onclick = () => window.focus(); } catch(e) {}
   }
 }
 
+// ===== Alarm =====
 function playAlarm() {
   const el = document.getElementById('alarm');
   el.volume = parseFloat(document.getElementById('alarmVol')?.value || "0.6");
   el.currentTime = 0;
   el.play().catch(()=>{});
 }
-function testAlarm() { playAlarm(); }
+function testAlarm(){ playAlarm(); }
 
+// ===== Uhrzeit-Restzeit anzeigen =====
+const alarmTimeInput = document.getElementById('alarmTime');
+const untilTimeEl = document.getElementById('untilTime');
+
+alarmTimeInput.addEventListener('input', showRemainingToClock);
+function showRemainingToClock() {
+  const t = alarmTimeInput.value; // "HH:MM"
+  if (!t) { untilTimeEl.textContent = ''; return; }
+  const [hh, mm] = t.split(':').map(n=>parseInt(n)||0);
+  const now = new Date();
+  let target = new Date(now);
+  target.setHours(hh, mm, 0, 0);
+  if (target <= now) target.setDate(target.getDate()+1); // morgen
+  const secs = Math.floor((target - now)/1000);
+  untilTimeEl.textContent = `Restzeit bis ${t} Uhr: ${fmt(secs)}`;
+}
+function fmt(secs){
+  const h = String(Math.floor(secs/3600)).padStart(2,'0');
+  const m = String(Math.floor((secs%3600)/60)).padStart(2,'0');
+  const s = String(secs%60).padStart(2,'0');
+  return `${h}:${m}:${s}`;
+}
+
+// ===== Timer starten (Uhrzeit hat Vorrang) =====
 function startTimer() {
   clearInterval(timer);
-  const h = parseInt(document.getElementById('hours').value) || 0;
-  const m = parseInt(document.getElementById('minutes').value) || 0;
-  const s = parseInt(document.getElementById('seconds').value) || 0;
-  let totalSeconds = h * 3600 + m * 60 + s;
+  cancelAnim();
 
-  if (totalSeconds <= 0 && presetSeconds > 0) totalSeconds = presetSeconds;
+  // 1) Uhrzeit-Modus mit Vorrang
+  const t = alarmTimeInput.value; // "HH:MM"
+  let totalSeconds = 0;
 
-  if (totalSeconds <= 0) { alert("Bitte eine gültige Zeit eingeben!"); return; }
-
-  if ('Notification' in window && Notification.permission === 'default') {
-    Notification.requestPermission().finally(updateNotifyStatus);
+  if (t) {
+    const [hh, mm] = t.split(':').map(n=>parseInt(n)||0);
+    const now = new Date();
+    let target = new Date(now);
+    target.setHours(hh, mm, 0, 0);
+    if (target <= now) target.setDate(target.getDate()+1); // morgen
+    totalSeconds = Math.max(1, Math.floor((target - now)/1000));
   } else {
-    updateNotifyStatus();
+    // 2) Dauer-Modus
+    const h = parseInt(document.getElementById('hours').value) || 0;
+    const m = parseInt(document.getElementById('minutes').value) || 0;
+    const s = parseInt(document.getElementById('seconds').value) || 0;
+    totalSeconds = h*3600 + m*60 + s;
+    if (totalSeconds <= 0 && presetSeconds > 0) totalSeconds = presetSeconds;
   }
 
-  endTime = Date.now() + totalSeconds * 1000;
+  if (totalSeconds <= 0) { alert("Bitte eine gültige Zeit oder Uhrzeit eingeben!"); return; }
+
+  // Zielzeit und Gesamtdauer merken
+  totalSecondsPlanned = totalSeconds;
+  endTime = Date.now() + totalSeconds*1000;
+
+  // Notifications ggf. anfragen
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission().finally(updateNotifyStatus);
+  } else { updateNotifyStatus(); }
+
+  // Start Anzeigen + Läufer
+  running = true;
   updateDisplay();
   timer = setInterval(updateDisplay, 1000);
+  startAnim(); // Läufer-Animation starten
 }
 
 function resetTimer() {
   clearInterval(timer);
+  cancelAnim();
+  running = false;
   endTime = null;
   presetSeconds = 0;
+  totalSecondsPlanned = 0;
   document.querySelectorAll('.preset-buttons button').forEach(b => b.classList.remove('active'));
   document.getElementById('timeDisplay').textContent = "00:00:00";
   document.title = originalTitle;
@@ -270,27 +361,75 @@ function resetTimer() {
 
 function updateDisplay() {
   if (!endTime) return;
-  let diff = Math.floor((endTime - Date.now()) / 1000);
+  const nowMs = Date.now();
+  let diff = Math.floor((endTime - nowMs)/1000);
+
+  // Uhrzeit-Restzeitanzeige live aktualisieren, falls gesetzt
+  if (alarmTimeInput.value) showRemainingToClock();
 
   if (diff <= 0) {
     clearInterval(timer);
+    running = false;
     document.getElementById('timeDisplay').textContent = "00:00:00";
     document.title = "⏰ Timer abgelaufen!";
     playAlarm();
     if (navigator.vibrate) navigator.vibrate([200,100,200]);
     notifyUser('⏰ Timer abgelaufen', 'Deine eingestellte Zeit ist vorbei.');
+    cancelAnim(true); // Läufer ans Ziel setzen
     alert("✅ Zeit ist abgelaufen!");
     return;
   }
 
-  const hrs = String(Math.floor(diff / 3600)).padStart(2, '0');
-  const mins = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
-  const secs = String(diff % 60).padStart(2, '0');
-  const timeString = `${hrs}:${mins}:${secs}`;
-  document.getElementById('timeDisplay').textContent = timeString;
-  document.title = `⏱️ ${timeString} verbleibend`;
+  document.getElementById('timeDisplay').textContent = fmt(diff);
+  document.title = `⏱️ ${fmt(diff)} verbleibend`;
 }
 
+// ===== Läufer-Animation (Sprites + Progress) =====
+let animStartTime = 0;
+let lastFrameTime = 0;
+let frameIndex = 0;
+
+function startAnim(){
+  animStartTime = performance.now();
+  lastFrameTime = animStartTime;
+  frameIndex = 0;
+  drawFrame(RUN_FRAMES[0][0], RUN_FRAMES[0][1]);
+  rafId = requestAnimationFrame(animLoop);
+}
+function cancelAnim(forceToFinish=false){
+  if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+  // Läufer-Position zurücksetzen / ans Ziel setzen
+  const wrap = document.getElementById('trackWrap');
+  const maxX = wrap.clientWidth - (FRAME_W*SCALE) - 26 /* etwas Abstand vorm Finish */;
+  const x = forceToFinish ? maxX : 0;
+  runnerEl.style.transform = `translateX(${x}px)`;
+}
+function animLoop(ts){
+  if (!running || !endTime) { rafId = null; return; }
+
+  // Fortschritt 0..1
+  const total = totalSecondsPlanned * 1000;
+  const elapsed = Math.min(total, Math.max(0, ts - animStartTime));
+  const progress = Math.min(1, 1 - ((endTime - Date.now()) / total)); // 0..1 anhand echter Zeit
+
+  // Position
+  const wrap = document.getElementById('trackWrap');
+  const maxX = wrap.clientWidth - (FRAME_W*SCALE) - 26; // bis kurz vor Finish
+  const posX = Math.max(0, Math.min(maxX, progress * maxX));
+  runnerEl.style.transform = `translateX(${posX}px)`;
+
+  // Frame wechseln nach ANIM_FPS
+  if (ts - lastFrameTime > (1000/ANIM_FPS)) {
+    frameIndex = (frameIndex + 1) % RUN_FRAMES.length;
+    const [c, r] = RUN_FRAMES[frameIndex];
+    drawFrame(c, r);
+    lastFrameTime = ts;
+  }
+
+  rafId = requestAnimationFrame(animLoop);
+}
+
+// ===== Themes =====
 function toggleDarkMode() {
   document.body.classList.toggle("dark");
   document.body.classList.remove("fancy");
@@ -307,6 +446,9 @@ window.onload = () => {
   if (savedTheme === "dark") document.body.classList.add("dark");
   if (savedTheme === "fancy") document.body.classList.add("fancy");
   updateNotifyStatus();
+  // Startpose setzen
+  drawFrame(RUN_FRAMES[0][0], RUN_FRAMES[0][1]);
+  cancelAnim(false);
 };
 </script>
 
