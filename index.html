@@ -76,12 +76,13 @@
     transition: transform .1s, filter .2s;
   }
   button:hover { transform: scale(1.05); filter: brightness(1.05); }
+
   .preset-buttons { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin: 6px 0 8px; }
   .preset-buttons button.active { box-shadow: 0 0 14px rgba(0,120,215,.8); }
   .row { margin: 6px 0; }
   .status { font-size: .92em; opacity: .85; margin-top: 8px; }
 
-  /* Steuer-Buttons Desktop */
+  /* Steuer-Buttons Desktop (Reihenfolge: Dark → Fancy → Notify) */
   .dark-toggle, .fancy-toggle, .notify-toggle {
     position: fixed; right: 20px; padding: 8px 14px; border-radius: 8px; border: none; z-index: 999;
   }
@@ -89,7 +90,7 @@
   .fancy-toggle { top: 64px; background: #c026d3; color:#fff;}
   .notify-toggle { top: 108px; background: #555; color:#fff;}
 
-  /* 📱 Smartphone: Buttons unten */
+  /* 📱 Smartphone: Buttons unten zentriert */
   @media (max-width: 768px) {
     .dark-toggle, .fancy-toggle, .notify-toggle {
       top: auto; right: 50%; transform: translateX(50%);
@@ -99,53 +100,11 @@
     .fancy-toggle { bottom: 60px; }
     .notify-toggle { bottom: 20px; }
   }
-
-  /* 🏁 Originalgetreue Bahn (CSS-Pixel-Art) */
-  .track-wrap{
-    position: relative; height: 120px; margin: 18px auto 6px; max-width: 720px;
-    border-radius: 12px; overflow: hidden;
-    box-shadow: inset 0 0 0 2px rgba(0,0,0,.15);
-  }
-  .grass-top, .grass-bottom {
-    position:absolute; left:0; right:0; height: 24px; background:#39b54a;
-    background-image: radial-gradient(#ffffff66 1px, transparent 1px);
-    background-size: 8px 8px;
-  }
-  .grass-top { top:0; }
-  .grass-bottom { bottom:0; }
-  .lanes {
-    position:absolute; left:0; right:0; top:24px; bottom:24px;
-    background:#d9782a; /* Orange Bahn */
-  }
-  /* weiße Linien (3 Bahnen + Rand) */
-  .lanes::before, .lanes::after {
-    content:""; position:absolute; left:0; right:0; height:2px; background:#fff;
-    box-shadow: 0 28px 0 #fff, 0 56px 0 #fff, 0 84px 0 #fff;
-  }
-  .lanes::before { top:0; }
-  .lanes::after  { bottom:0; }
-
-  /* Zielfahne rechts */
-  .finish {
-    position: absolute; right: 10px; top: 30px; bottom: 30px; width: 18px;
-    background: repeating-linear-gradient(180deg, #fff 0 10px, #e00 10px 20px);
-    box-shadow: inset 0 0 0 2px rgba(0,0,0,.25);
-  }
-
-  /* Runner-Canvas (über der Bahn) */
-  #runnerCanvas {
-    position:absolute; left:0; top:0; width:100%; height:100%;
-    image-rendering: pixelated;
-    pointer-events:none;
-  }
-
-  /* Fancy-Glow */
-  body.fancy .track-wrap { box-shadow: 0 0 25px rgba(255,255,255,.5), inset 0 0 0 2px rgba(255,255,255,.25); }
 </style>
 </head>
 <body>
 
-  <!-- Reihenfolge: Dark → Fancy → Notifications -->
+  <!-- Modus-Buttons -->
   <button class="dark-toggle" onclick="toggleDarkMode()">🌙 Dark</button>
   <button class="fancy-toggle" onclick="toggleFancyMode()">🎨 Fancy</button>
   <button class="notify-toggle" onclick="requestNotify()">🔔 Benachrichtigungen</button>
@@ -193,15 +152,6 @@
       <button onclick="testAlarm()">🔊 Testen</button>
     </div>
 
-    <!-- Track & Runner -->
-    <div class="track-wrap" id="trackWrap">
-      <div class="grass-top"></div>
-      <div class="lanes"></div>
-      <div class="grass-bottom"></div>
-      <div class="finish"></div>
-      <canvas id="runnerCanvas" width="720" height="120"></canvas>
-    </div>
-
     <!-- Audio -->
     <audio id="alarm" src="pi-pi-pi.mp3" preload="auto"></audio>
   </div>
@@ -211,92 +161,10 @@ let endTime = null;               // Zielzeitpunkt (ms)
 let timer;                        // setInterval ID
 let originalTitle = document.title;
 let presetSeconds = 0;            // Sekunden von Buttons
-let totalSecondsPlanned = 0;      // Gesamtdauer (für Progress)
+let totalSecondsPlanned = 0;      // Gesamtdauer (für Titelanzeige)
 let running = false;
 
-/* ===== Sprite-Konfiguration =====
-   Dein Sheet: 16×32 px pro Frame, Lauf-Frames in ZEILE 2 (Index 1)
-*/
-const FRAME_W = 16;
-const FRAME_H = 32;
-const SCALE   = 2.0;              // ~20% kleiner als vorher
-const START_OFFSET_X = 10;        // 10 px Abstand links
-const ANIM_FPS = 10;              // Laufgeschwindigkeit
-
-// 5 Lauf-Frames aus Zeile 2 (Index 1). Passen bei Bedarf die Spalten an:
-const RUN_FRAMES = [
-  [0, 1], [1, 1], [2, 1], [3, 1], [4, 1]
-];
-
-const sprite = new Image();
-sprite.src = 'runner.png'; // <- lege runner.png neben die HTML
-let framesCache = [];      // vorverarbeitete (ge-chromakeyte) Canvas-Bilder
-let lastFrameTs = 0;
-let frameIndex = 0;
-
-const canvas = document.getElementById('runnerCanvas');
-const ctx = canvas.getContext('2d', { willReadFrequently: true });
-
-// Canvas-DPI/Größe an Container anpassen
-function resizeCanvasToDisplaySize() {
-  const wrap = document.getElementById('trackWrap');
-  const width = wrap.clientWidth;
-  const height = wrap.clientHeight;
-  const dpr = window.devicePixelRatio || 1;
-  canvas.width  = Math.round(width * dpr);
-  canvas.height = Math.round(height * dpr);
-  canvas.style.width  = width + 'px';
-  canvas.style.height = height + 'px';
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-}
-window.addEventListener('resize', ()=>{ resizeCanvasToDisplaySize(); drawRunner(START_OFFSET_X); });
-
-// Chroma-Key: Grün transparent machen (einmalig pro Frame vorbereiten)
-function prepareFrames() {
-  framesCache = RUN_FRAMES.map(([col,row]) => {
-    const off = document.createElement('canvas');
-    off.width = FRAME_W * SCALE;
-    off.height = FRAME_H * SCALE;
-    const octx = off.getContext('2d', { willReadFrequently: true });
-
-    // Quelle-Frame in tmp zeichnen
-    const tmp = document.createElement('canvas');
-    tmp.width = FRAME_W; tmp.height = FRAME_H;
-    const tctx = tmp.getContext('2d', { willReadFrequently: true });
-    tctx.imageSmoothingEnabled = false;
-    tctx.drawImage(sprite, col*FRAME_W, row*FRAME_H, FRAME_W, FRAME_H, 0, 0, FRAME_W, FRAME_H);
-
-    // Chroma-Key (großzügig, damit alles Grün weg ist)
-    const img = tctx.getImageData(0,0,FRAME_W,FRAME_H);
-    const data = img.data;
-    for (let i=0;i<data.length;i+=4){
-      const r=data[i], g=data[i+1], b=data[i+2];
-      if (g > 130 && r < 150 && b < 150) data[i+3] = 0; // transparent
-    }
-    tctx.putImageData(img,0,0);
-
-    // sauber skaliert ins Offscreen
-    octx.imageSmoothingEnabled = false;
-    octx.drawImage(tmp, 0, 0, FRAME_W*SCALE, FRAME_H*SCALE);
-    return off;
-  });
-}
-
-sprite.onload = () => {
-  prepareFrames();
-  resizeCanvasToDisplaySize();
-  drawRunner(START_OFFSET_X); // Startpose
-};
-
-// Runner zeichnen bei x-Position
-function drawRunner(x){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  const img = framesCache.length ? framesCache[frameIndex] : null;
-  const y = canvas.height / (window.devicePixelRatio || 1) - (FRAME_H*SCALE) - 14; // schön mittig auf Bahn
-  if (img) ctx.drawImage(img, x, y);
-}
-
-// ===== Presets =====
+/* ===== Presets ===== */
 function setPreset(seconds, btn) {
   presetSeconds = seconds;
   document.getElementById('hours').value = Math.floor(seconds / 3600);
@@ -306,7 +174,7 @@ function setPreset(seconds, btn) {
   btn.classList.add('active');
 }
 
-// ===== Notifications =====
+/* ===== Notifications ===== */
 function updateNotifyStatus() {
   const s = document.getElementById('notifyStatus');
   if (!('Notification' in window)) {
@@ -329,7 +197,7 @@ function notifyUser(title, body) {
   }
 }
 
-// ===== Audio =====
+/* ===== Audio ===== */
 function playAlarm() {
   const el = document.getElementById('alarm');
   el.volume = parseFloat(document.getElementById('alarmVol')?.value || "0.6");
@@ -338,7 +206,7 @@ function playAlarm() {
 }
 function testAlarm(){ playAlarm(); }
 
-// ===== Uhrzeit-Restzeit anzeigen =====
+/* ===== Uhrzeit-Restzeit anzeigen ===== */
 const alarmTimeInput = document.getElementById('alarmTime');
 const untilTimeEl = document.getElementById('untilTime');
 alarmTimeInput.addEventListener('input', showRemainingToClock);
@@ -360,13 +228,11 @@ function fmt(secs){
   return `${h}:${m}:${s}`;
 }
 
-// ===== Timer starten (Uhrzeit hat Vorrang) =====
-let animRAF = null;
+/* ===== Timer starten (Uhrzeit hat Vorrang) ===== */
 function startTimer() {
   clearInterval(timer);
-  cancelAnimation();
 
-  // 1) Uhrzeit-Modus (Vorrang)
+  // Uhrzeit-Modus (Vorrang)
   const t = alarmTimeInput.value; // "HH:MM"
   let totalSeconds = 0;
   if (t) {
@@ -377,7 +243,7 @@ function startTimer() {
     if (target <= now) target.setDate(target.getDate()+1);
     totalSeconds = Math.max(1, Math.floor((target - now)/1000));
   } else {
-    // 2) Dauer-Modus
+    // Dauer-Modus
     const h = parseInt(document.getElementById('hours').value) || 0;
     const m = parseInt(document.getElementById('minutes').value) || 0;
     const s = parseInt(document.getElementById('seconds').value) || 0;
@@ -397,27 +263,22 @@ function startTimer() {
 
   // Start
   running = true;
-  lastFrameTs = performance.now();
-  frameIndex = 0;
   updateDisplay();
   timer = setInterval(updateDisplay, 1000);
-  resizeCanvasToDisplaySize();
-  requestFrame(); // Runner animieren
 }
 
 function resetTimer() {
   clearInterval(timer);
-  cancelAnimation();
   running = false;
-  endTime = null; presetSeconds = 0; totalSecondsPlanned = 0;
-  document.querySelectorAll('.preset-buttons button').forEach(b => b.classList.remove('active'));
+  endTime = null;
+  totalSecondsPlanned = 0;
+  // (Optional) Preset-Highlight zurücksetzen:
+  // document.querySelectorAll('.preset-buttons button').forEach(b => b.classList.remove('active'));
   document.getElementById('timeDisplay').textContent = "00:00:00";
   document.title = originalTitle;
-  // Läufer auf Startposition
-  resizeCanvasToDisplaySize();
-  drawRunner(START_OFFSET_X);
 }
 
+/* ===== Anzeige & Ablauf ===== */
 function updateDisplay() {
   if (!endTime) return;
   let diff = Math.floor((endTime - Date.now())/1000);
@@ -427,14 +288,16 @@ function updateDisplay() {
   if (diff <= 0) {
     clearInterval(timer);
     running = false;
+
+    // === SOFORT: Uhrzeit-Automatik leeren (dein Wunsch) ===
+    alarmTimeInput.value = '';
+    untilTimeEl.textContent = '';
+
     document.getElementById('timeDisplay').textContent = "00:00:00";
     document.title = "⏰ Timer abgelaufen!";
     playAlarm();
     if (navigator.vibrate) navigator.vibrate([200,100,200]);
     notifyUser('⏰ Timer abgelaufen', 'Deine eingestellte Zeit ist vorbei.');
-    // Läufer ins Ziel setzen
-    resizeCanvasToDisplaySize();
-    drawRunner(targetX());
     alert("✅ Zeit ist abgelaufen!");
     return;
   }
@@ -443,59 +306,37 @@ function updateDisplay() {
   document.title = `⏱️ ${fmt(diff)} verbleibend`;
 }
 
-// ===== Runner-Animation (Canvas, Chroma-Key) =====
-function targetX(){
-  const wrap = document.getElementById('trackWrap');
-  const width = wrap.clientWidth;
-  const maxX = width - (FRAME_W*SCALE) - 26; // kurz vor Zielfahne
-  return maxX;
-}
-function progress01(){
-  if (!endTime || !totalSecondsPlanned) return 0;
-  const totalMs = totalSecondsPlanned * 1000;
-  const elapsed = Math.min(totalMs, Math.max(0, totalMs - (endTime - Date.now())));
-  return Math.min(1, elapsed / totalMs);
-}
-function requestFrame(){ animRAF = requestAnimationFrame(step); }
-function cancelAnimation(){ if (animRAF){ cancelAnimationFrame(animRAF); animRAF=null; } }
-
-function step(ts){
-  if (!running || !endTime) { animRAF=null; return; }
-
-  // Framewechsel (5 Frames)
-  if (ts - lastFrameTs > (1000/ANIM_FPS)) {
-    frameIndex = (frameIndex + 1) % RUN_FRAMES.length;
-    lastFrameTs = ts;
-  }
-
-  // Position berechnen
-  const p = progress01(); // 0..1
-  const x = START_OFFSET_X + p * (targetX() - START_OFFSET_X);
-
-  drawRunner(x);
-  requestFrame();
-}
-
-// ===== Themes =====
+/* ===== Themes =====
+   Tipp: Klicke erneut auf den aktiven Modus (Dark/Fancy), um ihn zu deaktivieren.
+   Dann springt die Seite in den hellen Standardmodus zurück.
+*/
 function toggleDarkMode() {
+  const wasDark = document.body.classList.contains("dark");
   document.body.classList.toggle("dark");
   document.body.classList.remove("fancy");
   localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+  // Wenn derselbe Button erneut geklickt wird (dark war aktiv -> jetzt aus): clear to light
+  if (wasDark && !document.body.classList.contains("dark")) {
+    localStorage.setItem("theme", "light");
+  }
 }
 function toggleFancyMode() {
+  const wasFancy = document.body.classList.contains("fancy");
   document.body.classList.toggle("fancy");
   document.body.classList.remove("dark");
   localStorage.setItem("theme", document.body.classList.contains("fancy") ? "fancy" : "light");
+  if (wasFancy && !document.body.classList.contains("fancy")) {
+    localStorage.setItem("theme", "light");
+  }
 }
 
 window.onload = () => {
   const savedTheme = localStorage.getItem("theme");
+  // explizit sicherstellen, dass "light" beide Klassen entfernt
+  document.body.classList.remove("dark", "fancy");
   if (savedTheme === "dark") document.body.classList.add("dark");
   if (savedTheme === "fancy") document.body.classList.add("fancy");
   updateNotifyStatus();
-  resizeCanvasToDisplaySize();
-  // Startpose
-  drawRunner(START_OFFSET_X);
 };
 </script>
 
