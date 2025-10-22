@@ -764,10 +764,10 @@ function loop(){
   ctx.clearRect(0,0,w,h);
 
   const cx = w/2, cy = h/2;
-  const innerR = 90;             // Fortschrittsring Radius
-  const ringThickness = 18;
-  const beatOuterRBase = 130;    // Basisradius Beat-Ring
-  const beatThickness = 10;
+  const innerR = 80;             // Fortschrittsring Radius
+  const ringThickness = 20;
+  const beatOuterRBase = 120;    // Basisradius Beat-Ring
+  const beatThickness = 4;
 
   // Farben
   const trackColor = getComputedStyle(document.documentElement).getPropertyValue('--ring-track').trim() || '#e6e6e6';
@@ -874,6 +874,7 @@ window.onload = () => {
 
 </body>
 </html>
+
 
 
 
