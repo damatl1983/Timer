@@ -122,7 +122,7 @@
     background: var(--card-bg);
   }
 
-  /* Canvas Block */
+  /* Canvas Block – deine Werte beibehalten */
   .viz {
     margin: 1px auto 1px;
     width: 250px; height: 150px;
@@ -158,7 +158,7 @@
     .system-top { top: 8px; right: 8px; }
     .system-top .btn-light, .system-top .btn-dark, .system-top .btn-fancy, .system-top .btn-notify { display: none; }
     .system-bottom { display:block; }
-    body { padding-top: 64px; }
+    body { padding-top: 64px; } /* Platz für Sprachbutton */
   }
 </style>
 </head>
@@ -308,8 +308,8 @@ const LANGS = {
     notify_status_active:"Notifs: aktiv",
     notify_status_denied:"Notifs: geblockt",
     notify_status_default:"Notifs: offen",
-    invalid_time:"Gib mal 'ne echte Zeit ein 😅",
-    time_up_alert:"Bämm! Zeit ist um 😎",
+    invalid_time:"Gib mal 'ne echte Zeit ein Bro 😅", 
+    time_up_alert:"Bämm! Zeit ist um Bro 😎", 
     notif_title:"⏰ Ding Dong",
     notif_body:"Dein Timer ist durch.",
     notif_denied_tip:"Notifs sind blockiert. Aktivier sie in den Website-Einstellungen."
@@ -774,12 +774,35 @@ function loop(){
   const beatOuterRBase = 110;    // Basisradius Beat-Ring
   const beatThickness = 8;
 
-  // Farben
+  /* === 🌈 NEON GLOW & SHADOW LAYER – hinzugefügt === */
+  const glowBaseColor = document.body.classList.contains('fancy')
+    ? 'rgba(255,0,255,0.25)'   // Fancy Mode
+    : document.body.classList.contains('dark')
+      ? 'rgba(0,128,255,0.18)' // Dark Mode
+      : 'rgba(0,100,255,0.12)'; // Light Mode
+
+  // Radialer Glow unter den Ringen
+  const glowGrad = ctx.createRadialGradient(cx, cy, 40, cx, cy, 160);
+  glowGrad.addColorStop(0, glowBaseColor);
+  glowGrad.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = glowGrad;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 160, 0, 2 * Math.PI);
+  ctx.fill();
+
+  // Soft Shadow, damit der Ring „schwebt“
+  ctx.shadowColor = glowBaseColor;
+  ctx.shadowBlur = 25;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+  /* === Ende Glow & Shadow === */
+
+  // Farben für Ringe
   const trackColor = getComputedStyle(document.documentElement).getPropertyValue('--ring-track').trim() || '#e6e6e6';
   const fillColor  = getComputedStyle(document.documentElement).getPropertyValue('--ring-fill').trim()  || '#0078d7';
   let beatColor    = getComputedStyle(document.documentElement).getPropertyValue('--beat-color').trim() || '#ff3366';
 
-  // Fancy: Verlauf für Fortschrittsring
+  // Fortschrittsring – ggf. Verlauf im Fancy Mode
   let grad = ctx.createLinearGradient(0,0,w,0);
   if (document.body.classList.contains('fancy')) {
     grad.addColorStop(0,'#ff3366');
@@ -823,7 +846,7 @@ function loop(){
     amplitude *= 0.9;
   }
 
-  // kräftige „Disco“-Vibration
+  // kräftige „Disco“-Vibration – deine starke Skalierung bleibt
   const bump = (amplitude>0 ? (amplitude*2200) : 0); // bis +2200px
   const beatR = beatOuterRBase + bump;
 
@@ -879,25 +902,3 @@ window.onload = () => {
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
