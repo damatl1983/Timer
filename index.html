@@ -548,10 +548,15 @@ function updateDisplay() {
 
     document.getElementById('timeDisplay').textContent = "00:00:00";
     document.title = t('notif_title');
+    // 🔊 Erst Alarm & Notification starten
     playAlarm(); // startet auch Beat-Ring
-    if (navigator.vibrate) navigator.vibrate([200,100,200]);
     notifyUser(t('notif_title'), t('notif_body'));
-    alert("✅ " + t('time_up_alert'));
+    if (navigator.vibrate) navigator.vibrate([200,100,200]);
+
+    // ⏱️ Dann (leicht verzögert) die Meldung anzeigen
+    setTimeout(() => {
+      alert("✅ " + t('time_up_alert'));
+    }, 500);
     return;
   }
 
@@ -874,6 +879,7 @@ window.onload = () => {
 
 </body>
 </html>
+
 
 
 
