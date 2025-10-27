@@ -61,12 +61,12 @@
   body.military {
     --bg-color:#2e3327;
     --text-color:#e0e0d0;
-    --card-bg:rgba(46,51,39,0.85);
+    --card-bg:rgba(46,51,39,0.92);
     --shadow:rgba(0,0,0,0.6);
-    --accent:#78b13f;
-    --ring-track:#3a3d32;
-    --ring-fill:#9ac926;
-    --beat-color:#ffb703;
+    --accent:#78b13f;       /* Button-Grün */
+    --ring-track:#3a3d32;   /* matte Olivspur */
+    --ring-fill:#9ac926;    /* Nachtsicht-Grün */
+    --beat-color:#ffb703;   /* Radar-Orange */
     color: var(--text-color);
     background-color:#2b2f23;
     background-image:
@@ -76,20 +76,17 @@
       radial-gradient(160px 120px at 88% 78%, rgba(25,30,20,0.45) 0%, rgba(25,30,20,0.0) 75%),
       radial-gradient(220px 160px at 20% 30%, #3f4d34 0%, transparent 60%),
       radial-gradient(240px 140px at 70% 25%, #2d3828 0%, transparent 60%),
-      radial-gradient(200px 120px at 40% 70%, #5a6a48 0%, transparent 60%),
-      radial-gradient(180px 150px at 82% 68%, #2b2f23 0%, transparent 60%),
-      radial-gradient(200px 160px at 12% 80%, #4a5a3c 0%, transparent 60%),
       repeating-linear-gradient(135deg, rgba(255,255,255,0.03) 0 2px, rgba(0,0,0,0.03) 2px 4px);
-    background-blend-mode: overlay, overlay, overlay, overlay, normal, normal, normal, normal, normal, multiply;
+    background-blend-mode: overlay, overlay, overlay, overlay, normal, normal, multiply;
     background-attachment: fixed;
   }
   body.military .container {
     position: relative;
-    background:rgba(40,45,34,0.92);
     border: 1px solid #3a3d2e;   /* matte Equipment-Panel-Kante */
     box-shadow:
       inset 0 0 6px rgba(0,0,0,0.6),
       0 2px 14px rgba(0,0,0,0.6);
+    background: var(--card-bg);
   }
   body.military .container::before {
     content: "";
@@ -99,28 +96,18 @@
     border: 1px solid rgba(255,255,255,0.06);
     pointer-events: none;
   }
+  body.military .time-display {
+    color:#9ac926;
+    text-shadow:0 0 6px rgba(154,201,38,0.9);
+    font-family:"Courier New", monospace;
+  }
   body.military button {
-    background:#6f8c3b; color:#fff; border:1px solid #3b4425;
+    background:#6f8c3b;
+    color:#f0f0d0;
+    border:1px solid #3b4425;
     box-shadow:0 2px 6px rgba(0,0,0,0.5);
   }
-  body.military button:hover { background:#7dbb45; transform:scale(1.05); }
-
-  /* ---------- USED LOOK (optionaler Texturlayer, persistent) ---------- */
-  body.used-look::before {
-    content:"";
-    position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.5;
-    background:
-      radial-gradient(circle at 30% 30%,rgba(255,255,255,0.03) 0%,transparent 70%),
-      repeating-linear-gradient(45deg,rgba(255,255,255,0.03) 0 2px,transparent 2px 4px);
-    mix-blend-mode: overlay;
-  }
-  body.used-look .container {
-    background-blend-mode: multiply;
-    background-image:
-      linear-gradient(145deg,rgba(255,255,255,0.05),rgba(0,0,0,0.25)),
-      repeating-linear-gradient(90deg,rgba(255,255,255,0.02) 0 1px,transparent 1px 3px);
-    box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
-  }
+  body.military button:hover { background:#7dbb45; transform:scale(1.05); box-shadow:0 0 10px rgba(122,180,60,0.6); }
 
   /* ---------- GENERAL LAYOUT ---------- */
   body {
@@ -169,27 +156,25 @@
   .status { font-size:.92em; opacity:.85; margin-top:8px; }
   .alarm-at { font-size:1em; margin-top:6px; opacity:.95; }
 
-  /* Volume-Zeile */
+  /* Volume-Zeile (Slider 4px höher) */
   .volume-row { display:flex; gap:12px; align-items:center; justify-content:center; flex-wrap:wrap; }
-  .volume-row label { margin:0; position:relative; top:2px; } /* leichte Justierung */
+  .volume-row label { margin:0; position:relative; top:2px; }
+  #alarmVol { position:relative; top:-2px; } /* +2 (Label) & -2 (Slider) = 4px näher zusammen */
+
   .sound-file-row { display:flex; gap:10px; justify-content:center; align-items:center; flex-wrap:wrap; }
   .file-input { display:none; }
   .file-ui { display:inline-flex; align-items:center; gap:10px; flex-wrap:wrap; }
   .file-name { padding:6px 10px; border-radius:8px; border:1px dashed #888; background: var(--card-bg); }
   .sound-filename { font-size:0.95em; opacity:0.9; }
 
-  /* Canvas – Maße aus deiner Variante für „3D“-Look */
+  /* Canvas – Maße aus deiner 3D-Variante */
   .viz { margin: 1px auto 1px; width: 250px; height: 150px; position: relative; }
   .viz canvas { width:100%; height:100%; display:block; }
 
-  /* ---------- SYSTEM BUTTONS ---------- */
-  .system-top {
-    position: fixed; right: 16px; top: 16px; display: flex; gap: 8px; flex-direction: column;
-    z-index: 10;
-  }
+  /* ---------- SYSTEM BUTTONS & MENÜS ---------- */
+  .system-top { position: fixed; right: 16px; top: 16px; display: flex; gap: 8px; flex-direction: column; z-index: 10; }
   .system-top button { min-width: 180px; }
 
-  /* Menüs mit smooth Fade + Slide */
   .lang-menu, .deck-menu {
     position: fixed; right: 16px; top: calc(16px + 44px + 8px);
     background: rgba(255,255,255,0.98); color:#000;
@@ -205,14 +190,10 @@
   body.dark .lang-menu button:hover, body.dark .deck-menu button:hover { background: rgba(255,255,255,.08); }
   body.military .lang-menu, body.military .deck-menu { background:#3b3d32; color:#e0e0d0; border-color:#555; }
 
-  /* Used-Status-Style im Menü */
-  .deck-menu .used-active { background:rgba(0,200,0,0.18); font-weight:600; }
-
   /* --- Mobile: Style Deck & Notifications unten --- */
   .system-bottom { display:none; margin-top: 16px; }
   .system-bottom .btn-row { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
   .system-bottom button { min-width: 180px; }
-
   @media (max-width: 768px) {
     .system-top { top: 8px; right: 8px; }
     /* oben nur Sprache – StyleDeck & Notify nach unten */
@@ -246,10 +227,6 @@
     <button onclick="applyThemeAndClose('dark')">🌙 <span data-i18n="style_dark">Dark</span></button>
     <button onclick="applyThemeAndClose('fancy')">🎨 <span data-i18n="style_fancy">Fancy</span></button>
     <button onclick="applyThemeAndClose('military')">🪖 <span data-i18n="style_military">Military</span></button>
-    <hr style="opacity:.35;margin:6px 0">
-    <button id="usedToggleTop" onclick="toggleUsedLookAndClose('top')">
-      🧱 <span id="usedLabelTop">Used Look: Aus</span>
-    </button>
   </div>
 
   <div class="container" id="main">
@@ -331,10 +308,6 @@
     <button onclick="applyThemeAndClose('dark')">🌙 <span data-i18n="style_dark">Dark</span></button>
     <button onclick="applyThemeAndClose('fancy')">🎨 <span data-i18n="style_fancy">Fancy</span></button>
     <button onclick="applyThemeAndClose('military')">🪖 <span data-i18n="style_military">Military</span></button>
-    <hr style="opacity:.35;margin:6px 0">
-    <button id="usedToggleBottom" onclick="toggleUsedLookAndClose('bottom')">
-      🧱 <span id="usedLabelBottom">Used Look: Aus</span>
-    </button>
   </div>
 
   <!-- Audio -->
@@ -352,7 +325,6 @@ const LANGS = {
     btn_test_alarm:"Alarm testen", btn_notify:"Benachrichtigungen",
     btn_styledeck:"🎨 Style Deck ▾",
     style_light:"Hell", style_dark:"Dark", style_fancy:"Fancy", style_military:"Military",
-    style_used_on:"Used Look: Aktiv", style_used_off:"Used Look: Aus",
     label_sound:"Alarmton hochladen", btn_choose_file:"🎵 Datei auswählen",
     file_none:"Keine Datei ausgewählt",
     sound_current_prefix:"Aktueller Ton: ",
@@ -376,10 +348,9 @@ const LANGS = {
     section_timer:"Timer (Dauer)", section_time:"Uhrzeit (Alarm um)",
     btn_start:"Start (let's go)", btn_reset:"Reset (chill)",
     label_volume:"Lautstärke 🔊",
-    btn_test_alarm:"Soundcheck 🔥", btn_notify:"Notifs",
+    btn_test_alarm:"Alarm checken 🔥", btn_notify:"Notifs",
     btn_styledeck:"🎨 Style Deck ▾",
     style_light:"Hell", style_dark:"Dark", style_fancy:"Fancy", style_military:"Military",
-    style_used_on:"Used Look: Aktiv", style_used_off:"Used Look: Aus",
     label_sound:"Alarm hochladen", btn_choose_file:"🎵 Sound wählen",
     file_none:"Keine Datei gewählt",
     sound_current_prefix:"Aktueller Ton: ",
@@ -393,7 +364,7 @@ const LANGS = {
     invalid_time:"Gib mal 'ne echte Zeit ein Bro 😅",
     time_up_alert:"Bämm! Zeit ist um Bro 😎",
     notif_title:"⏰ Ding Dong",
-    notif_body:"Dein Timer ist durch Bro.",
+    notif_body:"Dein Timer ist durch.",
     notif_denied_tip:"Notifs sind blockiert. Aktivier sie in den Website-Einstellungen."
   },
   en: {
@@ -405,7 +376,6 @@ const LANGS = {
     btn_test_alarm:"Test alarm", btn_notify:"Notifications",
     btn_styledeck:"🎨 Style Deck ▾",
     style_light:"Light", style_dark:"Dark", style_fancy:"Fancy", style_military:"Military",
-    style_used_on:"Used Look: Active", style_used_off:"Used Look: Off",
     label_sound:"Upload alarm sound", btn_choose_file:"🎵 Choose file",
     file_none:"No file selected",
     sound_current_prefix:"Current sound: ",
@@ -431,7 +401,6 @@ const LANGS = {
     btn_test_alarm:"Alarm testi", btn_notify:"Bildirimler",
     btn_styledeck:"🎨 Style Deck ▾",
     style_light:"Açık", style_dark:"Koyu", style_fancy:"Fancy", style_military:"Askerî",
-    style_used_on:"Used Look: Etkin", style_used_off:"Used Look: Kapalı",
     label_sound:"Alarm sesi yükle", btn_choose_file:"🎵 Dosya seç",
     file_none:"Dosya seçilmedi",
     sound_current_prefix:"Geçerli ses: ",
@@ -457,7 +426,6 @@ const LANGS = {
     btn_test_alarm:"آزمایش زنگ", btn_notify:"اطلاع‌رسانی‌ها",
     btn_styledeck:"🎨 استایل دِک ▾",
     style_light:"روشن", style_dark:"تیره", style_fancy:"فَنسی", style_military:"نظامی",
-    style_used_on:"ظاهر کهنه: فعال", style_used_off:"ظاهر کهنه: خاموش",
     label_sound:"آپلود صدای زنگ", btn_choose_file:"🎵 انتخاب فایل",
     file_none:"فایلی انتخاب نشده است",
     sound_current_prefix:"صدای فعلی: ",
@@ -477,12 +445,14 @@ const LANGS = {
 };
 let currentLang = localStorage.getItem("lang") || "de";
 
+/* ===================== Helpers & i18n ===================== */
 function t(key){ const L = LANGS[currentLang]; return (L && L[key]) || LANGS.de[key] || key; }
 
 function applyLang() {
   document.querySelectorAll("[data-i18n]").forEach(el => {
     el.textContent = t(el.getAttribute("data-i18n"));
   });
+  // Buttons
   document.getElementById("btnLang").textContent = t("codeBtn");
   const sdTop = document.getElementById("btnStyleDeckTop");
   const sdBottom = document.getElementById("btnStyleDeckBottom");
@@ -512,7 +482,6 @@ function applyLang() {
   updateSoundFilenameLabel();
   updateNotifyStatus();
   updateAlarmAtPreview();
-  updateUsedStatusLabels();
 }
 
 /* Sprachmenü */
@@ -538,10 +507,6 @@ function toggleDeckMenu(which){
 }
 function applyThemeAndClose(theme){
   applyTheme(theme);
-  closeAllMenus();
-}
-function toggleUsedLookAndClose(which){
-  toggleUsedLook();
   closeAllMenus();
 }
 function closeAllMenus(){
@@ -697,7 +662,7 @@ function updateNotifyStatus() {
   const state = Notification.permission;
   if (state === 'granted') {
     s.textContent = t('notify_status_active');
-    setNotifyButtonsVisible(false);
+    setNotifyButtonsVisible(false); // Button ausblenden
   } else if (state === 'denied') {
     s.textContent = t('notify_status_denied');
     setNotifyButtonsVisible(true);
@@ -781,7 +746,7 @@ function resetToDefaultSound() {
   updateSoundFilenameLabel();
 }
 function playAlarm() {
-  startBeatRing();
+  startBeatRing(); // Start der Beat-Visualisierung
   alarmEl.volume = parseFloat(document.getElementById('alarmVol')?.value || "0.6");
   alarmEl.currentTime = 0;
   alarmEl.play().catch(()=>{});
@@ -791,7 +756,13 @@ function testAlarm(){ playAlarm(); }
 /* ===================== Themes ===================== */
 /* Chrome-sicher Light: Klassen reset + Repaint + Variablen hart setzen */
 const THEME_VARS = ['--bg-color','--text-color','--card-bg','--shadow','--accent','--ring-track','--ring-fill','--beat-color'];
-function forceChromeRepaint(){ document.body.style.display='none'; void document.body.offsetHeight; document.body.style.display=''; void document.body.offsetHeight; }
+
+function forceChromeRepaint(){
+  document.body.style.display = 'none';
+  void document.body.offsetHeight;
+  document.body.style.display = '';
+  void document.body.offsetHeight;
+}
 function setRootVarsForLight(){
   const r = document.documentElement.style;
   r.setProperty('--bg-color','#ffffff');
@@ -803,47 +774,36 @@ function setRootVarsForLight(){
   r.setProperty('--ring-fill','#0078d7');
   r.setProperty('--beat-color','#1e90ff');
 }
-function clearRootVars(){ const r = document.documentElement.style; THEME_VARS.forEach(v => r.removeProperty(v)); }
-
+function clearRootVars(){
+  const r = document.documentElement.style;
+  THEME_VARS.forEach(v => r.removeProperty(v));
+}
 function applyTheme(theme){
   if (theme === 'light') { document.body.className=''; forceChromeRepaint(); document.body.classList.add('light'); setRootVarsForLight(); }
   else { clearRootVars(); document.body.className=''; document.body.classList.add(theme); }
   localStorage.setItem('theme', theme);
-  // Used Look beibehalten, wenn aktiv gespeichert
-  if (localStorage.getItem('usedLook')==='1') document.body.classList.add('used-look');
-  updateUsedStatusLabels();
 }
 function setLight(){ applyTheme('light'); }
 function setDark(){ applyTheme('dark'); }
 function setFancy(){ applyTheme('fancy'); }
 function setMilitary(){ applyTheme('military'); }
 
-/* Used Look toggle + Statuslabels (oben & unten, mit i18n) */
-function toggleUsedLook(){
-  const active = document.body.classList.toggle('used-look');
-  localStorage.setItem('usedLook', active ? '1' : '0');
-  updateUsedStatusLabels();
-}
-function updateUsedStatusLabels(){
-  const active = document.body.classList.contains('used-look');
-  const top = document.getElementById('usedLabelTop');
-  const bot = document.getElementById('usedLabelBottom');
-  const btnTop = document.getElementById('usedToggleTop');
-  const btnBot = document.getElementById('usedToggleBottom');
-  if (top) top.textContent = active ? t('style_used_on') : t('style_used_off');
-  if (bot) bot.textContent = active ? t('style_used_on') : t('style_used_off');
-  if (btnTop) btnTop.classList.toggle('used-active', active);
-  if (btnBot) btnBot.classList.toggle('used-active', active);
-}
-
-/* ===================== Canvas: Progress + Beat Ring ===================== */
+/* ===================== Canvas: Progress + Beat Ring (Military HUD) ===================== */
 const canvas = document.getElementById('progressCanvas');
 const ctx = canvas.getContext('2d');
 let rafId = null;
 let runningCanvas = false;
 
-function ensureCanvasLoop(){ if (runningCanvas) return; runningCanvas = true; loop(); }
-function stopCanvasLoop(){ runningCanvas = false; if (rafId) cancelAnimationFrame(rafId); }
+function ensureCanvasLoop(){
+  if (runningCanvas) return;
+  runningCanvas = true;
+  loop();
+}
+function stopCanvasLoop(){
+  runningCanvas = false;
+  if (rafId) cancelAnimationFrame(rafId);
+}
+
 function getProgress(){
   if (!endTime || totalSecondsPlanned<=0) return 0;
   const remain = Math.max(0, endTime - Date.now());
@@ -853,6 +813,7 @@ function getProgress(){
 
 let beatActive = false;
 let audioCtx = null, analyser = null, dataArray = null, srcNode = null;
+
 function startBeatRing(){
   beatActive = true;
   try {
@@ -887,11 +848,14 @@ function loop(){
   const beatThickness = 8;
 
   /* === Radialer Glow hinter den Ringen, dezent === */
-  const glowBaseColor = document.body.classList.contains('fancy')
-    ? 'rgba(255,0,255,0.25)'
-    : (document.body.classList.contains('dark') || document.body.classList.contains('military'))
-      ? 'rgba(0,128,255,0.18)'
-      : 'rgba(0,100,255,0.12)';
+  const isMil = document.body.classList.contains('military');
+  const glowBaseColor = isMil
+    ? 'rgba(154,201,38,0.28)'
+    : (document.body.classList.contains('fancy'))
+      ? 'rgba(255,0,255,0.25)'
+      : (document.body.classList.contains('dark'))
+        ? 'rgba(0,128,255,0.18)'
+        : 'rgba(0,100,255,0.12)';
   const glowGrad = ctx.createRadialGradient(cx, cy, 40, cx, cy, 160);
   glowGrad.addColorStop(0, glowBaseColor);
   glowGrad.addColorStop(1, 'rgba(0,0,0,0)');
@@ -899,12 +863,12 @@ function loop(){
   ctx.beginPath(); ctx.arc(cx, cy, 160, 0, 2 * Math.PI); ctx.fill();
   ctx.shadowColor = glowBaseColor; ctx.shadowBlur = 18; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
 
-  // Farben
+  // Farben aus CSS-Variablen
   const trackColor = getComputedStyle(document.documentElement).getPropertyValue('--ring-track').trim() || '#e6e6e6';
   const fillColor  = getComputedStyle(document.documentElement).getPropertyValue('--ring-fill').trim()  || '#0078d7';
   const beatColor  = getComputedStyle(document.documentElement).getPropertyValue('--beat-color').trim() || '#ff3366';
 
-  // Fortschrittsring – in Fancy mit Verlauf
+  // Fortschrittsring – in Fancy mit Verlauf, sonst einfarbig
   let grad = ctx.createLinearGradient(0,0,w,0);
   if (document.body.classList.contains('fancy')) {
     grad.addColorStop(0,'#ff3366'); grad.addColorStop(0.5,'#ffcc00'); grad.addColorStop(1,'#00ff99');
@@ -916,7 +880,7 @@ function loop(){
   ctx.beginPath();
   ctx.lineWidth = ringThickness;
   ctx.strokeStyle = trackColor;
-  if (document.body.classList.contains('military')) ctx.setLineDash([6,4]); else ctx.setLineDash([]);
+  if (isMil) ctx.setLineDash([6,4]); else ctx.setLineDash([]);
   ctx.arc(cx, cy, innerR, 0, Math.PI*2);
   ctx.stroke();
   ctx.setLineDash([]);
@@ -942,14 +906,14 @@ function loop(){
     amplitude = (sum / dataArray.length) / 255; // 0..1
   } else { amplitude *= 0.9; }
 
-  // kräftiger Ausschlag (dein Wunsch): amplitude * 2200
+  // kräftiger Ausschlag
   const bump = (amplitude>0 ? (amplitude*2200) : 0);
   const beatR = beatOuterRBase + bump;
 
   ctx.beginPath();
   ctx.lineWidth = beatThickness + bump*0.25;
   const g2 = ctx.createRadialGradient(cx, cy, beatR-12, cx, cy, beatR+24);
-  g2.addColorStop(0, beatColor);
+  g2.addColorStop(0, isMil ? '#ff9900' : beatColor); // im Military etwas „hotter“
   g2.addColorStop(1, 'rgba(255,255,255,0)');
   ctx.strokeStyle = g2;
   ctx.globalAlpha = 0.8;
@@ -966,10 +930,6 @@ window.onload = () => {
   const savedTheme = localStorage.getItem('theme') || 'light';
   applyTheme(savedTheme);
 
-  // Used Look laden
-  if (localStorage.getItem('usedLook') === '1') document.body.classList.add('used-look');
-  updateUsedStatusLabels();
-
   // Sprache
   applyLang();
 
@@ -983,4 +943,3 @@ window.onload = () => {
 
 </body>
 </html>
-
