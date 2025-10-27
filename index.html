@@ -57,7 +57,7 @@
   }
   @keyframes bgShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
 
-  /* 🪖 MILITARY (WOODLAND) THEME – kräftiger Camo-Look + Stoffstruktur */
+  /* 🪖 MILITARY THEME (Woodland, statisch) */
   body.military {
     --bg-color:#2e3327;
     --text-color:#e0e0d0;
@@ -70,51 +70,56 @@
     color: var(--text-color);
     background-color:#2b2f23;
     background-image:
-      /* dunkle weiche Schattenflecken */
       radial-gradient(120px 80px at 12% 22%, rgba(20,25,18,0.45) 0%, rgba(20,25,18,0.0) 70%),
       radial-gradient(140px 100px at 82% 20%, rgba(30,35,25,0.50) 0%, rgba(30,35,25,0.0) 70%),
       radial-gradient(110px 100px at 30% 78%, rgba(15,20,12,0.40) 0%, rgba(15,20,12,0.0) 75%),
       radial-gradient(160px 120px at 88% 78%, rgba(25,30,20,0.45) 0%, rgba(25,30,20,0.0) 75%),
-      /* eigentliche Camo-Flecken in mehreren Grüntönen/Braun */
       radial-gradient(220px 160px at 20% 30%, #3f4d34 0%, transparent 60%),
       radial-gradient(240px 140px at 70% 25%, #2d3828 0%, transparent 60%),
       radial-gradient(200px 120px at 40% 70%, #5a6a48 0%, transparent 60%),
       radial-gradient(180px 150px at 82% 68%, #2b2f23 0%, transparent 60%),
       radial-gradient(200px 160px at 12% 80%, #4a5a3c 0%, transparent 60%),
-      /* feine Stoffstruktur */
       repeating-linear-gradient(135deg, rgba(255,255,255,0.03) 0 2px, rgba(0,0,0,0.03) 2px 4px);
     background-blend-mode: overlay, overlay, overlay, overlay, normal, normal, normal, normal, normal, multiply;
     background-attachment: fixed;
+  }
+  body.military .container {
+    position: relative;
+    background:rgba(40,45,34,0.92);
+    border: 1px solid #3a3d2e;   /* matte Equipment-Panel-Kante */
+    box-shadow:
+      inset 0 0 6px rgba(0,0,0,0.6),
+      0 2px 14px rgba(0,0,0,0.6);
+  }
+  body.military .container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.06);
+    pointer-events: none;
   }
   body.military button {
     background:#6f8c3b; color:#fff; border:1px solid #3b4425;
     box-shadow:0 2px 6px rgba(0,0,0,0.5);
   }
   body.military button:hover { background:#7dbb45; transform:scale(1.05); }
-  body.military .container {
-    background:rgba(40,45,34,0.92);
-    border:1px solid #4f563c;
-    box-shadow:0 0 20px rgba(0,0,0,0.6);
-  }
 
-  /* ---------- USED LOOK (optional, kombinierbar) ---------- */
-  body.used-look { position:relative; }
+  /* ---------- USED LOOK (optionaler Texturlayer, persistent) ---------- */
   body.used-look::before {
     content:"";
     position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.5;
     background:
       radial-gradient(circle at 30% 30%,rgba(255,255,255,0.03) 0%,transparent 70%),
-      repeating-linear-gradient(45deg,rgba(255,255,255,0.03) 0 2px,transparent 2px 4px),
-      url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEyOCIgaGVpZ2h0PSIxMjgiIGZpbGw9Im5vbmUiLz48ZmlsdGVyIGlkPSJuIiB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWwiIGJhc2VGcmVxdWVuY3k9IjAuOCIgbnVtT2N0YXZlcz0iMyIvPjxmZUNvbG9yTWF0cml4IHR5cGU9Im1hdHJpeCIgdmFsdWVzPSIwLjUgMCAwIDAgMCAgMC41IDAgMCAwIDAgICAwLjUgMCAwIDAgMCAgMC4wIDAgMCAxIDAiLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgc3R5bGU9ImZpbHRlcjp1cmwoI25pY2UpIi8+PC9zdmc+');
+      repeating-linear-gradient(45deg,rgba(255,255,255,0.03) 0 2px,transparent 2px 4px);
     mix-blend-mode: overlay;
   }
-  body.used-look .container, body.used-look button {
+  body.used-look .container {
     background-blend-mode: multiply;
     background-image:
       linear-gradient(145deg,rgba(255,255,255,0.05),rgba(0,0,0,0.25)),
       repeating-linear-gradient(90deg,rgba(255,255,255,0.02) 0 1px,transparent 1px 3px);
     box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
-    border-radius:10px;
   }
 
   /* ---------- GENERAL LAYOUT ---------- */
@@ -173,18 +178,18 @@
   .file-name { padding:6px 10px; border-radius:8px; border:1px dashed #888; background: var(--card-bg); }
   .sound-filename { font-size:0.95em; opacity:0.9; }
 
-  /* Canvas Block – deine Maße für 3D-Effekt bleiben */
+  /* Canvas – Maße aus deiner Variante für „3D“-Look */
   .viz { margin: 1px auto 1px; width: 250px; height: 150px; position: relative; }
   .viz canvas { width:100%; height:100%; display:block; }
 
-  /* --- Desktop/Laptop: Systembuttons oben rechts --- */
+  /* ---------- SYSTEM BUTTONS ---------- */
   .system-top {
     position: fixed; right: 16px; top: 16px; display: flex; gap: 8px; flex-direction: column;
     z-index: 10;
   }
   .system-top button { min-width: 180px; }
 
-  /* Sprach- & StyleDeck-Menüs (animiert) */
+  /* Menüs mit smooth Fade + Slide */
   .lang-menu, .deck-menu {
     position: fixed; right: 16px; top: calc(16px + 44px + 8px);
     background: rgba(255,255,255,0.98); color:#000;
@@ -200,13 +205,17 @@
   body.dark .lang-menu button:hover, body.dark .deck-menu button:hover { background: rgba(255,255,255,.08); }
   body.military .lang-menu, body.military .deck-menu { background:#3b3d32; color:#e0e0d0; border-color:#555; }
 
-  /* --- Mobile: unten Style Deck & Notifications --- */
+  /* Used-Status-Style im Menü */
+  .deck-menu .used-active { background:rgba(0,200,0,0.18); font-weight:600; }
+
+  /* --- Mobile: Style Deck & Notifications unten --- */
   .system-bottom { display:none; margin-top: 16px; }
   .system-bottom .btn-row { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
   .system-bottom button { min-width: 180px; }
 
   @media (max-width: 768px) {
     .system-top { top: 8px; right: 8px; }
+    /* oben nur Sprache – StyleDeck & Notify nach unten */
     .system-top .btn-styledeck, .system-top .btn-notify { display: none; }
     .system-bottom { display:block; }
     body { padding-top: 64px; }
@@ -215,7 +224,7 @@
 </head>
 <body class="light">
 
-  <!-- Desktop/Laptop: Sprache + Style Deck + Notifications | Mobile: nur Sprache oben -->
+  <!-- System: oben (Desktop) -->
   <div class="system-top">
     <button id="btnLang" class="btn-lang" onclick="toggleLangMenu()">🌐 DE</button>
     <button id="btnStyleDeckTop" class="btn-styledeck" onclick="toggleDeckMenu('top')">🎨 Style Deck ▾</button>
@@ -231,14 +240,16 @@
     <button onclick="setLang('fa')">🇦🇫 دری (Dari)</button>
   </div>
 
-  <!-- Style Deck Menü (Desktop) -->
+  <!-- Style Deck Menü (oben) -->
   <div class="deck-menu" id="deckMenuTop">
     <button onclick="applyThemeAndClose('light')">☀️ <span data-i18n="style_light">Hell</span></button>
     <button onclick="applyThemeAndClose('dark')">🌙 <span data-i18n="style_dark">Dark</span></button>
     <button onclick="applyThemeAndClose('fancy')">🎨 <span data-i18n="style_fancy">Fancy</span></button>
     <button onclick="applyThemeAndClose('military')">🪖 <span data-i18n="style_military">Military</span></button>
     <hr style="opacity:.35;margin:6px 0">
-    <button onclick="toggleUsedLookAndClose()">🧱 <span data-i18n="style_used">Used Look (ein/aus)</span></button>
+    <button id="usedToggleTop" onclick="toggleUsedLookAndClose('top')">
+      🧱 <span id="usedLabelTop">Used Look: Aus</span>
+    </button>
   </div>
 
   <div class="container" id="main">
@@ -314,14 +325,16 @@
     </div>
   </div>
 
-  <!-- Style Deck Menü (Mobile unten) -->
+  <!-- Style Deck Menü (unten) -->
   <div class="deck-menu" id="deckMenuBottom" style="right:auto; left:50%; transform:translate(-50%,-6px) scale(0.98);">
     <button onclick="applyThemeAndClose('light')">☀️ <span data-i18n="style_light">Hell</span></button>
     <button onclick="applyThemeAndClose('dark')">🌙 <span data-i18n="style_dark">Dark</span></button>
     <button onclick="applyThemeAndClose('fancy')">🎨 <span data-i18n="style_fancy">Fancy</span></button>
     <button onclick="applyThemeAndClose('military')">🪖 <span data-i18n="style_military">Military</span></button>
     <hr style="opacity:.35;margin:6px 0">
-    <button onclick="toggleUsedLookAndClose()">🧱 <span data-i18n="style_used">Used Look (ein/aus)</span></button>
+    <button id="usedToggleBottom" onclick="toggleUsedLookAndClose('bottom')">
+      🧱 <span id="usedLabelBottom">Used Look: Aus</span>
+    </button>
   </div>
 
   <!-- Audio -->
@@ -338,7 +351,8 @@ const LANGS = {
     btn_start:"Start", btn_reset:"Reset", label_volume:"Lautstärke",
     btn_test_alarm:"Alarm testen", btn_notify:"Benachrichtigungen",
     btn_styledeck:"🎨 Style Deck ▾",
-    style_light:"Hell", style_dark:"Dark", style_fancy:"Fancy", style_military:"Military", style_used:"Used Look (ein/aus)",
+    style_light:"Hell", style_dark:"Dark", style_fancy:"Fancy", style_military:"Military",
+    style_used_on:"Used Look: Aktiv", style_used_off:"Used Look: Aus",
     label_sound:"Alarmton hochladen", btn_choose_file:"🎵 Datei auswählen",
     file_none:"Keine Datei ausgewählt",
     sound_current_prefix:"Aktueller Ton: ",
@@ -364,7 +378,8 @@ const LANGS = {
     label_volume:"Lautstärke 🔊",
     btn_test_alarm:"Alarm checken 🔥", btn_notify:"Notifs",
     btn_styledeck:"🎨 Style Deck ▾",
-    style_light:"Hell", style_dark:"Dark", style_fancy:"Fancy", style_military:"Military", style_used:"Used Look (on/off)",
+    style_light:"Hell", style_dark:"Dark", style_fancy:"Fancy", style_military:"Military",
+    style_used_on:"Used Look: Aktiv", style_used_off:"Used Look: Aus",
     label_sound:"Alarm hochladen", btn_choose_file:"🎵 Sound wählen",
     file_none:"Keine Datei gewählt",
     sound_current_prefix:"Aktueller Ton: ",
@@ -389,7 +404,8 @@ const LANGS = {
     btn_start:"Start", btn_reset:"Reset", label_volume:"Volume",
     btn_test_alarm:"Test alarm", btn_notify:"Notifications",
     btn_styledeck:"🎨 Style Deck ▾",
-    style_light:"Light", style_dark:"Dark", style_fancy:"Fancy", style_military:"Military", style_used:"Used Look (on/off)",
+    style_light:"Light", style_dark:"Dark", style_fancy:"Fancy", style_military:"Military",
+    style_used_on:"Used Look: Active", style_used_off:"Used Look: Off",
     label_sound:"Upload alarm sound", btn_choose_file:"🎵 Choose file",
     file_none:"No file selected",
     sound_current_prefix:"Current sound: ",
@@ -414,7 +430,8 @@ const LANGS = {
     btn_start:"Başlat", btn_reset:"Sıfırla", label_volume:"Ses",
     btn_test_alarm:"Alarm testi", btn_notify:"Bildirimler",
     btn_styledeck:"🎨 Style Deck ▾",
-    style_light:"Açık", style_dark:"Koyu", style_fancy:"Fancy", style_military:"Askerî", style_used:"Used Look (aç/kapat)",
+    style_light:"Açık", style_dark:"Koyu", style_fancy:"Fancy", style_military:"Askerî",
+    style_used_on:"Used Look: Etkin", style_used_off:"Used Look: Kapalı",
     label_sound:"Alarm sesi yükle", btn_choose_file:"🎵 Dosya seç",
     file_none:"Dosya seçilmedi",
     sound_current_prefix:"Geçerli ses: ",
@@ -439,7 +456,8 @@ const LANGS = {
     btn_start:"شروع", btn_reset:"بازنشانی", label_volume:"بلندی صدا",
     btn_test_alarm:"آزمایش زنگ", btn_notify:"اطلاع‌رسانی‌ها",
     btn_styledeck:"🎨 استایل دِک ▾",
-    style_light:"روشن", style_dark:"تیره", style_fancy:"فَنسی", style_military:"نظامی", style_used:"ظاهر کهنه (روشن/خاموش)",
+    style_light:"روشن", style_dark:"تیره", style_fancy:"فَنسی", style_military:"نظامی",
+    style_used_on:"ظاهر کهنه: فعال", style_used_off:"ظاهر کهنه: خاموش",
     label_sound:"آپلود صدای زنگ", btn_choose_file:"🎵 انتخاب فایل",
     file_none:"فایلی انتخاب نشده است",
     sound_current_prefix:"صدای فعلی: ",
@@ -459,16 +477,13 @@ const LANGS = {
 };
 let currentLang = localStorage.getItem("lang") || "de";
 
-/* ===================== Helpers & i18n ===================== */
 function t(key){ const L = LANGS[currentLang]; return (L && L[key]) || LANGS.de[key] || key; }
 
 function applyLang() {
   document.querySelectorAll("[data-i18n]").forEach(el => {
     el.textContent = t(el.getAttribute("data-i18n"));
   });
-  // Buttons
   document.getElementById("btnLang").textContent = t("codeBtn");
-  // Style Deck Buttons
   const sdTop = document.getElementById("btnStyleDeckTop");
   const sdBottom = document.getElementById("btnStyleDeckBottom");
   if (sdTop) sdTop.textContent = t("btn_styledeck");
@@ -497,11 +512,7 @@ function applyLang() {
   updateSoundFilenameLabel();
   updateNotifyStatus();
   updateAlarmAtPreview();
-
-  // Update Style-Deck Menütexte
-  document.querySelectorAll('#deckMenuTop [data-i18n], #deckMenuBottom [data-i18n]').forEach(el=>{
-    el.textContent = t(el.getAttribute('data-i18n'));
-  });
+  updateUsedStatusLabels();
 }
 
 /* Sprachmenü */
@@ -518,25 +529,19 @@ function setLang(code){
   document.getElementById("langMenu").classList.remove('open');
 }
 
-/* ===================== Style Deck (Dropdown + Used Look) ===================== */
+/* ===================== Style Deck (oben & unten) ===================== */
 function toggleDeckMenu(which){
-  const topMenu = document.getElementById('deckMenuTop');
-  const bottomMenu = document.getElementById('deckMenuBottom');
-  const target = (which === 'top') ? topMenu : bottomMenu;
-  const isOpen = target.classList.contains('open');
+  const menu = (which==='top') ? document.getElementById('deckMenuTop') : document.getElementById('deckMenuBottom');
+  const open = menu.classList.contains('open');
   closeAllMenus();
-  if (!isOpen) target.classList.add('open');
+  if (!open) menu.classList.add('open');
 }
 function applyThemeAndClose(theme){
-  if (theme === 'light') setLight();
-  else if (theme === 'dark') setDark();
-  else if (theme === 'fancy') setFancy();
-  else if (theme === 'military') setMilitary();
+  applyTheme(theme);
   closeAllMenus();
 }
-function toggleUsedLookAndClose(){
-  document.body.classList.toggle('used-look');
-  localStorage.setItem('usedLook', document.body.classList.contains('used-look') ? '1' : '0');
+function toggleUsedLookAndClose(which){
+  toggleUsedLook();
   closeAllMenus();
 }
 function closeAllMenus(){
@@ -692,7 +697,7 @@ function updateNotifyStatus() {
   const state = Notification.permission;
   if (state === 'granted') {
     s.textContent = t('notify_status_active');
-    setNotifyButtonsVisible(false); // Button ausblenden
+    setNotifyButtonsVisible(false);
   } else if (state === 'denied') {
     s.textContent = t('notify_status_denied');
     setNotifyButtonsVisible(true);
@@ -776,7 +781,7 @@ function resetToDefaultSound() {
   updateSoundFilenameLabel();
 }
 function playAlarm() {
-  startBeatRing(); // Start der Beat-Visualisierung
+  startBeatRing();
   alarmEl.volume = parseFloat(document.getElementById('alarmVol')?.value || "0.6");
   alarmEl.currentTime = 0;
   alarmEl.play().catch(()=>{});
@@ -786,13 +791,7 @@ function testAlarm(){ playAlarm(); }
 /* ===================== Themes ===================== */
 /* Chrome-sicher Light: Klassen reset + Repaint + Variablen hart setzen */
 const THEME_VARS = ['--bg-color','--text-color','--card-bg','--shadow','--accent','--ring-track','--ring-fill','--beat-color'];
-
-function forceChromeRepaint(){
-  document.body.style.display = 'none';
-  void document.body.offsetHeight;
-  document.body.style.display = '';
-  void document.body.offsetHeight;
-}
+function forceChromeRepaint(){ document.body.style.display='none'; void document.body.offsetHeight; document.body.style.display=''; void document.body.offsetHeight; }
 function setRootVarsForLight(){
   const r = document.documentElement.style;
   r.setProperty('--bg-color','#ffffff');
@@ -804,34 +803,37 @@ function setRootVarsForLight(){
   r.setProperty('--ring-fill','#0078d7');
   r.setProperty('--beat-color','#1e90ff');
 }
-function clearRootVars(){
-  const r = document.documentElement.style;
-  THEME_VARS.forEach(v => r.removeProperty(v));
+function clearRootVars(){ const r = document.documentElement.style; THEME_VARS.forEach(v => r.removeProperty(v)); }
+
+function applyTheme(theme){
+  if (theme === 'light') { document.body.className=''; forceChromeRepaint(); document.body.classList.add('light'); setRootVarsForLight(); }
+  else { clearRootVars(); document.body.className=''; document.body.classList.add(theme); }
+  localStorage.setItem('theme', theme);
+  // Used Look beibehalten, wenn aktiv gespeichert
+  if (localStorage.getItem('usedLook')==='1') document.body.classList.add('used-look');
+  updateUsedStatusLabels();
 }
-function setLight(){
-  document.body.className = '';
-  forceChromeRepaint();
-  document.body.classList.add('light');
-  setRootVarsForLight();
-  localStorage.setItem('theme','light');
+function setLight(){ applyTheme('light'); }
+function setDark(){ applyTheme('dark'); }
+function setFancy(){ applyTheme('fancy'); }
+function setMilitary(){ applyTheme('military'); }
+
+/* Used Look toggle + Statuslabels (oben & unten, mit i18n) */
+function toggleUsedLook(){
+  const active = document.body.classList.toggle('used-look');
+  localStorage.setItem('usedLook', active ? '1' : '0');
+  updateUsedStatusLabels();
 }
-function setDark(){
-  clearRootVars();
-  document.body.className = '';
-  document.body.classList.add('dark');
-  localStorage.setItem('theme','dark');
-}
-function setFancy(){
-  clearRootVars();
-  document.body.className = '';
-  document.body.classList.add('fancy');
-  localStorage.setItem('theme','fancy');
-}
-function setMilitary(){
-  clearRootVars();
-  document.body.className = '';
-  document.body.classList.add('military');
-  localStorage.setItem('theme','military');
+function updateUsedStatusLabels(){
+  const active = document.body.classList.contains('used-look');
+  const top = document.getElementById('usedLabelTop');
+  const bot = document.getElementById('usedLabelBottom');
+  const btnTop = document.getElementById('usedToggleTop');
+  const btnBot = document.getElementById('usedToggleBottom');
+  if (top) top.textContent = active ? t('style_used_on') : t('style_used_off');
+  if (bot) bot.textContent = active ? t('style_used_on') : t('style_used_off');
+  if (btnTop) btnTop.classList.toggle('used-active', active);
+  if (btnBot) btnBot.classList.toggle('used-active', active);
 }
 
 /* ===================== Canvas: Progress + Beat Ring ===================== */
@@ -840,16 +842,8 @@ const ctx = canvas.getContext('2d');
 let rafId = null;
 let runningCanvas = false;
 
-function ensureCanvasLoop(){
-  if (runningCanvas) return;
-  runningCanvas = true;
-  loop();
-}
-function stopCanvasLoop(){
-  runningCanvas = false;
-  if (rafId) cancelAnimationFrame(rafId);
-}
-
+function ensureCanvasLoop(){ if (runningCanvas) return; runningCanvas = true; loop(); }
+function stopCanvasLoop(){ runningCanvas = false; if (rafId) cancelAnimationFrame(rafId); }
 function getProgress(){
   if (!endTime || totalSecondsPlanned<=0) return 0;
   const remain = Math.max(0, endTime - Date.now());
@@ -859,7 +853,6 @@ function getProgress(){
 
 let beatActive = false;
 let audioCtx = null, analyser = null, dataArray = null, srcNode = null;
-
 function startBeatRing(){
   beatActive = true;
   try {
@@ -879,6 +872,8 @@ function startBeatRing(){
   ensureCanvasLoop();
 }
 function stopBeatRing(){ beatActive = false; }
+alarmEl.addEventListener('ended', ()=> stopBeatRing());
+alarmEl.addEventListener('pause', ()=> { if (alarmEl.currentTime < alarmEl.duration) stopBeatRing(); });
 
 function loop(){
   rafId = requestAnimationFrame(loop);
@@ -891,7 +886,7 @@ function loop(){
   const beatOuterRBase = 110;    // Basisradius Beat-Ring
   const beatThickness = 8;
 
-  /* === Radialer Glow (dezent), themeabhängig === */
+  /* === Radialer Glow hinter den Ringen, dezent === */
   const glowBaseColor = document.body.classList.contains('fancy')
     ? 'rgba(255,0,255,0.25)'
     : (document.body.classList.contains('dark') || document.body.classList.contains('military'))
@@ -904,7 +899,7 @@ function loop(){
   ctx.beginPath(); ctx.arc(cx, cy, 160, 0, 2 * Math.PI); ctx.fill();
   ctx.shadowColor = glowBaseColor; ctx.shadowBlur = 18; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
 
-  // Farben für Ringe
+  // Farben
   const trackColor = getComputedStyle(document.documentElement).getPropertyValue('--ring-track').trim() || '#e6e6e6';
   const fillColor  = getComputedStyle(document.documentElement).getPropertyValue('--ring-fill').trim()  || '#0078d7';
   const beatColor  = getComputedStyle(document.documentElement).getPropertyValue('--beat-color').trim() || '#ff3366';
@@ -947,7 +942,7 @@ function loop(){
     amplitude = (sum / dataArray.length) / 255; // 0..1
   } else { amplitude *= 0.9; }
 
-  // kräftige „Disco/Radar“-Vibration – auf deinen Wunsch stark skalierend
+  // kräftiger Ausschlag (dein Wunsch): amplitude * 2200
   const bump = (amplitude>0 ? (amplitude*2200) : 0);
   const beatR = beatOuterRBase + bump;
 
@@ -962,25 +957,18 @@ function loop(){
   ctx.stroke();
   ctx.globalAlpha = 1;
 
-  // Wenn weder Timer läuft noch Beat aktiv: Loop anhalten
   if (!endTime && !beatActive) stopCanvasLoop();
 }
-
-// Beat-Stop, wenn Audio endet/pausiert
-alarmEl.addEventListener('ended', ()=> stopBeatRing());
-alarmEl.addEventListener('pause', ()=> { if (alarmEl.currentTime < alarmEl.duration) stopBeatRing(); });
 
 /* ===================== Init ===================== */
 window.onload = () => {
   // Theme laden
   const savedTheme = localStorage.getItem('theme') || 'light';
-  if (savedTheme === 'dark') setDark();
-  else if (savedTheme === 'fancy') setFancy();
-  else if (savedTheme === 'military') setMilitary();
-  else setLight();
+  applyTheme(savedTheme);
 
   // Used Look laden
   if (localStorage.getItem('usedLook') === '1') document.body.classList.add('used-look');
+  updateUsedStatusLabels();
 
   // Sprache
   applyLang();
@@ -988,16 +976,7 @@ window.onload = () => {
   // Alarmton aus Speicher laden
   loadStoredSoundIfAny();
 
-  // Click außerhalb: Menüs schließen
-  document.addEventListener('click', (e)=>{
-    const menu = document.getElementById('langMenu');
-    const btn = document.getElementById('btnLang');
-    if (menu.classList.contains('open') && !menu.contains(e.target) && e.target!==btn) {
-      menu.classList.remove('open');
-    }
-  });
-
-  // Canvas einmal starten
+  // Canvas loop (sparsam)
   ensureCanvasLoop();
 };
 </script>
