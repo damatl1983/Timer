@@ -56,6 +56,29 @@
   }
   @keyframes bgShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
 
+  /* 🪖 Military Theme (taktisch + Stoff/Camo-Muster) */
+  body.military {
+    --bg-color:#2b2f26;
+    --text-color:#f5f5dc;        /* beige */
+    --card-bg:#313528;           /* mattes Oliv-Dunkel */
+    --shadow:rgba(0,0,0,0.6);
+    --accent:#8ac926;            /* Army Green Akzent */
+    --ring-track:#3a4a3a;        /* dunkles Grün */
+    --ring-fill:#8ac926;         /* leuchtendes Army Green */
+    --beat-color:#ffb703;        /* taktisches Orange */
+    color: var(--text-color);
+    background:
+      /* grobe Camouflage-Flecken (mehrere Radial-Verläufe) */
+      radial-gradient(120px 80px at 10% 20%, rgba(60,80,50,0.45) 0%, rgba(60,80,50,0.0) 70%),
+      radial-gradient(140px 100px at 80% 25%, rgba(40,55,35,0.50) 0%, rgba(40,55,35,0.0) 70%),
+      radial-gradient(110px 100px at 30% 75%, rgba(70,90,55,0.40) 0%, rgba(70,90,55,0.0) 70%),
+      radial-gradient(160px 120px at 85% 80%, rgba(35,50,35,0.45) 0%, rgba(35,50,35,0.0) 70%),
+      /* feine „Stoff“-Struktur */
+      repeating-linear-gradient(135deg, rgba(255,255,255,0.03) 0 2px, rgba(0,0,0,0.03) 2px 4px),
+      var(--bg-color);
+    background-blend-mode: overlay, overlay, overlay, overlay, multiply, normal;
+  }
+
   body {
     font-family: Arial, sans-serif;
     text-align:center;
@@ -130,46 +153,51 @@
   }
   .viz canvas { width:100%; height:100%; display:block; }
 
-  /* --- Desktop/Laptop: alle Systembuttons oben rechts --- */
+  /* --- Desktop/Laptop: Systembuttons oben rechts --- */
   .system-top {
     position: fixed; right: 16px; top: 16px; display: flex; gap: 8px; flex-direction: column;
     z-index: 10;
   }
-  .system-top button { min-width: 140px; }
+  .system-top button { min-width: 160px; }
 
-  /* Sprachmenü – lesbar in allen Themes */
-  .lang-menu {
-    position: fixed; right: 16px; top: calc(16px + 44px + 8px);
+  /* Sprachmenü */
+  .lang-menu, .deck-menu {
+    position: fixed;
+    right: 16px;
+    top: calc(16px + 44px + 8px);
     background: rgba(255,255,255,0.98); color:#000;
     border:1px solid #888; border-radius:8px; box-shadow:0 6px 18px var(--shadow);
-    display:none; z-index: 20; min-width: 200px; text-align:left;
+    display:none; z-index: 20; min-width: 220px; text-align:left;
+    opacity: 0; transform: translateY(-6px) scale(0.98);
+    transition: opacity .18s ease, transform .18s ease;
   }
-  .lang-menu button { display:block; width:100%; text-align:left; padding:10px 14px; border:none; background:transparent; color:inherit; }
-  .lang-menu button:hover { background: rgba(0,0,0,.06); }
-  body.dark .lang-menu { background:#1f1f1f; color:#eaeaea; border-color:#555; }
-  body.dark .lang-menu button:hover { background: rgba(255,255,255,.08); }
+  .deck-menu.open, .lang-menu.open { display:block; opacity:1; transform: translateY(0) scale(1); }
+  .lang-menu button, .deck-menu button { display:block; width:100%; text-align:left; padding:10px 14px; border:none; background:transparent; color:inherit; }
+  .lang-menu button:hover, .deck-menu button:hover { background: rgba(0,0,0,.06); }
 
-  /* --- Mobile: nur Sprache oben; Hell/Dark/Fancy/Notify unten --- */
+  body.dark .lang-menu, body.dark .deck-menu { background:#1f1f1f; color:#eaeaea; border-color:#555; }
+  body.dark .lang-menu button:hover, body.dark .deck-menu button:hover { background: rgba(255,255,255,.08); }
+
+  /* --- Mobile: unten Style Deck & Notifications --- */
   .system-bottom { display:none; margin-top: 16px; }
   .system-bottom .btn-row { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
-  .system-bottom button { min-width: 140px; }
+  .system-bottom button { min-width: 160px; }
 
   @media (max-width: 768px) {
     .system-top { top: 8px; right: 8px; }
-    .system-top .btn-light, .system-top .btn-dark, .system-top .btn-fancy, .system-top .btn-notify { display: none; }
+    /* Oben nur Sprache + Style Deck ausblenden (wir zeigen mobil unten Style Deck) */
+    .system-top .btn-styledeck, .system-top .btn-notify { display: none; }
     .system-bottom { display:block; }
-    body { padding-top: 64px; } /* Platz für Sprachbutton */
+    body { padding-top: 64px; }
   }
 </style>
 </head>
 <body class="light">
 
-  <!-- Desktop/Laptop: alle oben | Mobile: nur Sprache oben -->
+  <!-- Desktop: Sprache + Style Deck + Notifications | Mobile: nur Sprache oben -->
   <div class="system-top">
     <button id="btnLang" class="btn-lang" onclick="toggleLangMenu()">🌐 DE</button>
-    <button class="btn-light" onclick="setLight()" data-i18n="btn_light">☀️ Hell</button>
-    <button class="btn-dark" onclick="toggleDarkMode()" data-i18n="btn_dark">🌙 Dark</button>
-    <button class="btn-fancy" onclick="toggleFancyMode()" data-i18n="btn_fancy">🎨 Fancy</button>
+    <button id="btnStyleDeckTop" class="btn-styledeck" onclick="toggleDeckMenu('top')">🎨 Style Deck ▾</button>
     <button class="btn-notify" onclick="requestNotify()" data-i18n="btn_notify">🔔 Benachrichtigungen</button>
   </div>
 
@@ -180,6 +208,14 @@
     <button onclick="setLang('en')">🇬🇧 English</button>
     <button onclick="setLang('tr')">🇹🇷 Türkçe</button>
     <button onclick="setLang('fa')">🇦🇫 دری (Dari)</button>
+  </div>
+
+  <!-- Style Deck Menü (Desktop) -->
+  <div class="deck-menu" id="deckMenuTop">
+    <button onclick="applyThemeAndClose('light')">☀️ <span data-i18n="style_light">Hell</span></button>
+    <button onclick="applyThemeAndClose('dark')">🌙 <span data-i18n="style_dark">Dark</span></button>
+    <button onclick="applyThemeAndClose('fancy')">🎨 <span data-i18n="style_fancy">Fancy</span></button>
+    <button onclick="applyThemeAndClose('military')">🪖 <span data-i18n="style_military">Military</span></button>
   </div>
 
   <div class="container" id="main">
@@ -247,14 +283,20 @@
     </div>
   </div>
 
-  <!-- Mobile: Mode/Notify unten -->
+  <!-- Mobile: Style Deck + Notifications unten -->
   <div class="system-bottom" id="bottomControls">
     <div class="btn-row">
-      <button class="btn-light" onclick="setLight()" data-i18n="btn_light">☀️ Hell</button>
-      <button class="btn-dark" onclick="toggleDarkMode()" data-i18n="btn_dark">🌙 Dark</button>
-      <button class="btn-fancy" onclick="toggleFancyMode()" data-i18n="btn_fancy">🎨 Fancy</button>
+      <button id="btnStyleDeckBottom" class="btn-styledeck" onclick="toggleDeckMenu('bottom')">🎨 Style Deck ▾</button>
       <button class="btn-notify" onclick="requestNotify()" data-i18n="btn_notify">🔔 Benachrichtigungen</button>
     </div>
+  </div>
+
+  <!-- Style Deck Menü (Mobile unten) -->
+  <div class="deck-menu" id="deckMenuBottom" style="right:auto; left:50%; transform:translate(-50%,-6px) scale(0.98);">
+    <button onclick="applyThemeAndClose('light')">☀️ <span data-i18n="style_light">Hell</span></button>
+    <button onclick="applyThemeAndClose('dark')">🌙 <span data-i18n="style_dark">Dark</span></button>
+    <button onclick="applyThemeAndClose('fancy')">🎨 <span data-i18n="style_fancy">Fancy</span></button>
+    <button onclick="applyThemeAndClose('military')">🪖 <span data-i18n="style_military">Military</span></button>
   </div>
 
   <!-- Audio -->
@@ -270,7 +312,9 @@ const LANGS = {
     section_timer:"Timer (Dauer)", section_time:"Uhrzeit (Alarm um)",
     btn_start:"Start", btn_reset:"Reset", label_volume:"Lautstärke",
     btn_test_alarm:"Alarm testen", btn_notify:"Benachrichtigungen",
-    btn_light:"☀️ Hell", btn_dark:"🌙 Dark", btn_fancy:"🎨 Fancy",
+    /* Style Deck */
+    btn_styledeck:"🎨 Style Deck ▾",
+    style_light:"Hell", style_dark:"Dark", style_fancy:"Fancy", style_military:"Military",
     label_sound:"Alarmton hochladen",
     btn_choose_file:"🎵 Datei auswählen",
     file_none:"Keine Datei ausgewählt",
@@ -295,8 +339,10 @@ const LANGS = {
     section_timer:"Timer (Dauer)", section_time:"Uhrzeit (Alarm um)",
     btn_start:"Start (let's go)", btn_reset:"Reset (chill)",
     label_volume:"Lautstärke 🔊",
-    btn_test_alarm:"Soundcheck 🔥", btn_notify:"Notifs",
-    btn_light:"☀️ Hell", btn_dark:"🌙 Dark", btn_fancy:"🎨 Fancy",
+    btn_test_alarm:"Alarm checken 🔥", btn_notify:"Notifs",
+    /* Style Deck */
+    btn_styledeck:"🎨 Style Deck ▾",
+    style_light:"Hell", style_dark:"Dark", style_fancy:"Fancy", style_military:"Military",
     label_sound:"Alarm hochladen",
     btn_choose_file:"🎵 Sound wählen",
     file_none:"Keine Datei gewählt",
@@ -308,8 +354,8 @@ const LANGS = {
     notify_status_active:"Notifs: aktiv",
     notify_status_denied:"Notifs: geblockt",
     notify_status_default:"Notifs: offen",
-    invalid_time:"Gib mal 'ne echte Zeit ein Bro 😅", 
-    time_up_alert:"Bämm! Zeit ist um Bro 😎", 
+    invalid_time:"Gib mal 'ne echte Zeit ein Bro 😅",
+    time_up_alert:"Bämm! Zeit ist um Bro 😎",
     notif_title:"⏰ Ding Dong",
     notif_body:"Dein Timer ist durch.",
     notif_denied_tip:"Notifs sind blockiert. Aktivier sie in den Website-Einstellungen."
@@ -321,7 +367,9 @@ const LANGS = {
     section_timer:"Timer (Duration)", section_time:"Time (Alarm at)",
     btn_start:"Start", btn_reset:"Reset", label_volume:"Volume",
     btn_test_alarm:"Test alarm", btn_notify:"Notifications",
-    btn_light:"☀️ Light", btn_dark:"🌙 Dark", btn_fancy:"🎨 Fancy",
+    /* Style Deck */
+    btn_styledeck:"🎨 Style Deck ▾",
+    style_light:"Light", style_dark:"Dark", style_fancy:"Fancy", style_military:"Military",
     label_sound:"Upload alarm sound",
     btn_choose_file:"🎵 Choose file",
     file_none:"No file selected",
@@ -346,7 +394,9 @@ const LANGS = {
     section_timer:"Zamanlayıcı (Süre)", section_time:"Saat (Alarm zamanı)",
     btn_start:"Başlat", btn_reset:"Sıfırla", label_volume:"Ses",
     btn_test_alarm:"Alarm testi", btn_notify:"Bildirimler",
-    btn_light:"☀️ Açık", btn_dark:"🌙 Koyu", btn_fancy:"🎨 Fancy",
+    /* Style Deck */
+    btn_styledeck:"🎨 Style Deck ▾",
+    style_light:"Açık", style_dark:"Koyu", style_fancy:"Fancy", style_military:"Askerî",
     label_sound:"Alarm sesi yükle",
     btn_choose_file:"🎵 Dosya seç",
     file_none:"Dosya seçilmedi",
@@ -371,7 +421,9 @@ const LANGS = {
     section_timer:"تایمر (مدت)", section_time:"زمان (زنگ در)",
     btn_start:"شروع", btn_reset:"بازنشانی", label_volume:"بلندی صدا",
     btn_test_alarm:"آزمایش زنگ", btn_notify:"اطلاع‌رسانی‌ها",
-    btn_light:"☀️ روشن", btn_dark:"🌙 تیره", btn_fancy:"🎨 فَنسی",
+    /* Style Deck */
+    btn_styledeck:"🎨 استایل دِک ▾",
+    style_light:"روشن", style_dark:"تیره", style_fancy:"فَنسی", style_military:"نظامی",
     label_sound:"آپلود صدای زنگ",
     btn_choose_file:"🎵 انتخاب فایل",
     file_none:"فایلی انتخاب نشده است",
@@ -400,11 +452,14 @@ function applyLang() {
   document.querySelectorAll("[data-i18n]").forEach(el => {
     el.textContent = t(el.getAttribute("data-i18n"));
   });
-  document.querySelectorAll(".btn-light").forEach(el => el.textContent = t("btn_light"));
-  document.querySelectorAll(".btn-dark").forEach(el => el.textContent = t("btn_dark"));
-  document.querySelectorAll(".btn-fancy").forEach(el => el.textContent = t("btn_fancy"));
-  document.querySelectorAll(".btn-notify").forEach(el => el.textContent = t("btn_notify"));
+  // Buttons
   document.getElementById("btnLang").textContent = t("codeBtn");
+  // Style Deck Buttons
+  const sdTop = document.getElementById("btnStyleDeckTop");
+  const sdBottom = document.getElementById("btnStyleDeckBottom");
+  if (sdTop) sdTop.textContent = t("btn_styledeck");
+  if (sdBottom) sdBottom.textContent = t("btn_styledeck");
+
   document.title = t("title");
 
   document.documentElement.lang = currentLang === "fa" ? "fa" : currentLang;
@@ -427,19 +482,65 @@ function applyLang() {
   updateSoundFilenameLabel();
   updateNotifyStatus();
   updateAlarmAtPreview();
+
+  // Update Style-Deck Menütexte (falls Sprache wechselt)
+  document.querySelectorAll('#deckMenuTop [data-i18n], #deckMenuBottom [data-i18n]').forEach(el=>{
+    el.textContent = t(el.getAttribute('data-i18n'));
+  });
 }
 
 /* Sprachmenü */
 function toggleLangMenu(){
   const menu = document.getElementById("langMenu");
-  menu.style.display = (menu.style.display === "block") ? "none" : "block";
+  const open = menu.classList.contains('open');
+  closeAllMenus();
+  if (!open) menu.classList.add('open');
 }
 function setLang(code){
   currentLang = code;
   localStorage.setItem("lang", currentLang);
   applyLang();
-  document.getElementById("langMenu").style.display = "none";
+  document.getElementById("langMenu").classList.remove('open');
 }
+
+/* ===================== Style Deck (Dropdown) ===================== */
+function toggleDeckMenu(which){
+  const topMenu = document.getElementById('deckMenuTop');
+  const bottomMenu = document.getElementById('deckMenuBottom');
+  const target = (which === 'top') ? topMenu : bottomMenu;
+  const isOpen = target.classList.contains('open');
+  closeAllMenus();
+  if (!isOpen) {
+    target.classList.add('open');
+  }
+}
+function applyThemeAndClose(theme){
+  if (theme === 'light') setLight();
+  else if (theme === 'dark') setDark();
+  else if (theme === 'fancy') setFancy();
+  else if (theme === 'military') setMilitary();
+  closeAllMenus();
+}
+function closeAllMenus(){
+  document.getElementById('langMenu').classList.remove('open');
+  document.getElementById('deckMenuTop').classList.remove('open');
+  document.getElementById('deckMenuBottom').classList.remove('open');
+}
+document.addEventListener('click', (e)=>{
+  const langBtn = document.getElementById('btnLang');
+  const deckBtnTop = document.getElementById('btnStyleDeckTop');
+  const deckBtnBottom = document.getElementById('btnStyleDeckBottom');
+  const langMenu = document.getElementById('langMenu');
+  const deckTop = document.getElementById('deckMenuTop');
+  const deckBottom = document.getElementById('deckMenuBottom');
+
+  const clickedInsideMenu = langMenu.contains(e.target) || deckTop.contains(e.target) || deckBottom.contains(e.target);
+  const clickedButton = e.target === langBtn || e.target === deckBtnTop || e.target === deckBtnBottom;
+
+  if (!clickedInsideMenu && !clickedButton) {
+    closeAllMenus();
+  }
+});
 
 /* ===================== Timer ===================== */
 let endTime = null;
@@ -710,8 +811,12 @@ function setFancy(){
   document.body.classList.add('fancy');
   localStorage.setItem('theme','fancy');
 }
-function toggleDarkMode(){ if (document.body.classList.contains('dark')) setLight(); else setDark(); }
-function toggleFancyMode(){ if (document.body.classList.contains('fancy')) setLight(); else setFancy(); }
+function setMilitary(){
+  clearRootVars();
+  document.body.className = '';
+  document.body.classList.add('military');
+  localStorage.setItem('theme','military');
+}
 
 /* ===================== Canvas: Progress + Beat Ring ===================== */
 const canvas = document.getElementById('progressCanvas');
@@ -759,8 +864,6 @@ function startBeatRing(){
 }
 function stopBeatRing(){
   beatActive = false;
-  // AudioContext nicht zwingend schließen (spart Ressourcen),
-  // Visualisierung fährt automatisch runter.
 }
 
 function loop(){
@@ -774,14 +877,13 @@ function loop(){
   const beatOuterRBase = 110;    // Basisradius Beat-Ring
   const beatThickness = 8;
 
-  /* === 🌈 NEON GLOW & SHADOW LAYER – hinzugefügt === */
+  /* === 🌈 NEON GLOW & SHADOW LAYER (dezent) === */
   const glowBaseColor = document.body.classList.contains('fancy')
     ? 'rgba(255,0,255,0.25)'   // Fancy Mode
-    : document.body.classList.contains('dark')
-      ? 'rgba(0,128,255,0.18)' // Dark Mode
+    : document.body.classList.contains('dark') || document.body.classList.contains('military')
+      ? 'rgba(0,128,255,0.18)' // Dark/Military -> kühles Blau als subtiler Lichtsaum
       : 'rgba(0,100,255,0.12)'; // Light Mode
 
-  // Radialer Glow unter den Ringen
   const glowGrad = ctx.createRadialGradient(cx, cy, 40, cx, cy, 160);
   glowGrad.addColorStop(0, glowBaseColor);
   glowGrad.addColorStop(1, 'rgba(0,0,0,0)');
@@ -790,19 +892,17 @@ function loop(){
   ctx.arc(cx, cy, 160, 0, 2 * Math.PI);
   ctx.fill();
 
-  // Soft Shadow, damit der Ring „schwebt“
   ctx.shadowColor = glowBaseColor;
   ctx.shadowBlur = 25;
   ctx.shadowOffsetX = 0;
   ctx.shadowOffsetY = 0;
-  /* === Ende Glow & Shadow === */
 
-  // Farben für Ringe
+  // Farben
   const trackColor = getComputedStyle(document.documentElement).getPropertyValue('--ring-track').trim() || '#e6e6e6';
   const fillColor  = getComputedStyle(document.documentElement).getPropertyValue('--ring-fill').trim()  || '#0078d7';
   let beatColor    = getComputedStyle(document.documentElement).getPropertyValue('--beat-color').trim() || '#ff3366';
 
-  // Fortschrittsring – ggf. Verlauf im Fancy Mode
+  // Fortschrittsring-Farbverlauf in Fancy
   let grad = ctx.createLinearGradient(0,0,w,0);
   if (document.body.classList.contains('fancy')) {
     grad.addColorStop(0,'#ff3366');
@@ -813,14 +913,14 @@ function loop(){
     grad.addColorStop(1, fillColor);
   }
 
-  // 1) Track (voller Kreis)
+  // 1) Track
   ctx.beginPath();
   ctx.lineWidth = ringThickness;
   ctx.strokeStyle = trackColor;
   ctx.arc(cx, cy, innerR, 0, Math.PI*2);
   ctx.stroke();
 
-  // 2) Progress (gefüllt, je nach Fortschritt)
+  // 2) Progress
   const p = getProgress();
   if (p > 0) {
     ctx.beginPath();
@@ -833,7 +933,7 @@ function loop(){
     ctx.stroke();
   }
 
-  // 3) Beat-Ring (äußerer Kreis), aktiv bei Alarm/Test
+  // 3) Beat-Ring
   let amplitude = 0;
   if (beatActive && analyser && dataArray) {
     analyser.getByteFrequencyData(dataArray);
@@ -842,15 +942,13 @@ function loop(){
     const avg = sum / dataArray.length; // 0..255
     amplitude = avg/255;                // 0..1
   } else {
-    // sanft ausblenden, wenn nicht aktiv
     amplitude *= 0.9;
   }
 
-  // kräftige „Disco“-Vibration – deine starke Skalierung bleibt
-  const bump = (amplitude>0 ? (amplitude*2200) : 0); // bis +2200px
+  // Du hattest eine starke Skalierung – wir lassen sie so
+  const bump = (amplitude>0 ? (amplitude*2200) : 0);
   const beatR = beatOuterRBase + bump;
 
-  // Beat-Ring zeichnen (mit leichter Transparenz)
   ctx.beginPath();
   ctx.lineWidth = beatThickness + bump*0.25;
   ctx.strokeStyle = beatColor;
@@ -859,7 +957,6 @@ function loop(){
   ctx.stroke();
   ctx.globalAlpha = 1;
 
-  // Wenn weder Timer läuft noch Beat aktiv: Loop anhalten, um CPU zu sparen
   if (!endTime && !beatActive) {
     stopCanvasLoop();
   }
@@ -868,38 +965,37 @@ function loop(){
 // Beat-Stop, wenn Audio endet/pausiert
 alarmEl.addEventListener('ended', ()=> stopBeatRing());
 alarmEl.addEventListener('pause', ()=> {
-  // Falls User manuell stoppt → Beat ausschalten
   if (alarmEl.currentTime < alarmEl.duration) stopBeatRing();
 });
 
 /* ===================== Init ===================== */
 window.onload = () => {
-  // Theme
+  // Theme laden
   const savedTheme = localStorage.getItem('theme') || 'light';
   if (savedTheme === 'dark') setDark();
   else if (savedTheme === 'fancy') setFancy();
+  else if (savedTheme === 'military') setMilitary();
   else setLight();
 
-  // Language
+  // Sprache
   applyLang();
 
   // Alarmton aus Speicher laden
   loadStoredSoundIfAny();
 
-  // Click außerhalb: Sprachmenü schließen
+  // Click außerhalb: Menüs schließen
   document.addEventListener('click', (e)=>{
     const menu = document.getElementById('langMenu');
     const btn = document.getElementById('btnLang');
-    if (menu.style.display==="block" && !menu.contains(e.target) && e.target!==btn) {
-      menu.style.display="none";
+    if (menu.classList.contains('open') && !menu.contains(e.target) && e.target!==btn) {
+      menu.classList.remove('open');
     }
   });
 
-  // Canvas einmal starten (bleibt sparsam stehen, wenn nix läuft)
+  // Canvas starten
   ensureCanvasLoop();
 };
 </script>
 
 </body>
 </html>
-
