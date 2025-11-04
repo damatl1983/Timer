@@ -231,6 +231,24 @@
   body.dark .lang-menu button:hover, body.dark .deck-menu button:hover { background: rgba(255,255,255,.08); }
   body.military .lang-menu, body.military .deck-menu { background:#3b3d32; color:#e0e0d0; border-color:#555; }
 
+  /* ✅ LESBARKEIT FÜR CHRISTMAS-MENÜS */
+  body.christmas .lang-menu,
+  body.christmas .deck-menu {
+    background: rgba(255,255,255,0.98);
+    color:#155d27;                 /* Tannengrün */
+    border-color: #c62828;         /* festliches Rot als Akzent */
+    box-shadow: 0 10px 24px rgba(198,40,40,.18), 0 4px 12px rgba(21,93,39,.18);
+  }
+  body.christmas .lang-menu button,
+  body.christmas .deck-menu button {
+    color:#155d27;
+  }
+  body.christmas .lang-menu button:hover,
+  body.christmas .deck-menu button:hover {
+    background: rgba(198,40,40,0.12); /* rot hinterlegt */
+    color:#b71c1c;                    /* Text in festlichem Rot */
+  }
+
   /* --- Mobile: Style Deck & Notifications unten --- */
   .system-bottom { display:none; margin-top: 16px; }
   .system-bottom .btn-row { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
@@ -242,7 +260,7 @@
     body { padding-top: 64px; }
   }
 
-  /* ❄️ CSS-Schnee (Basis-Schicht) – bleibt dezent, zusätzlicher dichter Canvas-Schnee kommt per JS */
+  /* ❄️ CSS-Schnee (Basis-Schicht) – zusätzlicher dichter Canvas-Schnee per JS */
   body.christmas::before {
     content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
     opacity:.35;
@@ -835,7 +853,7 @@ soundFileInput.addEventListener('change', () => {
 });
 function resetToDefaultSound() {
   localStorage.removeItem('alarmAudioData');
-  localStorage.removeItem('alarmAudioName');
+  localStorage.removeItem('alarmAudioName']);
   alarmEl.src = 'pi-pi-pi.mp3';
   updateSoundFilenameLabel();
 }
@@ -1041,7 +1059,6 @@ function drawSnow(){
   snowRaf = requestAnimationFrame(drawSnow);
   scx.clearRect(0,0,snowCanvas.width, snowCanvas.height);
 
-  // Layered glow to give depth
   scx.fillStyle = 'rgba(255,255,255,0.9)';
   for (let i=0;i<flakes.length;i++){
     const f = flakes[i];
