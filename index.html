@@ -76,8 +76,11 @@
       radial-gradient(160px 120px at 88% 78%, rgba(25,30,20,0.45) 0%, rgba(25,30,20,0.0) 75%),
       radial-gradient(220px 160px at 20% 30%, #3f4d34 0%, transparent 60%),
       radial-gradient(240px 140px at 70% 25%, #2d3828 0%, transparent 60%),
+      radial-gradient(200px 120px at 40% 70%, #5a6a48 0%, transparent 60%),
+      radial-gradient(180px 150px at 82% 68%, #2b2f23 0%, transparent 60%),
+      radial-gradient(200px 160px at 12% 80%, #4a5a3c 0%, transparent 60%),
       repeating-linear-gradient(135deg, rgba(255,255,255,0.03) 0 2px, rgba(0,0,0,0.03) 2px 4px);
-    background-blend-mode: overlay, overlay, overlay, overlay, normal, normal, multiply;
+    background-blend-mode: overlay, overlay, overlay, overlay, normal, normal, normal, normal, normal, multiply;
     background-attachment: fixed;
   }
   body.military .container {
@@ -108,6 +111,66 @@
     box-shadow:0 2px 6px rgba(0,0,0,0.5);
   }
   body.military button:hover { background:#7dbb45; transform:scale(1.05); box-shadow:0 0 10px rgba(122,180,60,0.6); }
+
+  /* 🎄 CHRISTMAS THEME */
+  body.christmas {
+    --bg-color:#f9fbff;
+    --text-color:#133018;
+    --card-bg:rgba(255,255,255,0.9);
+    --shadow:rgba(0,0,0,0.18);
+    --accent:#c62828;       /* Button-Rot */
+    --ring-track:#ffffff;   /* Schnee-weiß */
+    --ring-fill:#d32f2f;    /* Festliches Rot */
+    --beat-color:#2e7d32;   /* Tannen-Grün */
+    color:var(--text-color);
+    /* Zuckerstangen-Streifen plus Tannen-Grün */
+    background:
+      repeating-linear-gradient(45deg,#ffffff 0 18px,#e8f2e8 18px 36px),
+      repeating-linear-gradient(-45deg,#e53935 0 12px,#ffffff 12px 24px);
+    background-blend-mode: multiply;
+    background-attachment: fixed;
+  }
+  /* Schneefall Overlay */
+  body.christmas::before, body.christmas::after {
+    content:"";
+    pointer-events:none;
+    position:fixed; inset:0; z-index:0;
+    background-image:
+      radial-gradient(2px 2px at 20% 10%, rgba(255,255,255,.9) 0 70%, transparent 72%),
+      radial-gradient(2px 2px at 80% 20%, rgba(255,255,255,.9) 0 70%, transparent 72%),
+      radial-gradient(2px 2px at 40% 30%, rgba(255,255,255,.9) 0 70%, transparent 72%),
+      radial-gradient(2px 2px at 60% 5%, rgba(255,255,255,.9) 0 70%, transparent 72%),
+      radial-gradient(2px 2px at 15% 60%, rgba(255,255,255,.9) 0 70%, transparent 72%),
+      radial-gradient(2px 2px at 75% 70%, rgba(255,255,255,.9) 0 70%, transparent 72%),
+      radial-gradient(2px 2px at 50% 85%, rgba(255,255,255,.9) 0 70%, transparent 72%),
+      radial-gradient(3px 3px at 30% 50%, rgba(255,255,255,.9) 0 70%, transparent 72%),
+      radial-gradient(3px 3px at 65% 40%, rgba(255,255,255,.95) 0 70%, transparent 72%);
+    animation:snowFall 18s linear infinite;
+    opacity:.7;
+  }
+  body.christmas::after { animation-duration:26s; opacity:.5; filter:blur(1px); }
+  @keyframes snowFall {
+    from { background-position: 0 -200vh, 0 -180vh, 0 -160vh, 0 -140vh, 0 -120vh, 0 -100vh, 0 -80vh, 0 -60vh, 0 -40vh; }
+    to   { background-position: 0  100vh, 0   120vh, 0  140vh, 0  160vh, 0  180vh, 0  200vh, 0  220vh, 0  240vh, 0  260vh; }
+  }
+  body.christmas .time-display{
+    color:#d32f2f;
+    text-shadow:0 0 10px rgba(211,47,47,.55), 0 0 18px rgba(46,125,50,.35);
+    font-weight:700;
+  }
+  body.christmas button{
+    background:linear-gradient(#d32f2f,#b71c1c);
+    color:#fff;
+    border:1px solid #7f1010;
+    box-shadow:0 2px 8px rgba(183,28,28,.35);
+  }
+  body.christmas button:hover{ filter:brightness(1.05); transform:translateY(-1px); }
+  body.christmas .container{
+    background:var(--card-bg);
+    border:1px solid rgba(183,28,28,.35);
+    box-shadow:0 6px 18px rgba(0,0,0,.18);
+    position:relative; z-index:1;
+  }
 
   /* ---------- GENERAL LAYOUT ---------- */
   body {
@@ -159,7 +222,7 @@
   /* Volume-Zeile (Slider 4px höher) */
   .volume-row { display:flex; gap:12px; align-items:center; justify-content:center; flex-wrap:wrap; }
   .volume-row label { margin:0; position:relative; top:2px; }
-  #alarmVol { position:relative; top:-2px; } /* +2 (Label) & -2 (Slider) = 4px näher zusammen */
+  #alarmVol { position:relative; top:-2px; } /* 4px näher */
 
   .sound-file-row { display:flex; gap:10px; justify-content:center; align-items:center; flex-wrap:wrap; }
   .file-input { display:none; }
@@ -167,7 +230,7 @@
   .file-name { padding:6px 10px; border-radius:8px; border:1px dashed #888; background: var(--card-bg); }
   .sound-filename { font-size:0.95em; opacity:0.9; }
 
-  /* Canvas – Maße aus deiner 3D-Variante */
+  /* Canvas – Maße deiner 3D-Variante */
   .viz { margin: 1px auto 1px; width: 250px; height: 150px; position: relative; }
   .viz canvas { width:100%; height:100%; display:block; }
 
@@ -227,6 +290,7 @@
     <button onclick="applyThemeAndClose('dark')">🌙 <span data-i18n="style_dark">Dark</span></button>
     <button onclick="applyThemeAndClose('fancy')">🎨 <span data-i18n="style_fancy">Fancy</span></button>
     <button onclick="applyThemeAndClose('military')">🪖 <span data-i18n="style_military">Military</span></button>
+    <button onclick="applyThemeAndClose('christmas')">🎄 <span data-i18n="style_christmas">Christmas</span></button>
   </div>
 
   <div class="container" id="main">
@@ -308,6 +372,7 @@
     <button onclick="applyThemeAndClose('dark')">🌙 <span data-i18n="style_dark">Dark</span></button>
     <button onclick="applyThemeAndClose('fancy')">🎨 <span data-i18n="style_fancy">Fancy</span></button>
     <button onclick="applyThemeAndClose('military')">🪖 <span data-i18n="style_military">Military</span></button>
+    <button onclick="applyThemeAndClose('christmas')">🎄 <span data-i18n="style_christmas">Christmas</span></button>
   </div>
 
   <!-- Audio -->
@@ -324,7 +389,7 @@ const LANGS = {
     btn_start:"Start", btn_reset:"Reset", label_volume:"Lautstärke",
     btn_test_alarm:"Alarm testen", btn_notify:"Benachrichtigungen",
     btn_styledeck:"🎨 Style Deck ▾",
-    style_light:"Hell", style_dark:"Dark", style_fancy:"Fancy", style_military:"Military",
+    style_light:"Hell", style_dark:"Dark", style_fancy:"Fancy", style_military:"Military", style_christmas:"Christmas",
     label_sound:"Alarmton hochladen", btn_choose_file:"🎵 Datei auswählen",
     file_none:"Keine Datei ausgewählt",
     sound_current_prefix:"Aktueller Ton: ",
@@ -348,9 +413,9 @@ const LANGS = {
     section_timer:"Timer (Dauer)", section_time:"Uhrzeit (Alarm um)",
     btn_start:"Start (let's go)", btn_reset:"Reset (chill)",
     label_volume:"Lautstärke 🔊",
-    btn_test_alarm:"Soundcheck 🔥", btn_notify:"Notifs",
+    btn_test_alarm:"Alarm checken 🔥", btn_notify:"Notifs",
     btn_styledeck:"🎨 Style Deck ▾",
-    style_light:"Hell", style_dark:"Dark", style_fancy:"Fancy", style_military:"Military",
+    style_light:"Hell", style_dark:"Dark", style_fancy:"Fancy", style_military:"Military", style_christmas:"Christmas",
     label_sound:"Alarm hochladen", btn_choose_file:"🎵 Sound wählen",
     file_none:"Keine Datei gewählt",
     sound_current_prefix:"Aktueller Ton: ",
@@ -364,7 +429,7 @@ const LANGS = {
     invalid_time:"Gib mal 'ne echte Zeit ein Bro 😅",
     time_up_alert:"Bämm! Zeit ist um Bro 😎",
     notif_title:"⏰ Ding Dong",
-    notif_body:"Dein Timer ist durch Bro",
+    notif_body:"Dein Timer ist durch.",
     notif_denied_tip:"Notifs sind blockiert. Aktivier sie in den Website-Einstellungen."
   },
   en: {
@@ -375,7 +440,7 @@ const LANGS = {
     btn_start:"Start", btn_reset:"Reset", label_volume:"Volume",
     btn_test_alarm:"Test alarm", btn_notify:"Notifications",
     btn_styledeck:"🎨 Style Deck ▾",
-    style_light:"Light", style_dark:"Dark", style_fancy:"Fancy", style_military:"Military",
+    style_light:"Light", style_dark:"Dark", style_fancy:"Fancy", style_military:"Military", style_christmas:"Christmas",
     label_sound:"Upload alarm sound", btn_choose_file:"🎵 Choose file",
     file_none:"No file selected",
     sound_current_prefix:"Current sound: ",
@@ -400,7 +465,7 @@ const LANGS = {
     btn_start:"Başlat", btn_reset:"Sıfırla", label_volume:"Ses",
     btn_test_alarm:"Alarm testi", btn_notify:"Bildirimler",
     btn_styledeck:"🎨 Style Deck ▾",
-    style_light:"Açık", style_dark:"Koyu", style_fancy:"Fancy", style_military:"Askerî",
+    style_light:"Açık", style_dark:"Koyu", style_fancy:"Fancy", style_military:"Askerî", style_christmas:"Noel",
     label_sound:"Alarm sesi yükle", btn_choose_file:"🎵 Dosya seç",
     file_none:"Dosya seçilmedi",
     sound_current_prefix:"Geçerli ses: ",
@@ -425,7 +490,7 @@ const LANGS = {
     btn_start:"شروع", btn_reset:"بازنشانی", label_volume:"بلندی صدا",
     btn_test_alarm:"آزمایش زنگ", btn_notify:"اطلاع‌رسانی‌ها",
     btn_styledeck:"🎨 استایل دِک ▾",
-    style_light:"روشن", style_dark:"تیره", style_fancy:"فَنسی", style_military:"نظامی",
+    style_light:"روشن", style_dark:"تیره", style_fancy:"فَنسی", style_military:"نظامی", style_christmas:"کریسمس",
     label_sound:"آپلود صدای زنگ", btn_choose_file:"🎵 انتخاب فایل",
     file_none:"فایلی انتخاب نشده است",
     sound_current_prefix:"صدای فعلی: ",
@@ -435,7 +500,7 @@ const LANGS = {
     notify_status_unavailable:"اطلاع‌رسانی‌ها: دردسترس نیست",
     notify_status_active:"اطلاع‌رسانی‌ها: فعال",
     notify_status_denied:"اطلاع‌رسانی‌ها: رد شده",
-    notify_status_default:"اطلاع‌رسانی‌ها: نامشخص",
+    notify_status_default:"نامشخص",
     invalid_time:"لطفاً یک مدت یا ساعت معتبر وارد کنید!",
     time_up_alert:"زمان به پایان رسید!",
     notif_title:"⏰ تایمر تمام شد",
@@ -756,13 +821,7 @@ function testAlarm(){ playAlarm(); }
 /* ===================== Themes ===================== */
 /* Chrome-sicher Light: Klassen reset + Repaint + Variablen hart setzen */
 const THEME_VARS = ['--bg-color','--text-color','--card-bg','--shadow','--accent','--ring-track','--ring-fill','--beat-color'];
-
-function forceChromeRepaint(){
-  document.body.style.display = 'none';
-  void document.body.offsetHeight;
-  document.body.style.display = '';
-  void document.body.offsetHeight;
-}
+function forceChromeRepaint(){ document.body.style.display='none'; void document.body.offsetHeight; document.body.style.display=''; void document.body.offsetHeight; }
 function setRootVarsForLight(){
   const r = document.documentElement.style;
   r.setProperty('--bg-color','#ffffff');
@@ -774,36 +833,22 @@ function setRootVarsForLight(){
   r.setProperty('--ring-fill','#0078d7');
   r.setProperty('--beat-color','#1e90ff');
 }
-function clearRootVars(){
-  const r = document.documentElement.style;
-  THEME_VARS.forEach(v => r.removeProperty(v));
-}
+function clearRootVars(){ const r = document.documentElement.style; THEME_VARS.forEach(v => r.removeProperty(v)); }
+
 function applyTheme(theme){
   if (theme === 'light') { document.body.className=''; forceChromeRepaint(); document.body.classList.add('light'); setRootVarsForLight(); }
   else { clearRootVars(); document.body.className=''; document.body.classList.add(theme); }
   localStorage.setItem('theme', theme);
 }
-function setLight(){ applyTheme('light'); }
-function setDark(){ applyTheme('dark'); }
-function setFancy(){ applyTheme('fancy'); }
-function setMilitary(){ applyTheme('military'); }
 
-/* ===================== Canvas: Progress + Beat Ring (Military HUD) ===================== */
+/* ===================== Canvas: Progress + Beat Ring ===================== */
 const canvas = document.getElementById('progressCanvas');
 const ctx = canvas.getContext('2d');
 let rafId = null;
 let runningCanvas = false;
 
-function ensureCanvasLoop(){
-  if (runningCanvas) return;
-  runningCanvas = true;
-  loop();
-}
-function stopCanvasLoop(){
-  runningCanvas = false;
-  if (rafId) cancelAnimationFrame(rafId);
-}
-
+function ensureCanvasLoop(){ if (runningCanvas) return; runningCanvas = true; loop(); }
+function stopCanvasLoop(){ runningCanvas = false; if (rafId) cancelAnimationFrame(rafId); }
 function getProgress(){
   if (!endTime || totalSecondsPlanned<=0) return 0;
   const remain = Math.max(0, endTime - Date.now());
@@ -813,7 +858,6 @@ function getProgress(){
 
 let beatActive = false;
 let audioCtx = null, analyser = null, dataArray = null, srcNode = null;
-
 function startBeatRing(){
   beatActive = true;
   try {
@@ -826,9 +870,7 @@ function startBeatRing(){
       srcNode = audioCtx.createMediaElementSource(alarmEl);
       srcNode.connect(analyser);
       analyser.connect(audioCtx.destination);
-    } else if (audioCtx.state === 'suspended') {
-      audioCtx.resume();
-    }
+    } else if (audioCtx.state === 'suspended') { audioCtx.resume(); }
   } catch(e){}
   ensureCanvasLoop();
 }
@@ -842,20 +884,23 @@ function loop(){
   ctx.clearRect(0,0,w,h);
 
   const cx = w/2, cy = h/2;
-  const innerR = 70;             // Fortschrittsring Radius
+  const innerR = 70;
   const ringThickness = 22;
-  const beatOuterRBase = 110;    // Basisradius Beat-Ring
+  const beatOuterRBase = 110;
   const beatThickness = 8;
 
-  /* === Radialer Glow hinter den Ringen, dezent === */
+  /* === Radialer Glow hinter den Ringen, dezent – an Theme angepasst === */
   const isMil = document.body.classList.contains('military');
-  const glowBaseColor = isMil
-    ? 'rgba(154,201,38,0.28)'
-    : (document.body.classList.contains('fancy'))
-      ? 'rgba(255,0,255,0.25)'
-      : (document.body.classList.contains('dark'))
-        ? 'rgba(0,128,255,0.18)'
-        : 'rgba(0,100,255,0.12)';
+  const isXmas = document.body.classList.contains('christmas');
+  const glowBaseColor = isXmas
+    ? 'rgba(211,47,47,0.28)'
+    : isMil
+      ? 'rgba(154,201,38,0.28)'
+      : (document.body.classList.contains('fancy'))
+        ? 'rgba(255,0,255,0.25)'
+        : (document.body.classList.contains('dark'))
+          ? 'rgba(0,128,255,0.18)'
+          : 'rgba(0,100,255,0.12)';
   const glowGrad = ctx.createRadialGradient(cx, cy, 40, cx, cy, 160);
   glowGrad.addColorStop(0, glowBaseColor);
   glowGrad.addColorStop(1, 'rgba(0,0,0,0)');
@@ -868,9 +913,11 @@ function loop(){
   const fillColor  = getComputedStyle(document.documentElement).getPropertyValue('--ring-fill').trim()  || '#0078d7';
   const beatColor  = getComputedStyle(document.documentElement).getPropertyValue('--beat-color').trim() || '#ff3366';
 
-  // Fortschrittsring – in Fancy mit Verlauf, sonst einfarbig
+  // Fortschrittsring – Fancy: Verlauf | Christmas: Rot→Grün Verlauf
   let grad = ctx.createLinearGradient(0,0,w,0);
-  if (document.body.classList.contains('fancy')) {
+  if (isXmas) {
+    grad.addColorStop(0,'#d32f2f'); grad.addColorStop(1,'#2e7d32');
+  } else if (document.body.classList.contains('fancy')) {
     grad.addColorStop(0,'#ff3366'); grad.addColorStop(0.5,'#ffcc00'); grad.addColorStop(1,'#00ff99');
   } else {
     grad.addColorStop(0, fillColor); grad.addColorStop(1, fillColor);
@@ -885,35 +932,40 @@ function loop(){
   ctx.stroke();
   ctx.setLineDash([]);
 
-  // 2) Progress (echter Fortschritt)
+  // 2) Progress
   const p = getProgress();
   if (p > 0) {
     ctx.beginPath();
     ctx.lineWidth = ringThickness;
     ctx.lineCap = 'round';
     ctx.strokeStyle = grad;
-    const start = -Math.PI/2; // oben
+    const start = -Math.PI/2;
     const end = start + p * Math.PI*2;
     ctx.arc(cx, cy, innerR, start, end, false);
     ctx.stroke();
   }
 
-  // 3) Beat-Ring (Radar-Ping)
+  // 3) Beat-Ring
   let amplitude = 0;
   if (beatActive && analyser && dataArray) {
     analyser.getByteFrequencyData(dataArray);
     let sum = 0; for (let i=0;i<dataArray.length;i++) sum += dataArray[i];
-    amplitude = (sum / dataArray.length) / 255; // 0..1
+    amplitude = (sum / dataArray.length) / 255;
   } else { amplitude *= 0.9; }
 
-  // kräftiger Ausschlag
   const bump = (amplitude>0 ? (amplitude*2200) : 0);
   const beatR = beatOuterRBase + bump;
 
   ctx.beginPath();
   ctx.lineWidth = beatThickness + bump*0.25;
   const g2 = ctx.createRadialGradient(cx, cy, beatR-12, cx, cy, beatR+24);
-  g2.addColorStop(0, isMil ? '#ff9900' : beatColor); // im Military etwas „hotter“
+  if (isXmas) {
+    g2.addColorStop(0, '#2e7d32'); // grün
+  } else if (isMil) {
+    g2.addColorStop(0, '#ff9900'); // tact. orange
+  } else {
+    g2.addColorStop(0, beatColor);
+  }
   g2.addColorStop(1, 'rgba(255,255,255,0)');
   ctx.strokeStyle = g2;
   ctx.globalAlpha = 0.8;
@@ -943,4 +995,3 @@ window.onload = () => {
 
 </body>
 </html>
-
