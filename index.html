@@ -1037,9 +1037,10 @@ function resizeSnow(){
 }
 
 function makeFlakes(){
-  // ca. 30× dichter als einfache CSS-Deko: 600–900 Flakes je nach Größe
+  // CSS-Deko: 600–900 Flakes je nach Größe
   const base = Math.floor((window.innerWidth * window.innerHeight) / 2500); // density baseline
-  const count = Math.min(1200, Math.max(600, base)); // clamp for perf
+   // +20% Dichte, ansonsten alles unverändert
+  const count = Math.min(1200, Math.max(600, Math.floor(base * 1.2)));
   flakes = [];
   for (let i=0;i<count;i++){
     const layer = Math.random(); // 0..1 (parallax)
@@ -1110,4 +1111,5 @@ window.onload = () => {
 
 </body>
 </html>
+
 
