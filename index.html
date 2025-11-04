@@ -63,10 +63,10 @@
     --text-color:#e0e0d0;
     --card-bg:rgba(46,51,39,0.92);
     --shadow:rgba(0,0,0,0.6);
-    --accent:#78b13f;       /* Button-Grün */
-    --ring-track:#3a3d32;   /* matte Olivspur */
-    --ring-fill:#9ac926;    /* Nachtsicht-Grün */
-    --beat-color:#ffb703;   /* Radar-Orange */
+    --accent:#78b13f;
+    --ring-track:#3a3d32;
+    --ring-fill:#9ac926;
+    --beat-color:#ffb703;
     color: var(--text-color);
     background-color:#2b2f23;
     background-image:
@@ -85,73 +85,78 @@
   }
   body.military .container {
     position: relative;
-    border: 1px solid #3a3d2e;   /* matte Equipment-Panel-Kante */
-    box-shadow:
-      inset 0 0 6px rgba(0,0,0,0.6),
-      0 2px 14px rgba(0,0,0,0.6);
+    border: 1px solid #3a3d2e;
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.6), 0 2px 14px rgba(0,0,0,0.6);
     background: var(--card-bg);
   }
   body.military .container::before {
     content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 14px;
-    border: 1px solid rgba(255,255,255,0.06);
-    pointer-events: none;
+    position: absolute; inset: 0; border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.06); pointer-events: none;
   }
   body.military .time-display {
-    color:#9ac926;
-    text-shadow:0 0 6px rgba(154,201,38,0.9);
+    color:#9ac926; text-shadow:0 0 6px rgba(154,201,38,0.9);
     font-family:"Courier New", monospace;
   }
   body.military button {
-    background:#6f8c3b;
-    color:#f0f0d0;
-    border:1px solid #3b4425;
+    background:#6f8c3b; color:#f0f0d0; border:1px solid #3b4425;
     box-shadow:0 2px 6px rgba(0,0,0,0.5);
   }
   body.military button:hover { background:#7dbb45; transform:scale(1.05); box-shadow:0 0 10px rgba(122,180,60,0.6); }
 
-  /* 🎄 CHRISTMAS THEME */
+  /* 🎄 CHRISTMAS THEME — sanfter Hintergrund mit Icons + Schnee */
   body.christmas {
-    --bg-color:#f9fbff;
+    --bg-color:#f7fafc;
     --text-color:#133018;
-    --card-bg:rgba(255,255,255,0.9);
+    --card-bg:rgba(255,255,255,0.92);
     --shadow:rgba(0,0,0,0.18);
     --accent:#c62828;       /* Button-Rot */
     --ring-track:#ffffff;   /* Schnee-weiß */
     --ring-fill:#d32f2f;    /* Festliches Rot */
     --beat-color:#2e7d32;   /* Tannen-Grün */
     color:var(--text-color);
-    /* Zuckerstangen-Streifen plus Tannen-Grün */
     background:
-      repeating-linear-gradient(45deg,#ffffff 0 18px,#e8f2e8 18px 36px),
-      repeating-linear-gradient(-45deg,#e53935 0 12px,#ffffff 12px 24px);
-    background-blend-mode: multiply;
+      radial-gradient(1200px 800px at 50% -10%, #ffffff 0%, #eef5ff 45%, #eaf3ff 60%, #e7f2ff 100%),
+      linear-gradient(#f8fbff, #f6fbff);
     background-attachment: fixed;
   }
-  /* Schneefall Overlay */
-  body.christmas::before, body.christmas::after {
+  /* Deko-Collage */
+  body.christmas::before {
     content:"";
-    pointer-events:none;
-    position:fixed; inset:0; z-index:0;
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    opacity:.18; filter:saturate(1.1);
+    background-repeat:no-repeat,no-repeat,no-repeat,no-repeat,no-repeat,no-repeat,no-repeat,no-repeat;
+    background-image:
+      url("data:image/svg+xml;utf8,<?xml version='1.0'?><svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><g transform='translate(8,0)'><path d='M24 8c-6.6 0-12 5.4-12 12v28a6 6 0 0 0 12 0V20c0-2.2 1.8-4 4-4s4 1.8 4 4h8c0-6.6-5.4-12-12-12z' fill='%23d32f2f' stroke='%23b71c1c' stroke-width='2'/><g stroke='%23ffffff' stroke-width='4'><line x1='18' y1='12' x2='34' y2='28'/><line x1='16' y1='20' x2='32' y2='36'/><line x1='16' y1='28' x2='28' y2='40'/></g></g></svg>"),
+      url("data:image/svg+xml;utf8,<?xml version='1.0'?><svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><g transform='translate(0,2)'><path d='M10 36c4-10 14-20 30-22 4 0 8 2 10 6-6 0-10 2-14 6-4 4-8 6-14 8H10z' fill='%23d32f2f' stroke='%23b71c1c' stroke-width='2'/><ellipse cx='50' cy='14' rx='6' ry='6' fill='%23ffffff' stroke='%23e0e0e0' stroke-width='2'/><rect x='8' y='36' width='48' height='10' rx='5' fill='%23ffffff' stroke='%23e0e0e0' stroke-width='2'/></g></svg>"),
+      url("data:image/svg+xml;utf8,<?xml version='1.0'?><svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><g><circle cx='32' cy='28' r='14' fill='%238d6e63'/><circle cx='28' cy='26' r='3' fill='%23212121'/><circle cx='36' cy='26' r='3' fill='%23212121'/><circle cx='32' cy='38' r='4' fill='%23d32f2f'/><path d='M20 10c4 2 6 4 8 8M44 10c-4 2-6 4-8 8' stroke='%233e2723' stroke-width='3' fill='none' stroke-linecap='round'/></g></svg>"),
+      url("data:image/svg+xml;utf8,<?xml version='1.0'?><svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><g><polygon points='32,6 46,24 38,24 54,42 38,42 48,54 16,54 26,42 10,42 26,24 18,24' fill='%232e7d32' stroke='%23225528' stroke-width='2' stroke-linejoin='round'/><rect x='28' y='54' width='8' height='8' fill='%238d6e63'/><circle cx='32' cy='18' r='3' fill='%23ffd54f'/><circle cx='24' cy='28' r='2.5' fill='%23ef5350'/><circle cx='40' cy='32' r='2.5' fill='%234fc3f7'/></g></svg>"),
+      url("data:image/svg+xml;utf8,<?xml version='1.0'?><svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><g transform='translate(8,0)'><path d='M24 8c-6.6 0-12 5.4-12 12v28a6 6 0 0 0 12 0V20c0-2.2 1.8-4 4-4s4 1.8 4 4h8c0-6.6-5.4-12-12-12z' fill='%23d32f2f' stroke='%23b71c1c' stroke-width='2'/><g stroke='%23ffffff' stroke-width='4'><line x1='18' y1='12' x2='34' y2='28'/><line x1='16' y1='20' x2='32' y2='36'/><line x1='16' y1='28' x2='28' y2='40'/></g></g></svg>"),
+      url("data:image/svg+xml;utf8,<?xml version='1.0'?><svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><g transform='translate(0,2)'><path d='M10 36c4-10 14-20 30-22 4 0 8 2 10 6-6 0-10 2-14 6-4 4-8 6-14 8H10z' fill='%23d32f2f' stroke='%23b71c1c' stroke-width='2'/><ellipse cx='50' cy='14' rx='6' ry='6' fill='%23ffffff' stroke='%23e0e0e0' stroke-width='2'/><rect x='8' y='36' width='48' height='10' rx='5' fill='%23ffffff' stroke='%23e0e0e0' stroke-width='2'/></g></svg>"),
+      url("data:image/svg+xml;utf8,<?xml version='1.0'?><svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><g><circle cx='32' cy='28' r='14' fill='%238d6e63'/><circle cx='28' cy='26' r='3' fill='%23212121'/><circle cx='36' cy='26' r='3' fill='%23212121'/><circle cx='32' cy='38' r='4' fill='%23d32f2f'/><path d='M20 10c4 2 6 4 8 8M44 10c-4 2-6 4-8 8' stroke='%233e2723' stroke-width='3' fill='none' stroke-linecap='round'/></g></svg>"),
+      url("data:image/svg+xml;utf8,<?xml version='1.0'?><svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><g><polygon points='32,6 46,24 38,24 54,42 38,42 48,54 16,54 26,42 10,42 26,24 18,24' fill='%232e7d32' stroke='%23225528' stroke-width='2' stroke-linejoin='round'/><rect x='28' y='54' width='8' height='8' fill='%238d6e63'/><circle cx='32' cy='18' r='3' fill='%23ffd54f'/><circle cx='24' cy='28' r='2.5' fill='%23ef5350'/><circle cx='40' cy='32' r='2.5' fill='%234fc3f7'/></g></svg>");
+    background-size:72px,76px,80px,84px,62px,60px,66px,70px;
+    background-position:8% 10%,78% 14%,20% 78%,88% 72%,42% 22%,60% 80%,12% 58%,84% 44%;
+  }
+  /* Schneefall */
+  body.christmas::after {
+    content:"";
+    pointer-events:none; position:fixed; inset:0; z-index:0;
     background-image:
       radial-gradient(2px 2px at 20% 10%, rgba(255,255,255,.9) 0 70%, transparent 72%),
       radial-gradient(2px 2px at 80% 20%, rgba(255,255,255,.9) 0 70%, transparent 72%),
       radial-gradient(2px 2px at 40% 30%, rgba(255,255,255,.9) 0 70%, transparent 72%),
-      radial-gradient(2px 2px at 60% 5%, rgba(255,255,255,.9) 0 70%, transparent 72%),
+      radial-gradient(2px 2px at 60% 5%,  rgba(255,255,255,.9) 0 70%, transparent 72%),
       radial-gradient(2px 2px at 15% 60%, rgba(255,255,255,.9) 0 70%, transparent 72%),
       radial-gradient(2px 2px at 75% 70%, rgba(255,255,255,.9) 0 70%, transparent 72%),
       radial-gradient(2px 2px at 50% 85%, rgba(255,255,255,.9) 0 70%, transparent 72%),
-      radial-gradient(3px 3px at 30% 50%, rgba(255,255,255,.9) 0 70%, transparent 72%),
+      radial-gradient(3px 3px at 30% 50%, rgba(255,255,255,.95) 0 70%, transparent 72%),
       radial-gradient(3px 3px at 65% 40%, rgba(255,255,255,.95) 0 70%, transparent 72%);
-    animation:snowFall 18s linear infinite;
-    opacity:.7;
+    animation:snowFall 22s linear infinite; opacity:.55;
   }
-  body.christmas::after { animation-duration:26s; opacity:.5; filter:blur(1px); }
   @keyframes snowFall {
     from { background-position: 0 -200vh, 0 -180vh, 0 -160vh, 0 -140vh, 0 -120vh, 0 -100vh, 0 -80vh, 0 -60vh, 0 -40vh; }
-    to   { background-position: 0  100vh, 0   120vh, 0  140vh, 0  160vh, 0  180vh, 0  200vh, 0  220vh, 0  240vh, 0  260vh; }
+    to   { background-position: 0  100vh, 0  120vh, 0  140vh, 0  160vh, 0  180vh, 0  200vh, 0  220vh, 0  240vh, 0  260vh; }
   }
   body.christmas .time-display{
     color:#d32f2f;
@@ -160,15 +165,12 @@
   }
   body.christmas button{
     background:linear-gradient(#d32f2f,#b71c1c);
-    color:#fff;
-    border:1px solid #7f1010;
-    box-shadow:0 2px 8px rgba(183,28,28,.35);
+    color:#fff; border:1px solid #7f1010; box-shadow:0 2px 8px rgba(183,28,28,.35);
   }
   body.christmas button:hover{ filter:brightness(1.05); transform:translateY(-1px); }
   body.christmas .container{
     background:var(--card-bg);
-    border:1px solid rgba(183,28,28,.35);
-    box-shadow:0 6px 18px rgba(0,0,0,.18);
+    border:1px solid rgba(183,28,28,.35); box-shadow:0 6px 18px rgba(0,0,0,.18);
     position:relative; z-index:1;
   }
 
@@ -222,7 +224,7 @@
   /* Volume-Zeile (Slider 4px höher) */
   .volume-row { display:flex; gap:12px; align-items:center; justify-content:center; flex-wrap:wrap; }
   .volume-row label { margin:0; position:relative; top:2px; }
-  #alarmVol { position:relative; top:-2px; } /* 4px näher */
+  #alarmVol { position:relative; top:-2px; }
 
   .sound-file-row { display:flex; gap:10px; justify-content:center; align-items:center; flex-wrap:wrap; }
   .file-input { display:none; }
@@ -259,7 +261,6 @@
   .system-bottom button { min-width: 180px; }
   @media (max-width: 768px) {
     .system-top { top: 8px; right: 8px; }
-    /* oben nur Sprache – StyleDeck & Notify nach unten */
     .system-top .btn-styledeck, .system-top .btn-notify { display: none; }
     .system-bottom { display:block; }
     body { padding-top: 64px; }
@@ -792,7 +793,7 @@ soundFileInput.addEventListener('change', () => {
   }
   const reader = new FileReader();
   reader.onload = () => {
-    const dataUrl = reader.result; // base64 data URL
+    const dataUrl = reader.result;
     try {
       localStorage.setItem('alarmAudioData', dataUrl);
       localStorage.setItem('alarmAudioName', file.name);
@@ -811,7 +812,7 @@ function resetToDefaultSound() {
   updateSoundFilenameLabel();
 }
 function playAlarm() {
-  startBeatRing(); // Start der Beat-Visualisierung
+  startBeatRing();
   alarmEl.volume = parseFloat(document.getElementById('alarmVol')?.value || "0.6");
   alarmEl.currentTime = 0;
   alarmEl.play().catch(()=>{});
@@ -819,7 +820,6 @@ function playAlarm() {
 function testAlarm(){ playAlarm(); }
 
 /* ===================== Themes ===================== */
-/* Chrome-sicher Light: Klassen reset + Repaint + Variablen hart setzen */
 const THEME_VARS = ['--bg-color','--text-color','--card-bg','--shadow','--accent','--ring-track','--ring-fill','--beat-color'];
 function forceChromeRepaint(){ document.body.style.display='none'; void document.body.offsetHeight; document.body.style.display=''; void document.body.offsetHeight; }
 function setRootVarsForLight(){
@@ -834,7 +834,6 @@ function setRootVarsForLight(){
   r.setProperty('--beat-color','#1e90ff');
 }
 function clearRootVars(){ const r = document.documentElement.style; THEME_VARS.forEach(v => r.removeProperty(v)); }
-
 function applyTheme(theme){
   if (theme === 'light') { document.body.className=''; forceChromeRepaint(); document.body.classList.add('light'); setRootVarsForLight(); }
   else { clearRootVars(); document.body.className=''; document.body.classList.add(theme); }
@@ -889,9 +888,10 @@ function loop(){
   const beatOuterRBase = 110;
   const beatThickness = 8;
 
-  /* === Radialer Glow hinter den Ringen, dezent – an Theme angepasst === */
   const isMil = document.body.classList.contains('military');
   const isXmas = document.body.classList.contains('christmas');
+
+  /* Glow */
   const glowBaseColor = isXmas
     ? 'rgba(211,47,47,0.28)'
     : isMil
@@ -906,7 +906,7 @@ function loop(){
   glowGrad.addColorStop(1, 'rgba(0,0,0,0)');
   ctx.fillStyle = glowGrad;
   ctx.beginPath(); ctx.arc(cx, cy, 160, 0, 2 * Math.PI); ctx.fill();
-  ctx.shadowColor = glowBaseColor; ctx.shadowBlur = 18; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
+  ctx.shadowColor = glowBaseColor; ctx.shadowBlur = 18;
 
   // Farben aus CSS-Variablen
   const trackColor = getComputedStyle(document.documentElement).getPropertyValue('--ring-track').trim() || '#e6e6e6';
@@ -923,7 +923,7 @@ function loop(){
     grad.addColorStop(0, fillColor); grad.addColorStop(1, fillColor);
   }
 
-  // 1) Track (gestrichelt im Military)
+  // 1) Track (Military gestrichelt)
   ctx.beginPath();
   ctx.lineWidth = ringThickness;
   ctx.strokeStyle = trackColor;
@@ -978,17 +978,10 @@ function loop(){
 
 /* ===================== Init ===================== */
 window.onload = () => {
-  // Theme laden
   const savedTheme = localStorage.getItem('theme') || 'light';
   applyTheme(savedTheme);
-
-  // Sprache
   applyLang();
-
-  // Alarmton aus Speicher laden
   loadStoredSoundIfAny();
-
-  // Canvas loop (sparsam)
   ensureCanvasLoop();
 };
 </script>
