@@ -104,40 +104,22 @@
   }
   body.military button:hover { background:#7dbb45; transform:scale(1.05); box-shadow:0 0 10px rgba(122,180,60,0.6); }
 
-  /* 🎄 CHRISTMAS THEME — sanfter Hintergrund mit Icons + Schnee */
+  /* 🎄 CHRISTMAS THEME — Bild-Hintergrund + Schnee, grüne Start/Presets */
   body.christmas {
     --bg-color:#f7fafc;
     --text-color:#133018;
     --card-bg:rgba(255,255,255,0.92);
     --shadow:rgba(0,0,0,0.18);
-    --accent:#c62828;       /* Button-Rot */
+    --accent:#c62828;       /* Basis-Button-Rot */
     --ring-track:#ffffff;   /* Schnee-weiß */
     --ring-fill:#d32f2f;    /* Festliches Rot */
     --beat-color:#2e7d32;   /* Tannen-Grün */
     color:var(--text-color);
-    background:
-      radial-gradient(1200px 800px at 50% -10%, #ffffff 0%, #eef5ff 45%, #eaf3ff 60%, #e7f2ff 100%),
-      linear-gradient(#f8fbff, #f6fbff);
-    background-attachment: fixed;
+    /* Set your provided image file into the same folder as this HTML */
+    background: url('christmas-desktop-background-mg6avszlzyos5b39.jpg') center / cover fixed no-repeat, #f6f9ff;
   }
-  /* Deko-Collage */
-  body.christmas::before {
-    content:"";
-    position:fixed; inset:0; z-index:0; pointer-events:none;
-    opacity:.18; filter:saturate(1.1);
-    background-repeat:no-repeat,no-repeat,no-repeat,no-repeat,no-repeat,no-repeat,no-repeat,no-repeat;
-    background-image:
-      url("data:image/svg+xml;utf8,<?xml version='1.0'?><svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><g transform='translate(8,0)'><path d='M24 8c-6.6 0-12 5.4-12 12v28a6 6 0 0 0 12 0V20c0-2.2 1.8-4 4-4s4 1.8 4 4h8c0-6.6-5.4-12-12-12z' fill='%23d32f2f' stroke='%23b71c1c' stroke-width='2'/><g stroke='%23ffffff' stroke-width='4'><line x1='18' y1='12' x2='34' y2='28'/><line x1='16' y1='20' x2='32' y2='36'/><line x1='16' y1='28' x2='28' y2='40'/></g></g></svg>"),
-      url("data:image/svg+xml;utf8,<?xml version='1.0'?><svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><g transform='translate(0,2)'><path d='M10 36c4-10 14-20 30-22 4 0 8 2 10 6-6 0-10 2-14 6-4 4-8 6-14 8H10z' fill='%23d32f2f' stroke='%23b71c1c' stroke-width='2'/><ellipse cx='50' cy='14' rx='6' ry='6' fill='%23ffffff' stroke='%23e0e0e0' stroke-width='2'/><rect x='8' y='36' width='48' height='10' rx='5' fill='%23ffffff' stroke='%23e0e0e0' stroke-width='2'/></g></svg>"),
-      url("data:image/svg+xml;utf8,<?xml version='1.0'?><svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><g><circle cx='32' cy='28' r='14' fill='%238d6e63'/><circle cx='28' cy='26' r='3' fill='%23212121'/><circle cx='36' cy='26' r='3' fill='%23212121'/><circle cx='32' cy='38' r='4' fill='%23d32f2f'/><path d='M20 10c4 2 6 4 8 8M44 10c-4 2-6 4-8 8' stroke='%233e2723' stroke-width='3' fill='none' stroke-linecap='round'/></g></svg>"),
-      url("data:image/svg+xml;utf8,<?xml version='1.0'?><svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><g><polygon points='32,6 46,24 38,24 54,42 38,42 48,54 16,54 26,42 10,42 26,24 18,24' fill='%232e7d32' stroke='%23225528' stroke-width='2' stroke-linejoin='round'/><rect x='28' y='54' width='8' height='8' fill='%238d6e63'/><circle cx='32' cy='18' r='3' fill='%23ffd54f'/><circle cx='24' cy='28' r='2.5' fill='%23ef5350'/><circle cx='40' cy='32' r='2.5' fill='%234fc3f7'/></g></svg>"),
-      url("data:image/svg+xml;utf8,<?xml version='1.0'?><svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><g transform='translate(8,0)'><path d='M24 8c-6.6 0-12 5.4-12 12v28a6 6 0 0 0 12 0V20c0-2.2 1.8-4 4-4s4 1.8 4 4h8c0-6.6-5.4-12-12-12z' fill='%23d32f2f' stroke='%23b71c1c' stroke-width='2'/><g stroke='%23ffffff' stroke-width='4'><line x1='18' y1='12' x2='34' y2='28'/><line x1='16' y1='20' x2='32' y2='36'/><line x1='16' y1='28' x2='28' y2='40'/></g></g></svg>"),
-      url("data:image/svg+xml;utf8,<?xml version='1.0'?><svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><g transform='translate(0,2)'><path d='M10 36c4-10 14-20 30-22 4 0 8 2 10 6-6 0-10 2-14 6-4 4-8 6-14 8H10z' fill='%23d32f2f' stroke='%23b71c1c' stroke-width='2'/><ellipse cx='50' cy='14' rx='6' ry='6' fill='%23ffffff' stroke='%23e0e0e0' stroke-width='2'/><rect x='8' y='36' width='48' height='10' rx='5' fill='%23ffffff' stroke='%23e0e0e0' stroke-width='2'/></g></svg>"),
-      url("data:image/svg+xml;utf8,<?xml version='1.0'?><svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><g><circle cx='32' cy='28' r='14' fill='%238d6e63'/><circle cx='28' cy='26' r='3' fill='%23212121'/><circle cx='36' cy='26' r='3' fill='%23212121'/><circle cx='32' cy='38' r='4' fill='%23d32f2f'/><path d='M20 10c4 2 6 4 8 8M44 10c-4 2-6 4-8 8' stroke='%233e2723' stroke-width='3' fill='none' stroke-linecap='round'/></g></svg>"),
-      url("data:image/svg+xml;utf8,<?xml version='1.0'?><svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><g><polygon points='32,6 46,24 38,24 54,42 38,42 48,54 16,54 26,42 10,42 26,24 18,24' fill='%232e7d32' stroke='%23225528' stroke-width='2' stroke-linejoin='round'/><rect x='28' y='54' width='8' height='8' fill='%238d6e63'/><circle cx='32' cy='18' r='3' fill='%23ffd54f'/><circle cx='24' cy='28' r='2.5' fill='%23ef5350'/><circle cx='40' cy='32' r='2.5' fill='%234fc3f7'/></g></svg>");
-    background-size:72px,76px,80px,84px,62px,60px,66px,70px;
-    background-position:8% 10%,78% 14%,20% 78%,88% 72%,42% 22%,60% 80%,12% 58%,84% 44%;
-  }
+  /* Entfernt die frühere Deko-Collage, damit das Bild klar sichtbar bleibt */
+
   /* Schneefall */
   body.christmas::after {
     content:"";
@@ -163,16 +145,18 @@
     text-shadow:0 0 10px rgba(211,47,47,.55), 0 0 18px rgba(46,125,50,.35);
     font-weight:700;
   }
-  body.christmas button{
+  /* Weihnachts-Buttons: Start + Presets in Tannengrün, Reset in Rot */
+  body.christmas .btn-start,
+  body.christmas .btn-preset{
+    background:linear-gradient(#2e7d32,#1b5e20);
+    color:#fff; border:1px solid #1b5e20; box-shadow:0 2px 8px rgba(27,94,32,.35);
+  }
+  body.christmas .btn-preset.active{ box-shadow:0 0 16px rgba(46,125,50,.7) }
+  body.christmas .btn-reset{
     background:linear-gradient(#d32f2f,#b71c1c);
     color:#fff; border:1px solid #7f1010; box-shadow:0 2px 8px rgba(183,28,28,.35);
   }
-  body.christmas button:hover{ filter:brightness(1.05); transform:translateY(-1px); }
-  body.christmas .container{
-    background:var(--card-bg);
-    border:1px solid rgba(183,28,28,.35); box-shadow:0 6px 18px rgba(0,0,0,.18);
-    position:relative; z-index:1;
-  }
+  body.christmas .btn-reset:hover{ filter:brightness(1.05); transform:translateY(-1px) }
 
   /* ---------- GENERAL LAYOUT ---------- */
   body {
@@ -299,9 +283,9 @@
 
     <!-- Presets -->
     <div class="preset-buttons">
-      <button onclick="setPreset(3000, this)" data-i18n="preset_50">50 Min</button>
-      <button onclick="setPreset(1800, this)" data-i18n="preset_30">30 Min</button>
-      <button onclick="setPreset(600, this)" data-i18n="preset_10">10 Min</button>
+      <button class="btn-preset" onclick="setPreset(3000, this)" data-i18n="preset_50">50 Min</button>
+      <button class="btn-preset" onclick="setPreset(1800, this)" data-i18n="preset_30">30 Min</button>
+      <button class="btn-preset" onclick="setPreset(600, this)" data-i18n="preset_10">10 Min</button>
     </div>
 
     <!-- Dauer -->
@@ -321,8 +305,8 @@
 
     <!-- Start/Reset -->
     <div class="row">
-      <button onclick="startTimer()" data-i18n="btn_start">Start</button>
-      <button onclick="resetTimer()" data-i18n="btn_reset">Reset</button>
+      <button class="btn-start" onclick="startTimer()" data-i18n="btn_start">Start</button>
+      <button class="btn-reset" onclick="resetTimer()" data-i18n="btn_reset">Reset</button>
     </div>
 
     <!-- Countdown -->
