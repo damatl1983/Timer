@@ -17,7 +17,6 @@
     --beat-color:#ff3366;
   }
 
-  /* ---------- THEMES ---------- */
   body.light {
     --bg-color:#ffffff;
     --text-color:#000000;
@@ -57,7 +56,6 @@
   }
   @keyframes bgShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
 
-  /* 🪖 MILITARY THEME (Woodland, statisch) */
   body.military {
     --bg-color:#2e3327;
     --text-color:#e0e0d0;
@@ -104,21 +102,20 @@
   }
   body.military button:hover { background:#7dbb45; transform:scale(1.05); box-shadow:0 0 10px rgba(122,180,60,0.6); }
 
-  /* 🎄 CHRISTMAS THEME — Bild-Hintergrund + dichter Schneefall + alternierende Buttons + grüne Schrift */
   body.christmas {
     --bg-color:#f7fafc;
-    --text-color:#155d27; /* kräftiges Weihnachtsgrün für gute Lesbarkeit */
+    --text-color:#155d27;
     --card-bg:rgba(255,255,255,0.92);
     --shadow:rgba(0,0,0,0.18);
-    --accent:#c62828;       /* Basis-Button-Rot (Backup) */
-    --ring-track:#ffffff;   /* Schnee-weiß */
-    --ring-fill:#d32f2f;    /* Festliches Rot */
-    --beat-color:#2e7d32;   /* Tannen-Grün */
+    --accent:#c62828;
+    --ring-track:#ffffff;
+    --ring-fill:#d32f2f;
+    --beat-color:#2e7d32;
     color:var(--text-color);
     background: url('christmas-desktop-background-mg6avszlzyos5b39.jpg') center / cover fixed no-repeat, #f6f9ff;
   }
   body.christmas .time-display{
-    color:#2e7d32; /* auch die große Anzeige in grünlich */
+    color:#2e7d32;
     text-shadow:0 0 10px rgba(46,125,50,.55), 0 0 18px rgba(211,47,47,.35);
     font-weight:700;
   }
@@ -127,30 +124,15 @@
     border:1px solid rgba(183,28,28,.35); box-shadow:0 6px 18px rgba(0,0,0,.18);
     position:relative; z-index:1;
   }
-
-  /* 🎄 Alternierende Buttons: Start+odd Presets = Grün, even Presets+Reset = Rot */
   body.christmas button { color:#fff; border:1px solid #7f1010; box-shadow:0 2px 8px rgba(0,0,0,.25); }
   body.christmas .preset-buttons button:nth-child(odd),
-  body.christmas button.btn-start {
-    background:linear-gradient(#2e7d32,#1b5e20);
-    border-color:#1b5e20; box-shadow:0 2px 8px rgba(27,94,32,.35);
-  }
+  body.christmas button.btn-start { background:linear-gradient(#2e7d32,#1b5e20); border-color:#1b5e20; box-shadow:0 2px 8px rgba(27,94,32,.35); }
   body.christmas .preset-buttons button:nth-child(even),
-  body.christmas button.btn-reset {
-    background:linear-gradient(#d32f2f,#b71c1c);
-    border-color:#7f1010; box-shadow:0 2px 8px rgba(183,28,28,.35);
-  }
+  body.christmas button.btn-reset { background:linear-gradient(#d32f2f,#b71c1c); border-color:#7f1010; box-shadow:0 2px 8px rgba(183,28,28,.35); }
   body.christmas .preset-buttons button.active{ box-shadow:0 0 16px rgba(46,125,50,.7) }
   body.christmas button:hover{ filter:brightness(1.05); transform:translateY(-1px); }
+  body.christmas #btnChooseFile{ background:linear-gradient(#2e7d32,#1b5e20) !important; color:#fff !important; border:1px solid #1b5e20 !important; box-shadow:0 2px 8px rgba(27,94,32,.35); }
 
-  /* 🎵 „Sound wählen“ Button im Christmas-Theme grün */
-  body.christmas #btnChooseFile{
-    background:linear-gradient(#2e7d32,#1b5e20) !important;
-    color:#fff !important; border:1px solid #1b5e20 !important;
-    box-shadow:0 2px 8px rgba(27,94,32,.35);
-  }
-
-  /* ---------- GENERAL LAYOUT ---------- */
   body {
     font-family: Arial, sans-serif;
     text-align:center;
@@ -197,7 +179,6 @@
   .status { font-size:.92em; opacity:.85; margin-top:8px; }
   .alarm-at { font-size:1em; margin-top:6px; opacity:.95; }
 
-  /* Volume-Zeile (Slider 4px höher) */
   .volume-row { display:flex; gap:12px; align-items:center; justify-content:center; flex-wrap:wrap; }
   .volume-row label { margin:0; position:relative; top:2px; }
   #alarmVol { position:relative; top:-2px; }
@@ -208,11 +189,9 @@
   .file-name { padding:6px 10px; border-radius:8px; border:1px dashed #888; background: var(--card-bg); }
   .sound-filename { font-size:0.95em; opacity:0.9; }
 
-  /* Canvas – Maße deiner 3D-Variante */
   .viz { margin: 1px auto 1px; width: 250px; height: 150px; position: relative; }
   .viz canvas { width:100%; height:100%; display:block; }
 
-  /* ---------- SYSTEM BUTTONS & MENÜS ---------- */
   .system-top { position: fixed; right: 16px; top: 16px; display: flex; gap: 8px; flex-direction: column; z-index: 10; }
   .system-top button { min-width: 180px; }
 
@@ -231,25 +210,18 @@
   body.dark .lang-menu button:hover, body.dark .deck-menu button:hover { background: rgba(255,255,255,.08); }
   body.military .lang-menu, body.military .deck-menu { background:#3b3d32; color:#e0e0d0; border-color:#555; }
 
-  /* ✅ LESBARKEIT FÜR CHRISTMAS-MENÜS */
   body.christmas .lang-menu,
   body.christmas .deck-menu {
     background: rgba(255,255,255,0.98);
-    color:#155d27;                 /* Tannengrün */
-    border-color: #c62828;         /* festliches Rot als Akzent */
+    color:#155d27;
+    border-color: #c62828;
     box-shadow: 0 10px 24px rgba(198,40,40,.18), 0 4px 12px rgba(21,93,39,.18);
   }
   body.christmas .lang-menu button,
-  body.christmas .deck-menu button {
-    color:#155d27;
-  }
+  body.christmas .deck-menu button { color:#155d27; }
   body.christmas .lang-menu button:hover,
-  body.christmas .deck-menu button:hover {
-    background: rgba(198,40,40,0.12); /* rot hinterlegt */
-    color:#b71c1c;                    /* Text in festlichem Rot */
-  }
+  body.christmas .deck-menu button:hover { background: rgba(198,40,40,0.12); color:#b71c1c; }
 
-  /* --- Mobile: Style Deck & Notifications unten --- */
   .system-bottom { display:none; margin-top: 16px; }
   .system-bottom .btn-row { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
   .system-bottom button { min-width: 180px; }
@@ -260,23 +232,21 @@
     body { padding-top: 64px; }
   }
 
-  /* ❄️ CSS-Schnee (Basis-Schicht) – zusätzlicher dichter Canvas-Schnee per JS */
+  body.christmas::before,
+  body.christmas::after { pointer-events:none; }
   body.christmas::before {
-    content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
-    opacity:.35;
+    content:""; position:fixed; inset:0; z-index:0; opacity:.28;
     background-image:
       radial-gradient(3px 3px at 15% 5%,  rgba(255,255,255,.7) 0 70%, transparent 72%),
       radial-gradient(4px 4px at 35% 15%, rgba(255,255,255,.7) 0 70%, transparent 72%),
       radial-gradient(5px 5px at 70% 25%, rgba(255,255,255,.7) 0 70%, transparent 72%),
       radial-gradient(4px 4px at 90% 35%, rgba(255,255,255,.7) 0 70%, transparent 72%),
       radial-gradient(5px 5px at 20% 70%, rgba(255,255,255,.7) 0 70%, transparent 72%),
-      radial-gradient(4px 4px at 55% 85%, rgba(255,255,255,.7) 0 70%, transparent 72%),
-      radial-gradient(5px 5px at 82% 65%, rgba(255,255,255,.7) 0 70%, transparent 72%);
+      radial-gradient(4px 4px at 55% 85%, rgba(255,255,255,.7) 0 70%, transparent 72%);
     animation: snowBack 36s linear infinite;
   }
   body.christmas::after {
-    content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
-    opacity:.6;
+    content:""; position:fixed; inset:0; z-index:0; opacity:.5;
     background-image:
       radial-gradient(1px 1px at 10% 5%,  rgba(255,255,255,.9) 0 70%, transparent 72%),
       radial-gradient(1.5px 1.5px at 40% 10%,  rgba(255,255,255,.9) 0 70%, transparent 72%),
@@ -284,45 +254,34 @@
       radial-gradient(1.5px 1.5px at 90% 30%, rgba(255,255,255,.9) 0 70%, transparent 72%),
       radial-gradient(2px 2px at 15% 60%, rgba(255,255,255,.9) 0 70%, transparent 72%),
       radial-gradient(2px 2px at 50% 85%, rgba(255,255,255,.9) 0 70%, transparent 72%),
-      radial-gradient(1.5px 1.5px at 75% 70%, rgba(255,255,255,.9) 0 70%, transparent 72%),
-      radial-gradient(1px 1px at 30% 50%, rgba(255,255,255,.95) 0 70%, transparent 72%),
-      radial-gradient(2px 2px at 65% 40%, rgba(255,255,255,.95) 0 70%, transparent 72%),
-      radial-gradient(2.5px 2.5px at 20% 10%, rgba(255,255,255,.85) 0 70%, transparent 72%),
-      radial-gradient(3px 3px at 60% 25%, rgba(255,255,255,.85) 0 70%, transparent 72%),
-      radial-gradient(2.5px 2.5px at 80% 40%, rgba(255,255,255,.85) 0 70%, transparent 72%),
-      radial-gradient(2px 2px at 45% 70%, rgba(255,255,255,.85) 0 70%, transparent 72%),
-      radial-gradient(3px 3px at 75% 90%, rgba(255,255,255,.85) 0 70%, transparent 72%);
+      radial-gradient(1.5px 1.5px at 75% 70%, rgba(255,255,255,.9) 0 70%, transparent 72%);
     animation: snowFront 14s linear infinite;
   }
   @keyframes snowFront { from { background-position: 0 -200vh; } to { background-position: 0 100vh; } }
   @keyframes snowBack  { from { background-position: 0 -120vh; } to { background-position: 0 90vh; } }
 
-  /* ❄️❄️ Canvas-Schnee (dichter, parallax, 30×) */
   #snowCanvas {
     position: fixed;
     inset: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 0;      /* hinter .container (z-index:1) */
+    z-index: 0;
     pointer-events: none;
-    display: none;   /* nur im Christmas-Theme sichtbar */
+    display: none;
   }
   body.christmas #snowCanvas { display:block; }
 </style>
 </head>
 <body class="light">
 
-  <!-- DICHTER SCHNEE-CANVAS -->
   <canvas id="snowCanvas"></canvas>
 
-  <!-- System: oben (Desktop) -->
   <div class="system-top">
     <button id="btnLang" class="btn-lang" onclick="toggleLangMenu()">🌐 DE</button>
     <button id="btnStyleDeckTop" class="btn-styledeck" onclick="toggleDeckMenu('top')">🎨 Style Deck ▾</button>
     <button class="btn-notify" onclick="requestNotify()" data-i18n="btn_notify">🔔 Benachrichtigungen</button>
   </div>
 
-  <!-- Sprachmenü -->
   <div class="lang-menu" id="langMenu">
     <button onclick="setLang('de')">🇩🇪 Deutsch</button>
     <button onclick="setLang('de_gz')">🇩🇪💬 Deutsch Gen-Z</button>
@@ -331,7 +290,6 @@
     <button onclick="setLang('fa')">🇦🇫 دری (Dari)</button>
   </div>
 
-  <!-- Style Deck Menü (oben) -->
   <div class="deck-menu" id="deckMenuTop">
     <button onclick="applyThemeAndClose('light')">☀️ <span data-i18n="style_light">Hell</span></button>
     <button onclick="applyThemeAndClose('dark')">🌙 <span data-i18n="style_dark">Dark</span></button>
@@ -343,14 +301,12 @@
   <div class="container" id="main">
     <h1 data-i18n="title">⏱️ Timer</h1>
 
-    <!-- Presets -->
     <div class="preset-buttons">
       <button class="btn-preset" onclick="setPreset(3000, this)" data-i18n="preset_50">50 Min</button>
       <button class="btn-preset" onclick="setPreset(1800, this)" data-i18n="preset_30">30 Min</button>
       <button class="btn-preset" onclick="setPreset(600, this)" data-i18n="preset_10">10 Min</button>
     </div>
 
-    <!-- Dauer -->
     <div class="row">
       <div class="section-title" data-i18n="section_timer">Timer (Dauer)</div>
       <input type="number" id="hours" placeholder="Stunden" min="0" aria-label="Stunden">
@@ -359,29 +315,25 @@
       <div class="alarm-at" id="alarmAtLine" style="display:none;"></div>
     </div>
 
-    <!-- Uhrzeit -->
     <div class="row">
       <div class="section-title" data-i18n="section_time">Uhrzeit (Alarm um)</div>
       <input type="time" id="alarmTime" step="60" placeholder="HH:MM" aria-label="Uhrzeit" />
     </div>
 
-    <!-- Start/Reset -->
     <div class="row">
       <button class="btn-start" onclick="startTimer()" data-i18n="btn_start">Start</button>
       <button class="btn-reset" onclick="resetTimer()" data-i18n="btn_reset">Reset</button>
     </div>
 
-    <!-- Countdown -->
     <div class="time-display" id="timeDisplay">00:00:00</div>
 
-    <!-- Visual Countdown + Beat Ring -->
     <div class="viz">
-      <canvas id="progressCanvas" width="520" height="520"></canvas>
+      <!-- Canvas-Größe wird per JS dynamisch gesetzt; keine festen Pixel mehr -->
+      <canvas id="progressCanvas"></canvas>
     </div>
 
     <div class="status" id="notifyStatus">Benachrichtigungen: nicht festgelegt</div>
 
-    <!-- Lautstärke/Test/Alarmton -->
     <div class="row">
       <div class="volume-row" style="margin-top:4px">
         <label id="lblVolume"><span data-i18n="label_volume">Lautstärke</span>:</label>
@@ -389,7 +341,6 @@
         <button onclick="testAlarm()" data-i18n="btn_test_alarm">Alarm testen</button>
       </div>
 
-      <!-- Custom Upload UI -->
       <div class="sound-file-row" style="margin-top:10px">
         <label id="lblSound"><span data-i18n="label_sound">Alarmton hochladen</span>:</label>
 
@@ -405,7 +356,6 @@
     </div>
   </div>
 
-  <!-- Mobile: Style Deck + Notifications unten -->
   <div class="system-bottom" id="bottomControls">
     <div class="btn-row">
       <button id="btnStyleDeckBottom" class="btn-styledeck" onclick="toggleDeckMenu('bottom')">🎨 Style Deck ▾</button>
@@ -413,7 +363,6 @@
     </div>
   </div>
 
-  <!-- Style Deck Menü (unten) -->
   <div class="deck-menu" id="deckMenuBottom" style="right:auto; left:50%; transform:translate(-50%,-6px) scale(0.98);">
     <button onclick="applyThemeAndClose('light')">☀️ <span data-i18n="style_light">Hell</span></button>
     <button onclick="applyThemeAndClose('dark')">🌙 <span data-i18n="style_dark">Dark</span></button>
@@ -422,15 +371,12 @@
     <button onclick="applyThemeAndClose('christmas')">🎄 <span data-i18n="style_christmas">Christmas</span></button>
   </div>
 
-  <!-- Audio -->
   <audio id="alarm" src="pi-pi-pi.mp3" preload="auto"></audio>
 
 <script>
 /* ===================== i18n ===================== */
 const LANGS = {
-  de: {
-    codeBtn:"🌐 DE", dir:"ltr",
-    title:"⏱️ Timer",
+  de: { codeBtn:"🌐 DE", dir:"ltr", title:"⏱️ Timer",
     preset_50:"50 Min", preset_30:"30 Min", preset_10:"10 Min",
     section_timer:"Timer (Dauer)", section_time:"Uhrzeit (Alarm um)",
     btn_start:"Start", btn_reset:"Reset", label_volume:"Lautstärke",
@@ -453,35 +399,23 @@ const LANGS = {
     notif_body:"Deine eingestellte Zeit ist vorbei.",
     notif_denied_tip:"Benachrichtigungen sind blockiert. Bitte in den Website-Einstellungen aktivieren."
   },
-  de_gz: {
-    codeBtn:"🌐 DE💬", dir:"ltr",
-    title:"⏱️ Timer (Lit)",
+  de_gz: { codeBtn:"🌐 DE💬", dir:"ltr", title:"⏱️ Timer (Lit)",
     preset_50:"50 Min", preset_30:"30 Min", preset_10:"10 Min",
     section_timer:"Timer (Dauer)", section_time:"Uhrzeit (Alarm um)",
-    btn_start:"Start (let's go)", btn_reset:"Reset (chill)",
-    label_volume:"Lautstärke 🔊",
-    btn_test_alarm:"Alarm checken 🔥", btn_notify:"Notifs",
-    btn_styledeck:"🎨 Style Deck ▾",
+    btn_start:"Start (let's go)", btn_reset:"Reset (chill)", label_volume:"Lautstärke 🔊",
+    btn_test_alarm:"Alarm checken 🔥", btn_notify:"Notifs", btn_styledeck:"🎨 Style Deck ▾",
     style_light:"Hell", style_dark:"Dark", style_fancy:"Fancy", style_military:"Military", style_christmas:"Christmas",
     label_sound:"Alarm hochladen", btn_choose_file:"🎵 Sound wählen",
-    file_none:"Keine Datei gewählt",
-    sound_current_prefix:"Aktueller Ton: ",
-    sound_default_label:"Standard: pi-pi-pi.mp3",
-    btn_sound_reset:"Zurück auf Standard",
+    file_none:"Keine Datei gewählt", sound_current_prefix:"Aktueller Ton: ",
+    sound_default_label:"Standard: pi-pi-pi.mp3", btn_sound_reset:"Zurück auf Standard",
     alarm_time_prefix:"Alarmzeit: ", time_suffix:" Uhr",
-    notify_status_unavailable:"Notifs: nicht verfügbar",
-    notify_status_active:"Notifs: aktiv",
-    notify_status_denied:"Notifs: geblockt",
-    notify_status_default:"Offen",
-    invalid_time:"Gib mal 'ne echte Zeit ein Bro 😅",
-    time_up_alert:"Bämm! Zeit ist um Bro 😎",
-    notif_title:"⏰ Ding Dong",
-    notif_body:"Dein Timer ist durch.",
+    notify_status_unavailable:"Notifs: nicht verfügbar", notify_status_active:"Notifs: aktiv",
+    notify_status_denied:"Notifs: geblockt", notify_status_default:"Offen",
+    invalid_time:"Gib mal 'ne echte Zeit ein Bro 😅", time_up_alert:"Bämm! Zeit ist um Bro 😎",
+    notif_title:"⏰ Ding Dong", notif_body:"Dein Timer ist durch.",
     notif_denied_tip:"Notifs sind blockiert. Aktivier sie in den Website-Einstellungen."
   },
-  en: {
-    codeBtn:"🌐 EN", dir:"ltr",
-    title:"⏱️ Timer",
+  en: { codeBtn:"🌐 EN", dir:"ltr", title:"⏱️ Timer",
     preset_50:"50 min", preset_30:"30 min", preset_10:"10 min",
     section_timer:"Timer (Duration)", section_time:"Time (Alarm at)",
     btn_start:"Start", btn_reset:"Reset", label_volume:"Volume",
@@ -504,9 +438,7 @@ const LANGS = {
     notif_body:"Your set time has ended.",
     notif_denied_tip:"Notifications are blocked. Enable them in site settings."
   },
-  tr: {
-    codeBtn:"🌐 TR", dir:"ltr",
-    title:"⏱️ Zamanlayıcı",
+  tr: { codeBtn:"🌐 TR", dir:"ltr", title:"⏱️ Zamanlayıcı",
     preset_50:"50 dk", preset_30:"30 dk", preset_10:"10 dk",
     section_timer:"Zamanlayıcı (Süre)", section_time:"Saat (Alarm zamanı)",
     btn_start:"Başlat", btn_reset:"Sıfırla", label_volume:"Ses",
@@ -529,9 +461,7 @@ const LANGS = {
     notif_body:"Ayarladığınız süre sona erdi.",
     notif_denied_tip:"Bildirimler engelli. Site ayarlarından etkinleştirin."
   },
-  fa: { /* Dari */
-    codeBtn:"🌐 دری", dir:"rtl",
-    title:"⏱️ تایمر",
+  fa: { codeBtn:"🌐 دری", dir:"rtl", title:"⏱️ تایمر",
     preset_50:"۵۰ دقیقه", preset_30:"۳۰ دقیقه", preset_10:"۱۰ دقیقه",
     section_timer:"تایمر (مدت)", section_time:"زمان (زنگ در)",
     btn_start:"شروع", btn_reset:"بازنشانی", label_volume:"بلندی صدا",
@@ -564,7 +494,6 @@ function applyLang() {
   document.querySelectorAll("[data-i18n]").forEach(el => {
     el.textContent = t(el.getAttribute("data-i18n"));
   });
-  // Buttons
   document.getElementById("btnLang").textContent = t("codeBtn");
   const sdTop = document.getElementById("btnStyleDeckTop");
   const sdBottom = document.getElementById("btnStyleDeckBottom");
@@ -575,7 +504,6 @@ function applyLang() {
   document.documentElement.lang = currentLang === "fa" ? "fa" : currentLang;
   document.body.dir = LANGS[currentLang].dir || "ltr";
 
-  // Placeholders
   document.getElementById('hours').placeholder   =
     currentLang==="en" ? "Hours"   : currentLang==="tr" ? "Saat"   : currentLang==="fa" ? "ساعت"   : "Stunden";
   document.getElementById('minutes').placeholder =
@@ -585,7 +513,6 @@ function applyLang() {
   document.getElementById('alarmTime').placeholder =
     currentLang==="en" ? "HH:MM"   : currentLang==="tr" ? "SS:DD"  : "HH:MM";
 
-  // Upload UI
   document.getElementById("lblSound").querySelector("span").textContent = t("label_sound");
   document.getElementById("btnChooseFile").textContent = t("btn_choose_file");
   const fileNameEl = document.getElementById("fileNameText");
@@ -610,7 +537,7 @@ function setLang(code){
   document.getElementById("langMenu").classList.remove('open');
 }
 
-/* ===================== Style Deck (oben & unten) ===================== */
+/* ===================== Style Deck ===================== */
 function toggleDeckMenu(which){
   const menu = (which==='top') ? document.getElementById('deckMenuTop') : document.getElementById('deckMenuBottom');
   const open = menu.classList.contains('open');
@@ -716,7 +643,7 @@ function startTimer() {
     Notification.requestPermission().finally(updateNotifyStatus);
   } else { updateNotifyStatus(); }
 
-  ensureCanvasLoop();
+  startCanvasLoop(); // nur jetzt starten
   updateDisplay();
   timer = setInterval(updateDisplay, 1000);
 }
@@ -727,6 +654,7 @@ function resetTimer() {
   totalSecondsPlanned = 0;
   document.getElementById('timeDisplay').textContent = "00:00:00";
   document.title = t('title');
+  maybeStopCanvasLoop();
 }
 
 function fmt(secs){
@@ -742,20 +670,16 @@ function updateDisplay() {
 
   if (diff <= 0) {
     clearInterval(timer);
-    alarmTimeInput.value = ''; // Uhrzeit nach Ablauf leeren
+    endTime = null;
+    alarmTimeInput.value = '';
     updateAlarmAtPreview();
-
     document.getElementById('timeDisplay').textContent = "00:00:00";
     document.title = t('notif_title');
-    // 🔊 Erst Alarm & Notification starten
-    playAlarm(); // startet auch Beat-Ring
+    playAlarm();
     notifyUser(t('notif_title'), t('notif_body'));
     if (navigator.vibrate) navigator.vibrate([200,100,200]);
-
-    // ⏱️ Dann (leicht verzögert) die Meldung anzeigen
-    setTimeout(() => {
-      alert("✅ " + t('time_up_alert'));
-    }, 500);
+    setTimeout(() => alert("✅ " + t('time_up_alert')), 500);
+    maybeStopCanvasLoop();
     return;
   }
 
@@ -774,7 +698,7 @@ function updateNotifyStatus() {
   const state = Notification.permission;
   if (state === 'granted') {
     s.textContent = t('notify_status_active');
-    setNotifyButtonsVisible(false); // Button ausblenden
+    setNotifyButtonsVisible(false);
   } else if (state === 'denied') {
     s.textContent = t('notify_status_denied');
     setNotifyButtonsVisible(true);
@@ -822,11 +746,7 @@ function updateSoundFilenameLabel() {
 function loadStoredSoundIfAny() {
   const dataUrl = localStorage.getItem('alarmAudioData');
   const name = localStorage.getItem('alarmAudioName');
-  if (dataUrl && name) {
-    alarmEl.src = dataUrl;
-  } else {
-    alarmEl.src = 'pi-pi-pi.mp3';
-  }
+  alarmEl.src = (dataUrl && name) ? dataUrl : 'pi-pi-pi.mp3';
   updateSoundFilenameLabel();
 }
 soundFileInput.addEventListener('change', () => {
@@ -867,35 +787,82 @@ function testAlarm(){ playAlarm(); }
 
 /* ===================== Themes ===================== */
 const THEME_VARS = ['--bg-color','--text-color','--card-bg','--shadow','--accent','--ring-track','--ring-fill','--beat-color'];
-function forceChromeRepaint(){ document.body.style.display='none'; void document.body.offsetHeight; document.body.style.display=''; void document.body.offsetHeight; }
-function setRootVarsForLight(){
-  const r = document.documentElement.style;
-  r.setProperty('--bg-color','#ffffff');
-  r.setProperty('--text-color','#000000');
-  r.setProperty('--card-bg','#ffffff');
-  r.setProperty('--shadow','rgba(0,0,0,0.12)');
-  r.setProperty('--accent','#0078d7');
-  r.setProperty('--ring-track','#e6e6e6');
-  r.setProperty('--ring-fill','#0078d7');
-  r.setProperty('--beat-color','#1e90ff');
-}
 function clearRootVars(){ const r = document.documentElement.style; THEME_VARS.forEach(v => r.removeProperty(v)); }
 function applyTheme(theme){
-  if (theme === 'light') { document.body.className=''; forceChromeRepaint(); document.body.classList.add('light'); setRootVarsForLight(); }
-  else { clearRootVars(); document.body.className=''; document.body.classList.add(theme); }
+  document.body.className='';
+  if (theme === 'light') { document.body.classList.add('light'); }
+  else { document.body.classList.add(theme); }
   localStorage.setItem('theme', theme);
-  // Schneecanvas aktivieren/deaktivieren
+
+  // Schneecanvas
   if (theme === 'christmas') startSnow(); else stopSnow();
+
+  // Progress-Farben/Gradients neu cachen
+  cacheCanvasStyle();
+  // Falls ein Timer läuft oder Beat aktiv ist: Loop sicherstellen
+  maybeStartCanvasLoop();
 }
 
-/* ===================== Canvas: Progress + Beat Ring ===================== */
+/* ===================== Canvas: Progress + Beat (optimiert) ===================== */
 const canvas = document.getElementById('progressCanvas');
 const ctx = canvas.getContext('2d');
 let rafId = null;
 let runningCanvas = false;
+let targetFPS = 30;
+let frameMinDelta = 1000 / targetFPS;
+let lastFrameTime = 0;
 
-function ensureCanvasLoop(){ if (runningCanvas) return; runningCanvas = true; loop(); }
-function stopCanvasLoop(){ runningCanvas = false; if (rafId) cancelAnimationFrame(rafId); }
+// Style-Cache, damit wir nicht jedes Frame getComputedStyle/Gradients bauen
+let styleCache = {
+  trackColor:'#e6e6e6',
+  fillColor:'#0078d7',
+  beatColor:'#ff3366',
+  gradient:null,
+  isMil:false,
+  isXmas:false,
+  isFancy:false
+};
+
+function cacheCanvasStyle(){
+  const cs = getComputedStyle(document.documentElement);
+  styleCache.trackColor = cs.getPropertyValue('--ring-track').trim() || '#e6e6e6';
+  styleCache.fillColor  = cs.getPropertyValue('--ring-fill').trim()  || '#0078d7';
+  styleCache.beatColor  = cs.getPropertyValue('--beat-color').trim() || '#ff3366';
+  styleCache.isMil = document.body.classList.contains('military');
+  styleCache.isXmas = document.body.classList.contains('christmas');
+  styleCache.isFancy = document.body.classList.contains('fancy');
+  styleCache.gradient = null; // wird beim nächsten Draw neu erstellt
+}
+
+function resizeProgressCanvas(){
+  const box = canvas.parentElement.getBoundingClientRect();
+  const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2)); // DPR clamp auf 2
+  const w = Math.max(150, Math.floor(box.width));
+  const h = Math.max(120, Math.floor(box.height));
+  canvas.width = Math.floor(w * dpr);
+  canvas.height = Math.floor(h * dpr);
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  styleCache.gradient = null; // size abhängig
+}
+window.addEventListener('resize', ()=>{ resizeProgressCanvas(); });
+
+function ensureGradient(){
+  if (styleCache.gradient) return styleCache.gradient;
+  const w = canvas.width; const h = canvas.height;
+  const grad = ctx.createLinearGradient(0,0,w,0);
+  if (styleCache.isXmas) {
+    grad.addColorStop(0,'#d32f2f'); grad.addColorStop(1,'#2e7d32');
+  } else if (styleCache.isFancy) {
+    grad.addColorStop(0,'#ff3366'); grad.addColorStop(0.5,'#ffcc00'); grad.addColorStop(1,'#00ff99');
+  } else {
+    grad.addColorStop(0, styleCache.fillColor); grad.addColorStop(1, styleCache.fillColor);
+  }
+  styleCache.gradient = grad;
+  return grad;
+}
+
 function getProgress(){
   if (!endTime || totalSecondsPlanned<=0) return 0;
   const remain = Math.max(0, endTime - Date.now());
@@ -912,108 +879,85 @@ function startBeatRing(){
       audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       analyser = audioCtx.createAnalyser();
       analyser.fftSize = 256;
-      const bufferLength = analyser.frequencyBinCount;
-      dataArray = new Uint8Array(bufferLength);
+      dataArray = new Uint8Array(analyser.frequencyBinCount);
       srcNode = audioCtx.createMediaElementSource(alarmEl);
       srcNode.connect(analyser);
       analyser.connect(audioCtx.destination);
-    } else if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+    } else if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
   } catch(e){}
-  ensureCanvasLoop();
+  maybeStartCanvasLoop();
 }
-function stopBeatRing(){ beatActive = false; }
-alarmEl.addEventListener('ended', ()=> stopBeatRing());
-alarmEl.addEventListener('pause', ()=> { if (alarmEl.currentTime < alarmEl.duration) stopBeatRing(); });
+function stopBeatRing(){ beatActive = false; maybeStopCanvasLoop(); }
+alarmEl.addEventListener('ended', stopBeatRing);
+alarmEl.addEventListener('pause', ()=> { if (alarmEl.currentTime < (alarmEl.duration||1)) stopBeatRing(); });
 
-function loop(){
+function needCanvasLoop(){ return !!endTime || beatActive; }
+function maybeStartCanvasLoop(){ if (!runningCanvas && needCanvasLoop() && !document.hidden) startCanvasLoop(); }
+function maybeStopCanvasLoop(){ if (runningCanvas && !needCanvasLoop()) stopCanvasLoop(); }
+
+function startCanvasLoop(){ if (runningCanvas) return; runningCanvas = true; lastFrameTime = 0; loop(); }
+function stopCanvasLoop(){ runningCanvas = false; if (rafId) cancelAnimationFrame(rafId); }
+
+function loop(ts=0){
+  if (!runningCanvas) return;
   rafId = requestAnimationFrame(loop);
+  if (ts - lastFrameTime < frameMinDelta) return; // 30 FPS throttle
+  lastFrameTime = ts;
+
   const w = canvas.width, h = canvas.height;
   ctx.clearRect(0,0,w,h);
 
   const cx = w/2, cy = h/2;
-  const innerR = 70;
-  const ringThickness = 22;
-  const beatOuterRBase = 110;
-  const beatThickness = 8;
+  const innerR = Math.min(w,h)/6 + 45; // skaliert mit Größe
+  const ringThickness = 18;
+  const beatOuterRBase = innerR + 40;
+  const beatThickness = 6;
 
-  const isMil = document.body.classList.contains('military');
-  const isXmas = document.body.classList.contains('christmas');
+  // vereinfachter Glow (keine teure shadowBlur pro Frame)
+  ctx.fillStyle = 'rgba(0,0,0,0.0)';
+  ctx.beginPath(); ctx.arc(cx, cy, innerR+80, 0, Math.PI*2); ctx.fill();
 
-  /* Glow */
-  const glowBaseColor = isXmas
-    ? 'rgba(46,125,50,0.28)'
-    : isMil
-      ? 'rgba(154,201,38,0.28)'
-      : (document.body.classList.contains('fancy'))
-        ? 'rgba(255,0,255,0.25)'
-        : (document.body.classList.contains('dark'))
-          ? 'rgba(0,128,255,0.18)'
-          : 'rgba(0,100,255,0.12)';
-  const glowGrad = ctx.createRadialGradient(cx, cy, 40, cx, cy, 160);
-  glowGrad.addColorStop(0, glowBaseColor);
-  glowGrad.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.fillStyle = glowGrad;
-  ctx.beginPath(); ctx.arc(cx, cy, 160, 0, 2 * Math.PI); ctx.fill();
-  ctx.shadowColor = glowBaseColor; ctx.shadowBlur = 18;
-
-  // Farben aus CSS-Variablen
-  const trackColor = getComputedStyle(document.documentElement).getPropertyValue('--ring-track').trim() || '#e6e6e6';
-  const fillColor  = getComputedStyle(document.documentElement).getPropertyValue('--ring-fill').trim()  || '#0078d7';
-  const beatColor  = getComputedStyle(document.documentElement).getPropertyValue('--beat-color').trim() || '#ff3366';
-
-  // Fortschrittsring – Fancy: Verlauf | Christmas: Rot→Grün Verlauf
-  let grad = ctx.createLinearGradient(0,0,w,0);
-  if (isXmas) {
-    grad.addColorStop(0,'#d32f2f'); grad.addColorStop(1,'#2e7d32');
-  } else if (document.body.classList.contains('fancy')) {
-    grad.addColorStop(0,'#ff3366'); grad.addColorStop(0.5,'#ffcc00'); grad.addColorStop(1,'#00ff99');
-  } else {
-    grad.addColorStop(0, fillColor); grad.addColorStop(1, fillColor);
-  }
-
-  // 1) Track (Military gestrichelt)
+  // Track
   ctx.beginPath();
   ctx.lineWidth = ringThickness;
-  ctx.strokeStyle = trackColor;
-  if (isMil) ctx.setLineDash([6,4]); else ctx.setLineDash([]);
+  ctx.strokeStyle = styleCache.trackColor;
+  if (styleCache.isMil) ctx.setLineDash([6,4]); else ctx.setLineDash([]);
   ctx.arc(cx, cy, innerR, 0, Math.PI*2);
   ctx.stroke();
   ctx.setLineDash([]);
 
-  // 2) Progress
+  // Progress
   const p = getProgress();
   if (p > 0) {
     ctx.beginPath();
     ctx.lineWidth = ringThickness;
     ctx.lineCap = 'round';
-    ctx.strokeStyle = grad;
+    ctx.strokeStyle = ensureGradient();
     const start = -Math.PI/2;
     const end = start + p * Math.PI*2;
     ctx.arc(cx, cy, innerR, start, end, false);
     ctx.stroke();
   }
 
-  // 3) Beat-Ring
+  // Beat-Ring (mit vereinfachter Amplitude)
   let amplitude = 0;
   if (beatActive && analyser && dataArray) {
     analyser.getByteFrequencyData(dataArray);
     let sum = 0; for (let i=0;i<dataArray.length;i++) sum += dataArray[i];
     amplitude = (sum / dataArray.length) / 255;
-  } else { amplitude *= 0.9; }
+  }
 
-  const bump = (amplitude>0 ? (amplitude*2200) : 0);
+  const bump = amplitude * 14; // kleinerer Hub
   const beatR = beatOuterRBase + bump;
 
   ctx.beginPath();
-  ctx.lineWidth = beatThickness + bump*0.25;
-  const g2 = ctx.createRadialGradient(cx, cy, beatR-12, cx, cy, beatR+24);
-  if (isXmas) {
-    g2.addColorStop(0, '#2e7d32'); // grün
-  } else if (isMil) {
-    g2.addColorStop(0, '#ff9900'); // tact. orange
-  } else {
-    g2.addColorStop(0, beatColor);
-  }
+  ctx.lineWidth = beatThickness + bump*0.4;
+  const g2 = ctx.createRadialGradient(cx, cy, Math.max(1,beatR-8), cx, cy, beatR+18);
+  if (styleCache.isXmas) g2.addColorStop(0, '#2e7d32');
+  else if (styleCache.isMil) g2.addColorStop(0, '#ff9900');
+  else g2.addColorStop(0, styleCache.beatColor);
   g2.addColorStop(1, 'rgba(255,255,255,0)');
   ctx.strokeStyle = g2;
   ctx.globalAlpha = 0.8;
@@ -1021,49 +965,52 @@ function loop(){
   ctx.stroke();
   ctx.globalAlpha = 1;
 
-  if (!endTime && !beatActive) stopCanvasLoop();
+  if (!needCanvasLoop()) stopCanvasLoop();
 }
 
-/* ===================== ❄️ DICHTER SCHNEE (Canvas, parallax) ===================== */
+/* ===================== ❄️ Schnee (optimiert) ===================== */
 const snowCanvas = document.getElementById('snowCanvas');
 const scx = snowCanvas.getContext('2d');
 let snowRaf = null;
 let flakes = [];
 let snowActive = false;
+let snowLast = 0;
+const snowFPS = 30;
+const snowDelta = 1000 / snowFPS;
 
 function resizeSnow(){
   snowCanvas.width = window.innerWidth;
   snowCanvas.height = window.innerHeight;
 }
-
 function makeFlakes(){
-  // CSS-Deko: 600–900 Flakes je nach Größe
-  const base = Math.floor((window.innerWidth * window.innerHeight) / 2500); // density baseline
-   // +20% Dichte, ansonsten alles unverändert
-  const count = Math.min(1200, Math.max(600, Math.floor(base * 1.2)));
+  // Weniger Flocken, aber dynamisch
+  const base = Math.floor((window.innerWidth * window.innerHeight) / 6000);
+  const count = Math.min(500, Math.max(200, base)); // vorher bis 1200
   flakes = [];
   for (let i=0;i<count;i++){
-    const layer = Math.random(); // 0..1 (parallax)
+    const layer = Math.random();
     flakes.push({
       x: Math.random()*snowCanvas.width,
       y: Math.random()*snowCanvas.height,
-      r: 0.6 + layer*2.2,          // radius
-      s: 0.4 + layer*1.8,          // speed
-      w: 0.4 + layer*1.0,          // drift
-      a: Math.random()*Math.PI*2,  // angle for drift
-      o: 0.35 + layer*0.55         // opacity
+      r: 0.6 + layer*2.0,
+      s: 0.35 + layer*1.5,
+      w: 0.35 + layer*0.9,
+      a: Math.random()*Math.PI*2,
+      o: 0.28 + layer*0.5
     });
   }
 }
-
-function drawSnow(){
+function drawSnow(ts=0){
+  if (!snowActive) return;
   snowRaf = requestAnimationFrame(drawSnow);
-  scx.clearRect(0,0,snowCanvas.width, snowCanvas.height);
+  if (ts - snowLast < snowDelta) return;
+  snowLast = ts;
 
+  scx.clearRect(0,0,snowCanvas.width, snowCanvas.height);
   scx.fillStyle = 'rgba(255,255,255,0.9)';
   for (let i=0;i<flakes.length;i++){
     const f = flakes[i];
-    f.a += 0.01;               // drift animation
+    f.a += 0.01;
     f.y += f.s;
     f.x += Math.cos(f.a)*f.w;
 
@@ -1078,13 +1025,13 @@ function drawSnow(){
   }
   scx.globalAlpha = 1;
 }
-
 function startSnow(){
   if (snowActive) return;
   snowActive = true;
   resizeSnow();
   makeFlakes();
   window.addEventListener('resize', onResizeSnow);
+  snowLast = 0;
   drawSnow();
 }
 function stopSnow(){
@@ -1099,17 +1046,27 @@ function onResizeSnow(){
   makeFlakes();
 }
 
-/* ===================== Init ===================== */
+/* ===================== Sichtbarkeit / Init ===================== */
+document.addEventListener('visibilitychange', ()=>{
+  if (document.hidden) {
+    stopCanvasLoop();
+  } else {
+    // bei Rückkehr nur starten, wenn nötig
+    maybeStartCanvasLoop();
+  }
+});
+
 window.onload = () => {
   const savedTheme = localStorage.getItem('theme') || 'light';
   applyTheme(savedTheme);
   applyLang();
   loadStoredSoundIfAny();
-  ensureCanvasLoop();
+  // Canvas passend zur sichtbaren Größe setzen
+  resizeProgressCanvas();
+  cacheCanvasStyle();
+  // Loop NICHT automatisch starten – erst bei Timer/Beat
 };
 </script>
 
 </body>
 </html>
-
-
